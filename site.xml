@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<site>
+   <description name="ArchSafe Unified Modeling Tools" url="https://your-site.com">
+      Tools for safety-critical system modeling and analysis
+   </description>
+   <feature url="features/edu.kit.sdq.dsis.unified.feature_1.0.0.202512141431.jar" id="edu.kit.sdq.dsis.unified.feature" version="1.0.0.202512141431">
+      <category name="archsafe"/>
+   </feature>
+   <category-def name="archsafe" label="ArchSafe Unified Modeling WorkBench"/>
+</site>
