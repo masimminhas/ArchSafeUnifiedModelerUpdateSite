@@ -12,5 +12,5 @@
   </parent>
   <artifactId>edu.kit.sdq.dsis.unified.target</artifactId>
   <packaging>eclipse-target-definition</packaging>
-  <n>ArchSafeUnified – Target Platform</n>
+  <name>ArchSafeUnified – Target Platform</name>
 </project>

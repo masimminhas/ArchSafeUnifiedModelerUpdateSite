@@ -12,7 +12,7 @@
   </parent>
   <artifactId>edu.kit.sdq.dsis.unified.repository</artifactId>
   <packaging>eclipse-repository</packaging>
-  <n>ArchSafeUnified Modeling Workbench– P2 Update Site</n>
+  <name>ArchSafeUnified Modeling Workbench– P2 Update Site</name>
 
   <!--
     After mvn clean package, the P2 site is at:

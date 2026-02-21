@@ -10,7 +10,7 @@
     <version>1.0.0-SNAPSHOT</version>
     <relativePath>../../pom.xml</relativePath>
   </parent>
-  <artifactId>edu.kit.sdq.dsis.unified.feature</artifactId>
-  <packaging>eclipse-feature</packaging>
-  <name>ArchSafeUnified Modeling Workbench – Feature</name>
+  <artifactId>edu.kit.sdq.dsis.metamodel.unified</artifactId>
+  <packaging>eclipse-plugin</packaging>
+  <name>ArchSafeUnified Modeling Workbench – Metamodel Plugin</name>
 </project>

@@ -12,7 +12,7 @@
   </parent>
   <artifactId>edu.kit.sdq.dsis.unified.product</artifactId>
   <packaging>eclipse-repository</packaging>
-  <n>ArchSafeUnified Modeling Workbench – Standalone RCP Product</n>
+  <name>ArchSafeUnified Modeling Workbench – Standalone RCP Product</name>
 
   <build>
     <plugins>
