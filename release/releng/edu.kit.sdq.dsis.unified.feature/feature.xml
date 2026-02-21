@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ╔══════════════════════════════════════════════════════════════╗
+  ║  DSIS Unified – Eclipse Feature Definition                  ║
+  ║                                                             ║
+  ║  A Feature is the installable unit Eclipse shows users      ║
+  ║  in Help > Install New Software.                            ║
+  ║                                                             ║
+  ║  This feature:                                              ║
+  ║   • Bundles both plugins (metamodel + design)               ║
+  ║   • Declares Sirius/EMF as required features so Eclipse     ║
+  ║     auto-resolves them on install (no manual steps)         ║
+  ║   • Is referenced by both the update site and the RCP       ║
+  ║     product definition                                      ║
+  ╚══════════════════════════════════════════════════════════════╝
+-->
+<feature
+    id="edu.kit.sdq.dsis.unified.feature"
+    label="DSIS Unified Safety Modeling Tool"
+    version="1.0.0.qualifier"
+    provider-name="KIT – Software Design and Quality / DSIS"
+    plugin="edu.kit.sdq.dsis.metamodel.unified">
+
+  <description url="https://github.com/kit-sdq/dsis-unified-tool">
+    Unified ISO 26262 safety modeling tool for Eclipse Sirius.
+    Supports 9 diagram types: Architecture, Safety, FMEA, Requirements,
+    Traceability, Metrics Table, Metrics Dashboard, FMEA Table and
+    Failure Propagation Simulation.
+  </description>
+
+  <copyright>
+    Copyright (c) 2024 Karlsruhe Institute of Technology (KIT).
+    Software Design and Quality / DSIS Group.
+    All rights reserved.
+  </copyright>
+
+  <license url="https://www.eclipse.org/legal/epl-2.0/">
+    This program and the accompanying materials are made available
+    under the terms of the Eclipse Public License 2.0.
+    SPDX-License-Identifier: EPL-2.0
+  </license>
+
+  <url>
+    <update label="DSIS Unified Tool Update Site"
+            url="https://github.com/masimminhas/ArchSafeUnifiedModelerUpdateSite"/>
+    <discovery label="Project Homepage"
+               url="https://github.com/masimminhas/ArchSafeUnifiedModelerUpdateSite"/>
+  </url>
+
+  <!-- ── Plugins included in this feature ──────────────────── -->
+  <plugin id="edu.kit.sdq.dsis.metamodel.unified"
+          download-size="0" install-size="0"
+          version="0.0.0" unpack="false"/>
+
+  <plugin id="edu.kit.sdq.dsis.metamodel.unified.design"
+          download-size="0" install-size="0"
+          version="0.0.0" unpack="false"/>
+
+  <!-- ── Required features – Eclipse resolves these on install ─ -->
+  <requires>
+    <import feature="org.eclipse.sirius.runtime"
+            version="7.3.0" match="compatible"/>
+    <import feature="org.eclipse.sirius.diagram"
+            version="7.3.0" match="compatible"/>
+    <import feature="org.eclipse.sirius.table"
+            version="7.3.0" match="compatible"/>
+    <import feature="org.eclipse.sirius.common.acceleo.aql"
+            version="7.3.0" match="compatible"/>
+    <import feature="org.eclipse.emf"
+            version="2.29.0" match="greaterOrEqual"/>
+    <import feature="org.eclipse.emf.validation"
+            version="1.12.0" match="greaterOrEqual"/>
+  </requires>
+
+</feature>

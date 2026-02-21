@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  P2 Repository – Category Definition
+  ══════════════════════════════════════
+  Defines how features are grouped in
+  Help > Install New Software > Available Software.
+
+  Without categories, features are listed but hard to find.
+  With categories, users see a named group first.
+-->
+<site>
+
+  <category-def
+      name="ArchSafeUnified.main"
+      label="ArchSafeUnified Modeling Workbench">
+    <description>
+      ISO 26262 unified safety modeling tool for Eclipse.
+      Covers Architecture, FMEA, Requirements, Hazard Analysis,
+      Traceability and Failure Propagation Simulation.
+    </description>
+  </category-def>
+
+  <feature
+      url="features/edu.kit.sdq.dsis.unified.feature_1.0.0.qualifier.jar"
+      id="edu.kit.sdq.dsis.unified.feature"
+      version="1.0.0.qualifier">
+    <category name="dsis.main"/>
+  </feature>
+
+</site>

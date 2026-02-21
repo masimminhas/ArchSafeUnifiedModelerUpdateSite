@@ -1,0 +1,291 @@
+name: Build · Release · Publish
+
+# ╔══════════════════════════════════════════════════════════════════╗
+# ║  DSIS Unified – GitHub Actions CI/CD Pipeline                  ║
+# ║                                                                 ║
+# ║  Triggers:                                                      ║
+# ║    • Every push to main     → build + publish update site       ║
+# ║    • Pull requests          → build only (no publish)           ║
+# ║    • Tag  v*.*.*            → full release:                     ║
+# ║        ✓ P2 update site  → GitHub Pages                        ║
+# ║        ✓ Standalone zips → GitHub Release assets               ║
+# ║        ✓ Docker image    → GitHub Container Registry (ghcr.io) ║
+# ╚══════════════════════════════════════════════════════════════════╝
+
+on:
+  push:
+    branches: [main]
+    tags:     ["v*.*.*"]
+  pull_request:
+    branches: [main]
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository_owner }}/dsis-unified-tool
+  JAVA_VERSION: "17"
+  MAVEN_OPTS: >-
+    -Xmx2g
+    -XX:+UseG1GC
+    -Dmaven.artifact.threads=8
+
+jobs:
+
+  # ──────────────────────────────────────────────────────────────────
+  # JOB 1: Build everything with Tycho
+  # ──────────────────────────────────────────────────────────────────
+  build:
+    name: Build (Tycho)
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@v4
+
+      - name: Set up Java ${{ env.JAVA_VERSION }}
+        uses: actions/setup-java@v4
+        with:
+          java-version: ${{ env.JAVA_VERSION }}
+          distribution: temurin
+          cache: maven
+
+      # Cache the Tycho/Maven local repository between runs.
+      # Tycho downloads hundreds of Eclipse JARs; caching saves ~10 minutes.
+      - name: Cache Maven local repository
+        uses: actions/cache@v4
+        with:
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-m2-
+
+      - name: Build with Maven/Tycho
+        run: |
+          mvn clean package \
+            -T 1C -B \
+            --no-transfer-progress \
+            -Dmaven.test.skip=true
+
+      # Upload P2 repository as artifact for downstream jobs
+      - name: Upload P2 update site
+        uses: actions/upload-artifact@v4
+        with:
+          name: p2-repository
+          path: releng/edu.kit.sdq.dsis.unified.repository/target/repository/
+          retention-days: 14
+
+      # Upload all four RCP product archives
+      - name: Upload RCP product archives
+        uses: actions/upload-artifact@v4
+        with:
+          name: rcp-products
+          path: releng/edu.kit.sdq.dsis.unified.product/target/products/*.zip
+          retention-days: 14
+
+      - name: Upload RCP product archives (tar.gz)
+        uses: actions/upload-artifact@v4
+        with:
+          name: rcp-products-targz
+          path: releng/edu.kit.sdq.dsis.unified.product/target/products/*.tar.gz
+          retention-days: 14
+
+  # ──────────────────────────────────────────────────────────────────
+  # JOB 2: Publish P2 update site to GitHub Pages
+  #         Runs on: push to main OR tag push
+  # ──────────────────────────────────────────────────────────────────
+  publish-updatesite:
+    name: Publish Update Site → GitHub Pages
+    needs: build
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push'
+
+    # Required permissions for Pages deployment
+    permissions:
+      pages:  write
+      id-token: write
+      contents: read
+
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    steps:
+      - name: Checkout (for index.html and docs/)
+        uses: actions/checkout@v4
+
+      - name: Download P2 update site artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: p2-repository
+          path: _site/updatesite/
+
+      # Copy the static landing page into the site root
+      - name: Copy landing page
+        run: |
+          cp -r docs/. _site/
+          echo "Update site URL: https://${{ github.repository_owner }}.https://github.com/masimminhas/ArchSafeUnifiedModelerUpdateSite"
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site/
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
+
+  # ──────────────────────────────────────────────────────────────────
+  # JOB 3: Create GitHub Release with RCP download assets
+  #         Runs on: version tag  v*.*.*  only
+  # ──────────────────────────────────────────────────────────────────
+  github-release:
+    name: Create GitHub Release
+    needs: build
+    runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/tags/v')
+
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Download RCP zip products
+        uses: actions/download-artifact@v4
+        with:
+          name: rcp-products
+          path: release-assets/
+
+      - name: Download RCP tar.gz products
+        uses: actions/download-artifact@v4
+        with:
+          name: rcp-products-targz
+          path: release-assets/
+
+      - name: Download P2 repository (zip it for release)
+        uses: actions/download-artifact@v4
+        with:
+          name: p2-repository
+          path: p2-repo/
+
+      - name: Zip P2 update site for release asset
+        run: |
+          cd p2-repo
+          zip -r ../release-assets/archsafe-unified-updatesite-${{ github.ref_name }}.zip .
+
+      # Extract version from tag (strips the leading 'v')
+      - name: Parse version
+        id: version
+        run: echo "VERSION=${GITHUB_REF_NAME#v}" >> $GITHUB_OUTPUT
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          name: "ArchSafeUnified Tool ${{ github.ref_name }}"
+          tag_name: ${{ github.ref_name }}
+          draft: false
+          prerelease: false
+          generate_release_notes: true
+          body: |
+            ## ArchSafeUnified Modeling Workbench ${{ github.ref_name }}
+
+            ISO 26262 safety modeling tool for Eclipse 
+
+            ### Installation Options
+
+            #### Option 1 — Eclipse Update Site (recommended for Eclipse users)
+            1. Open Eclipse Modeling Tools 2024-03 or later
+            2. Go to **Help → Install New Software → Add...**
+            3. Enter URL: `https://github.com/masimminhas/ArchSafeUnifiedModelerUpdateSite`
+            4. Select **ArchSafeUnified Safety Modeling Tool** → Install
+
+            #### Option 2 — Standalone Application (no Eclipse required)
+            Download the archive for your platform, unzip, and run `dsis-unified`:
+            - **Windows** → `archsafe-unified-win32.win32.x86_64.zip`
+            - **Linux**   → `archsafe-unified-linux.gtk.x86_64.tar.gz`
+            - **macOS Intel** → `archsafe-unified-macosx.cocoa.x86_64.tar.gz`
+            - **macOS Apple Silicon** → `archsafe-unified-macosx.cocoa.aarch64.tar.gz`
+
+            #### Option 3 — Docker (zero installation, browser-based)
+            ```bash
+            docker run -p 6080:6080 ghcr.io/kit-sdq/archsafe-unified-tool:${{ github.ref_name }}
+            # Open http://localhost:6080 — password: dsis2024
+            ```
+
+            ### What's included
+            - 9 diagram types: Architecture, Safety, FMEA, Requirements, Traceability,
+              Metrics Table, Metrics Dashboard, FMEA Table, Failure Propagation Simulation
+            - 45 semantic validation rules (ISO 26262-compliant)
+            - Pre-loaded example model (ABS brake system)
+
+          files: release-assets/**
+
+  # ──────────────────────────────────────────────────────────────────
+  # JOB 4: Build and push Docker image to GitHub Container Registry
+  #         Runs on: tag push only
+  # ──────────────────────────────────────────────────────────────────
+  docker:
+    name: Build & Push Docker Image
+    needs: build
+    runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/tags/v')
+
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      # We need the built RCP product for the Docker build
+      - name: Download RCP Linux product
+        uses: actions/download-artifact@v4
+        with:
+          name: rcp-products-targz
+          path: releng/edu.kit.sdq.dsis.unified.product/target/products/
+
+      # Unpack the Linux tar.gz so the Dockerfile COPY can find the folder
+      - name: Unpack Linux RCP for Docker build context
+        run: |
+          cd releng/edu.kit.sdq.dsis.unified.product/target/products
+          mkdir -p edu.kit.sdq.dsis.unified.product/linux/gtk/x86_64
+          tar -xzf archsafe-unified-linux.gtk.x86_64.tar.gz \
+              -C edu.kit.sdq.dsis.unified.product/linux/gtk/x86_64 \
+              --strip-components=1
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Log in to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Extract metadata (tags, labels)
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          tags: |
+            type=semver,pattern={{version}}
+            type=semver,pattern={{major}}.{{minor}}
+            type=raw,value=latest,enable={{is_default_branch}}
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: docker/Dockerfile
+          # Use the pre-built RCP; skip the Maven build stage inside Docker
+          # by using a custom target that only runs the runtime stage
+          target: ""
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          # Cache layers between builds (speeds up subsequent pushes)
+          cache-from: type=gha
+          cache-to:   type=gha,mode=max
+          platforms: linux/amd64

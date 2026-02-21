@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension point="org.eclipse.sirius.externalJavaAction">
+      <!-- Architecture Analysis Actions -->
+           <javaActions
+            id="edu.kit.sdq.dsis.unified.design.actions.TestAction"
+            actionClass="edu.kit.sdq.dsis.unified.design.actions.TestAction">
+      </javaActions>
+      <javaActions
+            id="edu.kit.sdq.dsis.unified.design.actions.ValidateConsistencyAction"
+            actionClass="edu.kit.sdq.dsis.unified.design.actions.ValidateConsistencyAction">
+      </javaActions>
+
+      <javaActions
+            id="edu.kit.sdq.dsis.unified.design.actions.MetricsAction"
+            actionClass="edu.kit.sdq.dsis.unified.design.actions.MetricsAction">
+      </javaActions>
+      
+      <javaActions
+            id="edu.kit.sdq.dsis.unified.design.actions.HazardAnalysisAction"
+            actionClass="edu.kit.sdq.dsis.unified.design.actions.HazardAnalysisAction">
+      </javaActions>
+      
+      <javaActions
+            id="edu.kit.sdq.dsis.unified.design.actions.ImpactAnalysisAction"
+            actionClass="edu.kit.sdq.dsis.unified.design.actions.ImpactAnalysisAction">
+      </javaActions>
+      
+      <javaActions
+            id="edu.kit.sdq.dsis.unified.design.actions.ExportArchitectureAction"
+            actionClass="edu.kit.sdq.dsis.unified.design.actions.ExportArchitectureAction">
+      </javaActions>
+      
+      <!-- FMEA Actions -->
+      <javaActions
+            id="edu.kit.sdq.dsis.unified.design.actions.GenerateFMEAAction"
+            actionClass="edu.kit.sdq.dsis.unified.design.actions.GenerateFMEAAction">
+      </javaActions>
+
+      <javaActions
+            id="edu.kit.sdq.dsis.unified.design.actions.ExportFMEAAction"
+            actionClass="edu.kit.sdq.dsis.unified.design.actions.ExportFMEAAction">
+      </javaActions>
+
+      <!-- Metrics Actions -->
+      <javaActions
+            id="edu.kit.sdq.dsis.unified.design.actions.ExportDetailedMetricsAction"
+            actionClass="edu.kit.sdq.dsis.unified.design.actions.ExportDetailedMetricsAction">
+      </javaActions>
+
+      <javaActions
+            id="edu.kit.sdq.dsis.unified.design.actions.RecommendationAction"
+            actionClass="edu.kit.sdq.dsis.unified.design.actions.RecommendationAction">
+      </javaActions>
+      
+      <!--Traceability Actions-->
+       <javaActions
+            id="edu.kit.sdq.dsis.unified.design.actions.ExportTraceabilityAction"
+            actionClass="edu.kit.sdq.dsis.unified.design.actions.ExportTraceabilityAction">
+      </javaActions>
+      
+       <javaActions
+            id="edu.kit.sdq.dsis.unified.design.actions.GenerateTraceabilityReportAction"
+            actionClass="edu.kit.sdq.dsis.unified.design.actions.GenerateTraceabilityReportAction">
+      </javaActions>
+                  
+       <javaActions
+            id="edu.kit.sdq.dsis.unified.design.actions.TraceabilityQueryAction"
+            actionClass="edu.kit.sdq.dsis.unified.design.actions.TraceabilityQueryAction">
+      </javaActions>
+      
+      <javaActions
+            id="edu.kit.sdq.dsis.unified.design.actions.ValidateTraceabilityQueryAction"
+            actionClass="edu.kit.sdq.dsis.unified.design.actions.ValidateTraceabilityQueryAction">
+      </javaActions>
+      
+      <javaActions
+            id="edu.kit.sdq.dsis.unified.design.actions.HighlightTraceChainAction"
+            actionClass="edu.kit.sdq.dsis.unified.design.actions.HighlightTraceChainAction">
+      </javaActions>
+      
+                  <javaActions
+            id="edu.kit.sdq.dsis.unified.design.actions.ValidateTraceabilityCoverageAction"
+            actionClass="edu.kit.sdq.dsis.unified.design.actions.ValidateTraceabilityCoverageAction">
+      </javaActions>
+      <!--ISO 26262 Actions-->
+      <javaActions
+            id="edu.kit.sdq.dsis.unified.design.actions.req.ValidateRequirementDerivationChainAction"
+            actionClass="edu.kit.sdq.dsis.unified.design.actions.req.ValidateRequirementDerivationChainAction">
+      </javaActions>
+      <javaActions
+            id="edu.kit.sdq.dsis.unified.design.actions.req.ValidateHARACompletenessAction"
+            actionClass="edu.kit.sdq.dsis.unified.design.actions.req.ValidateHARACompletenessAction">
+      </javaActions>
+            <javaActions
+            id="edu.kit.sdq.dsis.unified.design.actions.req.PropagateASILAction"
+            actionClass="edu.kit.sdq.dsis.unified.design.actions.req.PropagateASILAction">
+      </javaActions>
+      
+                  <javaActions
+            id="edu.kit.sdq.dsis.unified.design.actions.req.ValidateTSRVerificationAction"
+            actionClass="edu.kit.sdq.dsis.unified.design.actions.req.ValidateTSRVerificationAction">
+      </javaActions>
+      
+      <javaActions
+            id="edu.kit.sdq.dsis.unified.design.actions.req.CheckApprovalStatusAction"
+            actionClass="edu.kit.sdq.dsis.unified.design.actions.req.CheckApprovalStatusAction">
+      </javaActions>
+      
+            <javaActions
+            id="edu.kit.sdq.dsis.unified.design.actions.req.CheckArchitectureConsistencyAction"
+            actionClass="edu.kit.sdq.dsis.unified.design.actions.req.CheckArchitectureConsistencyAction">
+      </javaActions>
+      
+                  <javaActions
+            id="edu.kit.sdq.dsis.unified.design.actions.req.ExportSafetyRequirementReportAction"
+            actionClass="edu.kit.sdq.dsis.unified.design.actions.req.ExportSafetyRequirementReportAction">
+      </javaActions>
+      
+          <javaActions
+            id="edu.kit.sdq.dsis.unified.design.actions.req.ExportSafetyCaseAction"
+            actionClass="edu.kit.sdq.dsis.unified.design.actions.req.ExportSafetyCaseAction">
+      </javaActions>
+      
+<javaActions
+            id="edu.kit.sdq.dsis.unified.design.actions.req.PromoteRequirementStatusAction"
+            actionClass="edu.kit.sdq.dsis.unified.design.actions.req.PromoteRequirementStatusAction">
+      </javaActions>
+      
+      <!--QUANTITATIVE METRICS ACTIONS-->
+      
+      <javaActions
+            id="edu.kit.sdq.dsis.unified.design.services.MetricsService"
+            actionClass="edu.kit.sdq.dsis.unified.design.services.MetricsService">
+      </javaActions>
+      
+            <javaActions
+            id="edu.kit.sdq.dsis.unified.design.actions.metrics.RefreshMetricsAction"
+            actionClass="edu.kit.sdq.dsis.unified.design.actions.metrics.RefreshMetricsAction">
+      </javaActions>
+      
+       <!--Simulation Actions-->
+                   <javaActions
+            id="edu.kit.sdq.dsis.unified.design.actions.sim.ExportSimulationReportAction"
+            actionClass="edu.kit.sdq.dsis.unified.design.actions.sim.ExportSimulationReportAction">
+      </javaActions>
+       
+       <javaActions
+            id="edu.kit.sdq.dsis.unified.design.actions.sim.FailurePropagationEngine"
+            actionClass="edu.kit.sdq.dsis.unified.design.actions.sim.FailurePropagationEngine">
+      </javaActions>
+      
+             <javaActions
+            id="edu.kit.sdq.dsis.unified.design.actions.sim.IdentifyCriticalPropagationPathAction"
+            actionClass="edu.kit.sdq.dsis.unified.design.actions.sim.IdentifyCriticalPropagationPathAction">
+      </javaActions>
+      
+                   <javaActions
+            id="edu.kit.sdq.dsis.unified.design.actions.sim.ResetSimulationAction"
+            actionClass="edu.kit.sdq.dsis.unified.design.actions.sim.ResetSimulationAction">
+      </javaActions>
+      
+                   <javaActions
+            id="edu.kit.sdq.dsis.unified.design.actions.sim.ShowPropagationReportAction"
+            actionClass="edu.kit.sdq.dsis.unified.design.actions.sim.ShowPropagationReportAction">
+      </javaActions>
+                         <javaActions
+            id="edu.kit.sdq.dsis.unified.design.actions.sim.SimulationState"
+            actionClass="edu.kit.sdq.dsis.unified.design.actions.sim.SimulationState">
+      </javaActions>
+      
+                         <javaActions
+            id="edu.kit.sdq.dsis.unified.design.actions.sim.TriggerFailurePropagationAction"
+            actionClass="edu.kit.sdq.dsis.unified.design.actions.sim.TriggerFailurePropagationAction">
+      </javaActions>
+      
+                         <javaActions
+            id="edu.kit.sdq.dsis.unified.design.actions.sim.TriggerFromFailureModeAction"
+            actionClass="edu.kit.sdq.dsis.unified.design.actions.sim.TriggerFromFailureModeAction">
+      </javaActions>
+                         <javaActions
+            id="edu.kit.sdq.dsis.metamodel.unified.design.SimulationServices"
+            actionClass="edu.kit.sdq.dsis.metamodel.unified.design.SimulationServices">
+      </javaActions>
+      
+   </extension>
+</plugin>

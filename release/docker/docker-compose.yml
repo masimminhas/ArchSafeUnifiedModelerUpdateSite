@@ -1,0 +1,54 @@
+version: "3.9"
+
+# ╔══════════════════════════════════════════════════════════════╗
+# ║  DSIS Unified – Docker Compose                             ║
+# ║                                                            ║
+# ║  Reviewer launch (one command, zero config):               ║
+# ║    docker compose up                                       ║
+# ║    → Open http://localhost:6080                            ║
+# ║                                                            ║
+# ║  Clean up after reviewing:                                 ║
+# ║    docker compose down                                     ║
+# ╚══════════════════════════════════════════════════════════════╝
+
+services:
+  dsis-unified:
+    image: ghcr.io/kit-sdq/ArchSafe-unified-tool:1.0.0
+    container_name: ArchSafeUnified-Modeling-Workbench
+
+    ports:
+      # noVNC web interface — open http://localhost:6080 in browser
+      - "6080:6080"
+
+    environment:
+      # Display resolution inside the virtual desktop
+      SCREEN_WIDTH: 1600
+      SCREEN_HEIGHT: 900
+      SCREEN_DEPTH: 24
+      # VNC access password — change for any shared/public environment
+      VNC_PASSWORD: dsis2024
+
+    volumes:
+      # Persist the Eclipse workspace across container restarts.
+      # Models saved inside the tool will survive docker compose down/up.
+      - ArchSafeUnified-workspace:/root/ArchSafe-unified-workspace
+
+      # Optional: mount a local folder to exchange model files
+      # - ./my-models:/root/dsis-unified-workspace/my-project
+
+    restart: unless-stopped
+
+    # Shared memory for Chromium inside container (not needed here,
+    # but good practice for any GTK app using WebKit)
+    shm_size: 256m
+
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:6080/"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+      start_period: 40s
+
+volumes:
+  dsis-workspace:
+    driver: local

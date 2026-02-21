@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ╔══════════════════════════════════════════════════════════════╗
+  ║  DSIS Unified – Eclipse RCP Product Descriptor              ║
+  ║                                                             ║
+  ║  Tycho reads this file to assemble the standalone product.  ║
+  ║  Also usable in Eclipse IDE: open in PDE Product Editor.    ║
+  ║                                                             ║
+  ║  Key decisions:                                             ║
+  ║   • feature-based (cleaner than plugin-based)              ║
+  ║   • JustJ JRE bundled → reviewer needs nothing installed    ║
+  ║   • .unified file association set                          ║
+  ║   • Pre-configured workspace with example model             ║
+  ╚══════════════════════════════════════════════════════════════╝
+-->
+<product
+    name="DSIS Unified Safety Modeling Tool"
+    uid="edu.kit.sdq.dsis.unified.product"
+    id="edu.kit.sdq.dsis.metamodel.unified.design.dsisunified"
+    application="org.eclipse.ui.ide.workbench"
+    version="1.0.0.qualifier"
+    useFeatures="true"
+    includeLaunchers="true">
+
+  <aboutInfo>
+    <image path="splash.bmp"/>
+    <text>
+DSIS Unified Safety Modeling Tool  v1.0
+Karlsruhe Institute of Technology (KIT)
+Software Design and Quality – DSIS Group
+
+ISO 26262 Functional Safety Modeling
+Diagrams: Architecture · Safety · FMEA
+          Requirements · Traceability
+          Failure Propagation Simulation
+
+https://github.com/kit-sdq/dsis-unified-tool
+    </text>
+  </aboutInfo>
+
+  <configIni use="default"/>
+
+  <launcherArgs>
+    <programArgs>
+      --launcher.defaultAction openFile
+      -data @user.home/dsis-unified-workspace
+    </programArgs>
+    <vmArgs>
+      -Xms256m
+      -Xmx1024m
+      -XX:+UseG1GC
+      -Dosgi.requiredJavaVersion=17
+      -Dfile.encoding=UTF-8
+      -Declipse.product=edu.kit.sdq.dsis.unified.product
+    </vmArgs>
+    <vmArgsMac>
+      -XstartOnFirstThread
+      -Dorg.eclipse.swt.internal.carbon.smallFonts
+    </vmArgsMac>
+  </launcherArgs>
+
+  <splash location="edu.kit.sdq.dsis.metamodel.unified.design"/>
+
+  <launcher name="dsis-unified">
+    <linux icon="icons/icon.xpm"/>
+    <macosx icon="icons/icon.icns"/>
+    <win useIco="true">
+      <ico path="icons/icon.ico"/>
+    </win>
+  </launcher>
+
+  <!-- ── Features included in the standalone product ────────── -->
+  <features>
+
+    <!-- YOUR TOOL -->
+    <feature id="edu.kit.sdq.dsis.unified.feature"      installMode="root"/>
+
+    <!-- Eclipse base platform (workbench, project explorer) -->
+    <feature id="org.eclipse.platform"                   installMode="root"/>
+    <feature id="org.eclipse.rcp"                        installMode="root"/>
+
+    <!-- Eclipse IDE (needed for workspace, navigator) -->
+    <feature id="org.eclipse.ide"                        installMode="root"/>
+
+    <!-- Sirius runtime + all sub-features -->
+    <feature id="org.eclipse.sirius.runtime"             installMode="root"/>
+    <feature id="org.eclipse.sirius.diagram"             installMode="root"/>
+    <feature id="org.eclipse.sirius.table"               installMode="root"/>
+    <feature id="org.eclipse.sirius.common.acceleo.aql" installMode="root"/>
+    <feature id="org.eclipse.sirius.ui"                  installMode="root"/>
+
+    <!-- EMF runtime -->
+    <feature id="org.eclipse.emf"                        installMode="root"/>
+    <feature id="org.eclipse.emf.validation"             installMode="root"/>
+
+    <!--
+      JustJ OpenJDK 17 – bundled JRE.
+      Makes the zip fully self-contained.
+      Reviewer just unzips and double-clicks.
+      Remove this if you prefer a smaller download and
+      require users to have Java 17+ installed themselves.
+    -->
+    <feature id="org.eclipse.justj.openjdk.hotspot.jre.full" installMode="root"/>
+
+  </features>
+
+  <!-- ── Introductory welcome screen (optional but recommended) ─ -->
+  <introInfo>
+    <image path="icons/welcome.png"/>
+  </introInfo>
+
+  <preferencesInfo>
+    <targetfile overwrite="false"/>
+  </preferencesInfo>
+
+  <cssInfo/>
+
+</product>

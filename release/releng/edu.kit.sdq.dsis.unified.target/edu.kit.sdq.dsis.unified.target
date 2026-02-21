@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<?pde version="3.8"?>
+<!--
+  ╔═══════════════════════════════════════════════════════════════╗
+  ║  DSIS Unified – Target Platform Definition                   ║
+  ║                                                              ║
+  ║  Pins exact dependency versions so builds are reproducible.  ║
+  ║                                                              ║
+  ║  Eclipse base : 2024-03 (4.31)                              ║
+  ║  Sirius       : 7.3.0                                       ║
+  ║  JustJ JRE    : OpenJDK 17 (bundled into standalone RCP)    ║
+  ║                                                              ║
+  ║  To update versions:                                         ║
+  ║    1. Edit the repository URLs below                         ║
+  ║    2. Open in Eclipse PDE: Window > Preferences >            ║
+  ║       Plug-in Development > Target Platform > Add            ║
+  ║    3. Run: mvn clean package                                 ║
+  ╚═══════════════════════════════════════════════════════════════╝
+-->
+<target name="edu.kit.sdq.dsis.unified.target" sequenceNumber="1">
+  <locations>
+
+    <!-- ── Eclipse 2024-03 Release Repository ─────────────────── -->
+    <location includeAllPlatforms="false"
+              includeConfigurePhase="true"
+              includeMode="planner"
+              includeSource="true"
+              type="InstallableUnit">
+      <repository location="https://download.eclipse.org/releases/2024-03/"/>
+
+      <!-- Eclipse Platform (workbench, SWT, JFace) -->
+      <unit id="org.eclipse.platform.feature.group"          version="0.0.0"/>
+      <unit id="org.eclipse.rcp.feature.group"               version="0.0.0"/>
+
+      <!-- EMF core, edit, and XMI persistence -->
+      <unit id="org.eclipse.emf.feature.group"               version="0.0.0"/>
+      <unit id="org.eclipse.emf.edit.feature.group"          version="0.0.0"/>
+      <unit id="org.eclipse.emf.ecore.xmi"                   version="0.0.0"/>
+      <unit id="org.eclipse.emf.common"                      version="0.0.0"/>
+
+      <!-- Xtext (Sirius AQL dependency) -->
+      <unit id="org.eclipse.xtext.feature.group"             version="0.0.0"/>
+
+      <!-- PDE (needed for IDE tooling during development) -->
+      <unit id="org.eclipse.pde.feature.group"               version="0.0.0"/>
+
+      <!-- Eclipse Modeling Tools extras -->
+      <unit id="org.eclipse.emf.ecore.edit.feature.group"   version="0.0.0"/>
+    </location>
+
+    <!-- ── Eclipse Sirius 7.3.0 ───────────────────────────────── -->
+    <location includeAllPlatforms="false"
+              includeConfigurePhase="true"
+              includeMode="planner"
+              includeSource="true"
+              type="InstallableUnit">
+      <repository location="https://download.eclipse.org/sirius/updates/releases/7.3.0/2024-03/"/>
+
+      <!-- Sirius runtime (core, model access, session management) -->
+      <unit id="org.eclipse.sirius.runtime.feature.group"              version="0.0.0"/>
+      <!-- Sirius diagram (all 9 diagrams in unified.odesign) -->
+      <unit id="org.eclipse.sirius.diagram.feature.group"              version="0.0.0"/>
+      <!-- Sirius table (FMEATable + MetricsTableDashboard) -->
+      <unit id="org.eclipse.sirius.table.feature.group"                version="0.0.0"/>
+      <!-- AQL interpreter (all aql: audit expressions) -->
+      <unit id="org.eclipse.sirius.common.acceleo.aql.feature.group"  version="0.0.0"/>
+      <!-- Sirius EMF extensions (validation markers) -->
+      <unit id="org.eclipse.sirius.ext.emf.feature.group"             version="0.0.0"/>
+      <!-- Sirius IDE integration (model explorer, wizards) -->
+      <unit id="org.eclipse.sirius.ui.feature.group"                   version="0.0.0"/>
+    </location>
+
+    <!-- ── EMF Validation Framework ──────────────────────────── -->
+    <location includeAllPlatforms="false"
+              includeConfigurePhase="true"
+              includeMode="planner"
+              includeSource="true"
+              type="InstallableUnit">
+      <repository location="https://download.eclipse.org/modeling/emf/validation/updates/releases/R202211151500/"/>
+      <unit id="org.eclipse.emf.validation.feature.group"   version="0.0.0"/>
+      <unit id="org.eclipse.emf.validation"                 version="0.0.0"/>
+    </location>
+
+    <!-- ── Eclipse Orbit (Apache Commons) ────────────────────── -->
+    <location includeAllPlatforms="false"
+              includeConfigurePhase="true"
+              includeMode="planner"
+              includeSource="true"
+              type="InstallableUnit">
+      <repository location="https://download.eclipse.org/tools/orbit/simrel/orbit-aggregation/2024-03/"/>
+      <unit id="org.apache.commons.lang3"                   version="0.0.0"/>
+      <unit id="org.apache.commons.io"                      version="0.0.0"/>
+      <unit id="com.google.gson"                            version="0.0.0"/>
+    </location>
+
+    <!-- ── JustJ OpenJDK 17 (bundled JRE for standalone RCP) ── -->
+    <!--
+      This makes the standalone product self-contained (~300MB total).
+      Reviewers need NOTHING pre-installed — not even Java.
+      Comment this block out if all target machines have Java 17+.
+    -->
+    <location includeAllPlatforms="false"
+              includeConfigurePhase="true"
+              includeMode="planner"
+              includeSource="false"
+              type="InstallableUnit">
+      <repository location="https://download.eclipse.org/justj/jres/17/updates/release/latest/"/>
+      <unit id="org.eclipse.justj.openjdk.hotspot.jre.full.feature.group" version="0.0.0"/>
+    </location>
+
+  </locations>
+</target>

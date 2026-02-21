@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+                             http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <!--
+    ╔══════════════════════════════════════════════════════════════╗
+    ║  DSIS Unified Modeling Tool  –  Root Parent POM             ║
+    ║  KIT · SDQ · DSIS                                           ║
+    ║                                                             ║
+    ║  One command builds everything:                             ║
+    ║    mvn clean package                                        ║
+    ║                                                             ║
+    ║  Produces:                                                  ║
+    ║   • P2 update site  → releng/repository/target/repository/ ║
+    ║   • Standalone zips → releng/product/target/products/      ║
+    ║       dsis-unified-win32.win32.x86_64.zip                  ║
+    ║       dsis-unified-linux.gtk.x86_64.tar.gz                 ║
+    ║       dsis-unified-macosx.cocoa.x86_64.tar.gz              ║
+    ║       dsis-unified-macosx.cocoa.aarch64.tar.gz             ║
+    ║                                                             ║
+    ║  Requirements: Maven 3.9+  Tycho 4.0+  Java 17+            ║
+    ╚══════════════════════════════════════════════════════════════╝
+  -->
+
+  <groupId>edu.kit.sdq.dsis</groupId>
+  <artifactId>edu.kit.sdq.dsis.unified.parent</artifactId>
+  <version>1.0.0-SNAPSHOT</version>
+  <packaging>pom</packaging>
+
+  <name>DSIS Unified Safety Modeling Tool – Parent</name>
+  <description>
+    ISO 26262 unified safety modeling tool for Eclipse/Sirius.
+    Covers Architecture, FMEA, Requirements, Hazard Analysis,
+    Traceability and Failure Propagation Simulation.
+  </description>
+  <url>https://github.com/kit-sdq/dsis-unified-tool</url>
+
+  <licenses>
+    <license>
+      <name>Eclipse Public License 2.0</name>
+      <url>https://www.eclipse.org/legal/epl-2.0/</url>
+    </license>
+  </licenses>
+
+  <organization>
+    <name>Karlsruhe Institute of Technology – SDQ/DSIS</name>
+    <url>https://sdq.kastel.kit.edu</url>
+  </organization>
+
+  <scm>
+    <connection>scm:git:https://github.com/kit-sdq/dsis-unified-tool.git</connection>
+    <url>https://github.com/kit-sdq/dsis-unified-tool</url>
+  </scm>
+
+  <!-- ── Global properties ──────────────────────────────────────── -->
+  <properties>
+    <tycho.version>4.0.6</tycho.version>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <java.version>17</java.version>
+    <!-- Sirius 7.3 requires Eclipse 2024-03 -->
+    <eclipse.release>2024-03</eclipse.release>
+    <sirius.version>7.3.0</sirius.version>
+  </properties>
+
+  <!-- ── Build reactor – order matters ─────────────────────────── -->
+  <modules>
+    <module>releng/edu.kit.sdq.dsis.unified.target</module>
+    <module>plugins/edu.kit.sdq.dsis.metamodel.unified</module>
+    <module>plugins/edu.kit.sdq.dsis.metamodel.unified.design</module>
+    <module>releng/edu.kit.sdq.dsis.unified.feature</module>
+    <module>releng/edu.kit.sdq.dsis.unified.repository</module>
+    <module>releng/edu.kit.sdq.dsis.unified.product</module>
+  </modules>
+
+  <build>
+    <plugins>
+
+      <!-- Tycho core – enables eclipse-plugin / eclipse-feature packaging -->
+      <plugin>
+        <groupId>org.eclipse.tycho</groupId>
+        <artifactId>tycho-maven-plugin</artifactId>
+        <version>${tycho.version}</version>
+        <extensions>true</extensions>
+      </plugin>
+
+      <!-- Target platform configuration shared by all modules -->
+      <plugin>
+        <groupId>org.eclipse.tycho</groupId>
+        <artifactId>target-platform-configuration</artifactId>
+        <version>${tycho.version}</version>
+        <configuration>
+          <target>
+            <artifact>
+              <groupId>edu.kit.sdq.dsis</groupId>
+              <artifactId>edu.kit.sdq.dsis.unified.target</artifactId>
+              <version>${project.version}</version>
+            </artifact>
+          </target>
+          <!-- RCP is built for all four platforms in parallel -->
+          <environments>
+            <environment><os>win32</os><ws>win32</ws><arch>x86_64</arch></environment>
+            <environment><os>linux</os><ws>gtk</ws><arch>x86_64</arch></environment>
+            <environment><os>macosx</os><ws>cocoa</ws><arch>x86_64</arch></environment>
+            <environment><os>macosx</os><ws>cocoa</ws><arch>aarch64</arch></environment>
+          </environments>
+        </configuration>
+      </plugin>
+
+      <!-- Java 17 compilation -->
+      <plugin>
+        <groupId>org.eclipse.tycho</groupId>
+        <artifactId>tycho-compiler-plugin</artifactId>
+        <version>${tycho.version}</version>
+        <configuration>
+          <source>${java.version}</source>
+          <target>${java.version}</target>
+          <encoding>UTF-8</encoding>
+        </configuration>
+      </plugin>
+
+      <!-- Generate source bundles (good practice for OSS tool) -->
+      <plugin>
+        <groupId>org.eclipse.tycho</groupId>
+        <artifactId>tycho-source-plugin</artifactId>
+        <version>${tycho.version}</version>
+        <executions>
+          <execution>
+            <id>plugin-source</id>
+            <goals><goal>plugin-source</goal></goals>
+          </execution>
+        </executions>
+      </plugin>
+
+      <!-- Version consistency across all bundle/feature manifests -->
+      <plugin>
+        <groupId>org.eclipse.tycho</groupId>
+        <artifactId>tycho-versions-plugin</artifactId>
+        <version>${tycho.version}</version>
+      </plugin>
+
+    </plugins>
+  </build>
+
+</project>

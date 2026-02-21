@@ -1,0 +1,573 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<unified:UnifiedSystemModel xmi:version="2.0" 
+    xmlns:xmi="http://www.omg.org/XMI" 
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+    xmlns:unified="http://edu.kit.sdq.dsis.metamodel/unified"
+    modelVersion="1.0">
+  
+  <!-- ========================================== -->
+  <!-- ARCHITECTURE: System Blocks -->
+  <!-- ========================================== -->
+  
+  <!-- Safety-Critical Blocks -->
+  <rootBlocks xsi:type="unified:SafetyCriticalBlock" 
+      id="AEB_Controller" 
+      name="AEB_Controller" 
+      description="Main controller for autonomous emergency braking decision-making"
+      blockType="CONTROLLER"
+      safetyCriticality="CRITICAL"
+      asilLevel="ASIL_D"
+      hasRedundancy="true"
+      redundancyType="TMR">
+    
+    <failureModes id="FM_AEB_01" 
+        name="Controller_Hang" 
+        description="Controller software hangs or crashes"
+        failureRate="0.0001"
+        failureEffect="Loss of AEB function - vehicle cannot perform emergency braking"/>
+    
+    <failureModes id="FM_AEB_02" 
+        name="False_Activation" 
+        description="Controller incorrectly triggers emergency braking"
+        failureRate="0.0005"
+        failureEffect="Unexpected vehicle deceleration causing rear-end collision risk"/>
+    
+    <failureModes id="FM_AEB_03" 
+        name="Delayed_Response" 
+        description="Controller processes collision detection too slowly"
+        failureRate="0.0003"
+        failureEffect="Insufficient braking time leading to collision"/>
+  </rootBlocks>
+  
+  <rootBlocks xsi:type="unified:SafetyCriticalBlock" 
+      id="Radar_Sensor" 
+      name="Forward_Radar_Sensor" 
+      description="77GHz radar sensor for forward object detection"
+      blockType="SENSOR"
+      safetyCriticality="HIGH"
+      asilLevel="ASIL_C"
+      hasRedundancy="false"
+      redundancyType="NONE">
+    
+    <failureModes id="FM_RADAR_01" 
+        name="Sensor_Blind" 
+        description="Radar sensor fails to detect objects"
+        failureRate="0.0002"
+        failureEffect="No collision warning issued, AEB system inactive"/>
+    
+    <failureModes id="FM_RADAR_02" 
+        name="False_Detection" 
+        description="Radar sensor reports non-existent obstacles"
+        failureRate="0.0004"
+        failureEffect="Unnecessary emergency braking activation"/>
+    
+    <failureModes id="FM_RADAR_03" 
+        name="Range_Degradation" 
+        description="Detection range reduced due to sensor degradation"
+        failureRate="0.0006"
+        failureEffect="Reduced warning time for collision avoidance"/>
+  </rootBlocks>
+  
+  <rootBlocks xsi:type="unified:SafetyCriticalBlock" 
+      id="Camera_Sensor" 
+      name="Front_Camera_Sensor" 
+      description="Vision camera for object classification and validation"
+      blockType="SENSOR"
+      safetyCriticality="HIGH"
+      asilLevel="ASIL_B"
+      hasRedundancy="false"
+      redundancyType="NONE">
+    
+    <failureModes id="FM_CAM_01" 
+        name="Image_Processing_Failure" 
+        description="Camera fails to process or classify objects"
+        failureRate="0.0003"
+        failureEffect="Loss of object validation capability"/>
+    
+    <failureModes id="FM_CAM_02" 
+        name="Poor_Weather_Performance" 
+        description="Camera performance degraded in rain/fog/snow"
+        failureRate="0.0015"
+        failureEffect="Reduced system reliability in adverse weather"/>
+  </rootBlocks>
+  
+  <rootBlocks xsi:type="unified:SafetyCriticalBlock" 
+      id="Brake_Actuator" 
+      name="Electronic_Brake_Actuator" 
+      description="Electro-hydraulic brake system actuator"
+      blockType="ACTUATOR"
+      safetyCriticality="CRITICAL"
+      asilLevel="ASIL_D"
+      hasRedundancy="true"
+      redundancyType="HOT_REDUNDANCY">
+    
+    <failureModes id="FM_BRAKE_01" 
+        name="Actuator_Stuck" 
+        description="Brake actuator fails to respond to commands"
+        failureRate="0.0001"
+        failureEffect="No braking force applied despite AEB activation"/>
+    
+    <failureModes id="FM_BRAKE_02" 
+        name="Partial_Braking" 
+        description="Brake actuator provides insufficient force"
+        failureRate="0.0004"
+        failureEffect="Inadequate deceleration, possible collision"/>
+    
+    <failureModes id="FM_BRAKE_03" 
+        name="Brake_Lock" 
+        description="Brakes lock continuously without command"
+        failureRate="0.00005"
+        failureEffect="Vehicle immobilization, traffic hazard"/>
+  </rootBlocks>
+  
+  <rootBlocks xsi:type="unified:SafetyCriticalBlock" 
+      id="Vehicle_CAN_Bus" 
+      name="CAN_Communication_Bus" 
+      description="Controller Area Network for vehicle communication"
+      blockType="COMMUNICATION"
+      safetyCriticality="HIGH"
+      asilLevel="ASIL_C"
+      hasRedundancy="false"
+      redundancyType="NONE">
+    
+    <failureModes id="FM_CAN_01" 
+        name="Bus_Off" 
+        description="CAN bus enters error passive or bus-off state"
+        failureRate="0.0002"
+        failureEffect="Loss of communication between AEB components"/>
+    
+    <failureModes id="FM_CAN_02" 
+        name="Message_Loss" 
+        description="Critical messages dropped or corrupted"
+        failureRate="0.0005"
+        failureEffect="Delayed or missing sensor data"/>
+  </rootBlocks>
+  
+  <!-- Regular System Blocks -->
+  <systemBlocks xsi:type="unified:SystemBlock" 
+      id="Speed_Sensor" 
+      name="Vehicle_Speed_Sensor" 
+      description="Wheel speed sensor for vehicle velocity measurement"
+      blockType="SENSOR"/>
+  
+  <systemBlocks xsi:type="unified:SystemBlock" 
+      id="HMI_Display" 
+      name="Driver_HMI_Display" 
+      description="Human-machine interface for warnings and system status"
+      blockType="USER_INTERFACE"/>
+  
+  <systemBlocks xsi:type="unified:SystemBlock" 
+      id="Power_Supply" 
+      name="12V_Power_Supply" 
+      description="Vehicle electrical power supply unit"
+      blockType="POWER_SUPPLY"/>
+  
+  <systemBlocks xsi:type="unified:SystemBlock" 
+      id="Diagnostics_Module" 
+      name="System_Diagnostics" 
+      description="Diagnostic and fault detection module"
+      blockType="PROCESSING_UNIT"/>
+  
+  <!-- ========================================== -->
+  <!-- ARCHITECTURE: Block Connections -->
+  <!-- ========================================== -->
+  
+  <blockConnections id="CONN_01" 
+      name="Radar_to_Controller" 
+      description="Radar sensor data to AEB controller"
+      connectionType="DATA_FLOW"
+      fromBlock="//@rootBlocks.1"
+      toBlock="//@rootBlocks.0"/>
+  
+  <blockConnections id="CONN_02" 
+      name="Camera_to_Controller" 
+      description="Camera sensor data to AEB controller"
+      connectionType="DATA_FLOW"
+      fromBlock="//@rootBlocks.2"
+      toBlock="//@rootBlocks.0"/>
+  
+  <blockConnections id="CONN_03" 
+      name="Controller_to_Brake" 
+      description="Braking command from controller to actuator"
+      connectionType="CONTROL_FLOW"
+      fromBlock="//@rootBlocks.0"
+      toBlock="//@rootBlocks.3"/>
+  
+  <blockConnections id="CONN_04" 
+      name="Speed_to_Controller" 
+      description="Vehicle speed data to controller"
+      connectionType="DATA_FLOW"
+      fromBlock="//@systemBlocks.0"
+      toBlock="//@rootBlocks.0"/>
+  
+  <blockConnections id="CONN_05" 
+      name="Controller_to_HMI" 
+      description="Warning signals to driver display"
+      connectionType="SIGNAL_FLOW"
+      fromBlock="//@rootBlocks.0"
+      toBlock="//@systemBlocks.1"/>
+  
+  <blockConnections id="CONN_06" 
+      name="CAN_Radar" 
+      description="CAN bus connection to radar"
+      connectionType="DATA_FLOW"
+      fromBlock="//@rootBlocks.4"
+      toBlock="//@rootBlocks.1"/>
+  
+  <blockConnections id="CONN_07" 
+      name="CAN_Camera" 
+      description="CAN bus connection to camera"
+      connectionType="DATA_FLOW"
+      fromBlock="//@rootBlocks.4"
+      toBlock="//@rootBlocks.2"/>
+  
+  <blockConnections id="CONN_08" 
+      name="CAN_Controller" 
+      description="CAN bus connection to AEB controller"
+      connectionType="DATA_FLOW"
+      fromBlock="//@rootBlocks.4"
+      toBlock="//@rootBlocks.0"/>
+  
+  <blockConnections id="CONN_09" 
+      name="Power_to_Controller" 
+      description="Electrical power to AEB controller"
+      connectionType="POWER_FLOW"
+      fromBlock="//@systemBlocks.2"
+      toBlock="//@rootBlocks.0"/>
+  
+  <blockConnections id="CONN_10" 
+      name="Diagnostics_to_Controller" 
+      description="Diagnostic status information"
+      connectionType="DATA_FLOW"
+      fromBlock="//@systemBlocks.3"
+      toBlock="//@rootBlocks.0"/>
+  
+  <!-- ========================================== -->
+  <!-- ARCHITECTURE: Block Associations -->
+  <!-- ========================================== -->
+  
+  <blockAssociations id="ASSOC_01" 
+      name="Sensor_Fusion_Dependency"
+      description="Controller depends on both sensors for fusion"
+      associationType="DEPENDENCY"
+      sourceBlock="//@rootBlocks.0"
+      targetBlock="//@rootBlocks.1"/>
+  
+  <blockAssociations id="ASSOC_02" 
+      name="Sensor_Fusion_Dependency_2"
+      description="Controller depends on camera for validation"
+      associationType="DEPENDENCY"
+      sourceBlock="//@rootBlocks.0"
+      targetBlock="//@rootBlocks.2"/>
+  
+  <blockAssociations id="ASSOC_03" 
+      name="Actuator_Dependency"
+      description="Controller requires brake actuator for function"
+      associationType="DEPENDENCY"
+      sourceBlock="//@rootBlocks.0"
+      targetBlock="//@rootBlocks.3"/>
+<blockAssociations
+    id="ASSOC_01"
+    name="Sensor_Fusion_Dependency"
+    description="Controller depends on both sensors for fusion"
+    sourceBlock="//@rootBlocks.0"
+    targetBlock="//@rootBlocks.1"
+    associationType="DEPENDENCY"/>
+    
+<blockAssociations
+    id="ASSOC_02"
+    name="Sensor_Fusion_Dependency_2"
+    description="Controller depends on camera for validation"
+    sourceBlock="//@rootBlocks.0"
+    targetBlock="//@rootBlocks.2"
+    associationType="DEPENDENCY"/>
+    
+<blockAssociations
+    id="ASSOC_03"
+    name="Actuator_Dependency"
+    description="Controller requires brake actuator for function"
+    sourceBlock="//@rootBlocks.0"
+    targetBlock="//@rootBlocks.3"
+    associationType="DEPENDENCY"/>
+  
+  <!-- ========================================== -->
+  <!-- SAFETY: Integrated Hazards -->
+  <!-- ========================================== -->
+  
+  <globalHazards id="HAZ_01" 
+      name="Unintended_Vehicle_Acceleration" 
+      description="Vehicle fails to brake or accelerates when emergency braking should occur"
+      riskLevel="CATASTROPHIC"
+      hazardCategory="LOSS_OF_FUNCTION"
+      mitigationStatus="PARTIALLY_MITIGATED"
+      severityJustification="Can lead to high-speed collision with severe injury or fatality"
+      relatedBlocks="//@rootBlocks.0 //@rootBlocks.3"/>
+  
+  <globalHazards id="HAZ_02" 
+      name="False_Emergency_Braking" 
+      description="System activates emergency braking without actual threat"
+      riskLevel="CRITICAL_RISK"
+      hazardCategory="UNINTENDED_FUNCTION"
+      mitigationStatus="PARTIALLY_MITIGATED"
+      severityJustification="Can cause rear-end collision or loss of vehicle control"
+      relatedBlocks="//@rootBlocks.0 //@rootBlocks.1 //@rootBlocks.2"/>
+  
+  <globalHazards id="HAZ_03" 
+      name="Delayed_AEB_Activation" 
+      description="Emergency braking activates too late to prevent collision"
+      riskLevel="CATASTROPHIC"
+      hazardCategory="TIMING_FAILURE"
+      mitigationStatus="PARTIALLY_MITIGATED"
+      severityJustification="Insufficient time to decelerate results in collision"
+      relatedBlocks="//@rootBlocks.0 //@rootBlocks.1 //@rootBlocks.4"/>
+  
+  <globalHazards id="HAZ_04" 
+      name="Sensor_Blind_Spot" 
+      description="Sensors fail to detect obstacles in critical situations"
+      riskLevel="CATASTROPHIC"
+      hazardCategory="FUNCTIONAL_FAILURE"
+      mitigationStatus="PARTIALLY_MITIGATED"
+      severityJustification="No warning or braking for imminent collision"
+      relatedBlocks="//@rootBlocks.1 //@rootBlocks.2"/>
+  
+  <globalHazards id="HAZ_05" 
+      name="Insufficient_Braking_Force" 
+      description="Brake actuator cannot generate required deceleration"
+      riskLevel="CATASTROPHIC"
+      hazardCategory="FUNCTIONAL_FAILURE"
+      mitigationStatus="FULLY_MITIGATED"
+      severityJustification="Vehicle cannot stop in time despite system activation"
+      relatedBlocks="//@rootBlocks.3"/>
+  
+  <globalHazards id="HAZ_06" 
+      name="Communication_Loss" 
+      description="CAN bus failure prevents sensor data from reaching controller"
+      riskLevel="CRITICAL_RISK"
+      hazardCategory="LOSS_OF_FUNCTION"
+      mitigationStatus="PARTIALLY_MITIGATED"
+      severityJustification="System cannot function without sensor input"
+      relatedBlocks="//@rootBlocks.4 //@rootBlocks.0"/>
+  
+  <!-- ========================================== -->
+  <!-- SAFETY: FMEA Analysis -->
+  <!-- ========================================== -->
+  
+  <fmeaAnalysis id="FMEA_AEB_2024" 
+      name="AEB_System_FMEA" 
+      description="Failure Mode and Effects Analysis for Autonomous Emergency Braking System"
+      rpnThreshold="100"
+      analysisStatus="IN_REVIEW"
+      reviewer="Safety Engineering Team">
+    
+    <!-- FMEA Items for AEB Controller -->
+    <fmeaItems id="FMEA_ITEM_01" 
+        name="Controller_Software_Hang"
+        description="Controller software hangs or crashes during operation"
+        severity="9"
+        occurrence="2"
+        detection="3"
+        localEffect="Loss of AEB decision-making capability"
+        systemEffect="Complete loss of AEB function, vehicle cannot perform emergency braking"
+        recommendedAction="Implement watchdog timer with automatic reset; Add backup controller in TMR configuration"
+        actionStatus="IN_PROGRESS"
+        autoGenerated="false"
+        responsiblePerson="SW Safety Lead"
+        failureMode="//@rootBlocks.0/@failureModes.0"
+        analyzedComponent="//@rootBlocks.0"
+        relatedHazards="//@globalHazards.0"/>
+    
+    <fmeaItems id="FMEA_ITEM_02" 
+        name="False_AEB_Activation"
+        description="Controller incorrectly interprets sensor data and triggers emergency braking"
+        severity="7"
+        occurrence="3"
+        detection="4"
+        localEffect="Unintended brake command issued"
+        systemEffect="Unexpected vehicle deceleration causing rear-end collision risk"
+        recommendedAction="Implement sensor fusion with confidence thresholds; Add driver override mechanism"
+        actionStatus="COMPLETED"
+        autoGenerated="false"
+        responsiblePerson="Algorithm Developer"
+        failureMode="//@rootBlocks.0/@failureModes.1"
+        analyzedComponent="//@rootBlocks.0"
+        relatedHazards="//@globalHazards.1"/>
+    
+    <fmeaItems id="FMEA_ITEM_03" 
+        name="Delayed_Processing"
+        description="Controller processes collision detection algorithms too slowly"
+        severity="9"
+        occurrence="2"
+        detection="5"
+        localEffect="Braking command delayed by 200-500ms"
+        systemEffect="Insufficient time to decelerate, collision occurs"
+        recommendedAction="Optimize processing algorithms; Upgrade to faster processor; Implement hard real-time scheduling"
+        actionStatus="OPEN"
+        autoGenerated="false"
+        responsiblePerson="System Architect"
+        failureMode="//@rootBlocks.0/@failureModes.2"
+        analyzedComponent="//@rootBlocks.0"
+        relatedHazards="//@globalHazards.2"/>
+    
+    <!-- FMEA Items for Radar Sensor -->
+    <fmeaItems id="FMEA_ITEM_04" 
+        name="Radar_Complete_Failure"
+        description="Radar sensor fails to detect any objects"
+        severity="9"
+        occurrence="1"
+        detection="2"
+        localEffect="No obstacle detection from radar"
+        systemEffect="Loss of primary sensor, system relies only on camera"
+        recommendedAction="Implement sensor health monitoring; Camera must take over as primary sensor"
+        actionStatus="COMPLETED"
+        autoGenerated="true"
+        responsiblePerson="HW Integration Lead"
+        failureMode="//@rootBlocks.1/@failureModes.0"
+        analyzedComponent="//@rootBlocks.1"
+        relatedHazards="//@globalHazards.3"/>
+    
+    <fmeaItems id="FMEA_ITEM_05" 
+        name="Radar_False_Positive"
+        description="Radar reports obstacles that don't exist"
+        severity="6"
+        occurrence="4"
+        detection="3"
+        localEffect="False object detection signals"
+        systemEffect="Unnecessary emergency braking events"
+        recommendedAction="Implement camera-based validation before braking; Add clutter filtering algorithms"
+        actionStatus="IN_PROGRESS"
+        autoGenerated="true"
+        responsiblePerson="Sensor Fusion Engineer"
+        failureMode="//@rootBlocks.1/@failureModes.1"
+        analyzedComponent="//@rootBlocks.1"
+        relatedHazards="//@globalHazards.1"/>
+    
+    <fmeaItems id="FMEA_ITEM_06" 
+        name="Radar_Range_Degradation"
+        description="Detection range reduced from 150m to less than 100m"
+        severity="7"
+        occurrence="3"
+        detection="6"
+        localEffect="Late collision warning"
+        systemEffect="Reduced warning time, insufficient braking distance"
+        recommendedAction="Implement periodic sensor calibration checks; Define minimum performance thresholds"
+        actionStatus="OPEN"
+        autoGenerated="true"
+        responsiblePerson="Validation Engineer"
+        failureMode="//@rootBlocks.1/@failureModes.2"
+        analyzedComponent="//@rootBlocks.1"
+        relatedHazards="//@globalHazards.2"/>
+    
+    <!-- FMEA Items for Camera -->
+    <fmeaItems id="FMEA_ITEM_07" 
+        name="Camera_Processing_Failure"
+        description="Image processing pipeline fails to classify objects"
+        severity="6"
+        occurrence="2"
+        detection="3"
+        localEffect="Loss of object validation"
+        systemEffect="Reduced confidence in obstacle detection, system may fail to activate"
+        recommendedAction="Implement algorithm watchdog; Add fallback classification method"
+        actionStatus="COMPLETED"
+        autoGenerated="true"
+        responsiblePerson="Computer Vision Lead"
+        failureMode="//@rootBlocks.2/@failureModes.0"
+        analyzedComponent="//@rootBlocks.2"
+        relatedHazards="//@globalHazards.3"/>
+    
+    <fmeaItems id="FMEA_ITEM_08" 
+        name="Weather_Degradation"
+        description="Camera performance severely degraded in heavy rain/fog"
+        severity="7"
+        occurrence="5"
+        detection="7"
+        localEffect="Poor image quality and detection accuracy"
+        systemEffect="System reliability reduced in adverse weather conditions"
+        recommendedAction="Add heated lens cover; Implement rain/fog detection with graceful degradation"
+        actionStatus="IN_PROGRESS"
+        autoGenerated="true"
+        responsiblePerson="Environmental Testing Lead"
+        failureMode="//@rootBlocks.2/@failureModes.1"
+        analyzedComponent="//@rootBlocks.2"
+        relatedHazards="//@globalHazards.3"/>
+    
+    <!-- FMEA Items for Brake Actuator -->
+    <fmeaItems id="FMEA_ITEM_09" 
+        name="Actuator_No_Response"
+        description="Brake actuator completely fails to respond to commands"
+        severity="10"
+        occurrence="1"
+        detection="2"
+        localEffect="No braking force applied"
+        systemEffect="Critical safety function lost, collision unavoidable"
+        recommendedAction="Implement hot redundancy with secondary actuator path; Add continuous actuator health checks"
+        actionStatus="VERIFIED"
+        autoGenerated="false"
+        responsiblePerson="Brake System Engineer"
+        failureMode="//@rootBlocks.3/@failureModes.0"
+        analyzedComponent="//@rootBlocks.3"
+        relatedHazards="//@globalHazards.4"/>
+    
+    <fmeaItems id="FMEA_ITEM_10" 
+        name="Partial_Brake_Force"
+        description="Actuator provides only 50-70% of commanded braking force"
+        severity="8"
+        occurrence="2"
+        detection="4"
+        localEffect="Reduced deceleration"
+        systemEffect="Inadequate stopping distance, collision may occur"
+        recommendedAction="Add brake force feedback sensor; Implement compensation algorithm"
+        actionStatus="OPEN"
+        autoGenerated="false"
+        responsiblePerson="Controls Engineer"
+        failureMode="//@rootBlocks.3/@failureModes.1"
+        analyzedComponent="//@rootBlocks.3"
+        relatedHazards="//@globalHazards.4"/>
+    
+    <!-- FMEA Items for CAN Bus -->
+    <fmeaItems id="FMEA_ITEM_11" 
+        name="CAN_Bus_Off"
+        description="CAN controller enters bus-off state due to errors"
+        severity="8"
+        occurrence="2"
+        detection="2"
+        localEffect="Communication between components lost"
+        systemEffect="Sensor data cannot reach controller, AEB function lost"
+        recommendedAction="Implement automatic bus recovery; Add redundant communication path"
+        actionStatus="IN_PROGRESS"
+        autoGenerated="true"
+        responsiblePerson="Network Engineer"
+        failureMode="//@rootBlocks.4/@failureModes.0"
+        analyzedComponent="//@rootBlocks.4"
+        relatedHazards="//@globalHazards.5"/>
+    
+    <fmeaItems id="FMEA_ITEM_12" 
+        name="CAN_Message_Loss"
+        description="Critical sensor messages dropped or corrupted"
+        severity="7"
+        occurrence="3"
+        detection="5"
+        localEffect="Intermittent sensor data reception"
+        systemEffect="Delayed or missing collision warnings"
+        recommendedAction="Implement message retry mechanism; Add CRC and sequence number validation"
+        actionStatus="OPEN"
+        autoGenerated="true"
+        responsiblePerson="Communication Protocol Engineer"
+        failureMode="//@rootBlocks.4/@failureModes.1"
+        analyzedComponent="//@rootBlocks.4"
+        relatedHazards="//@globalHazards.5"/>
+  </fmeaAnalysis>
+  
+  <!-- ========================================== -->
+  <!-- METADATA -->
+  <!-- ========================================== -->
+  
+  <analysisMetadata 
+      lastAnalysisDate="2024-01-03T10:00:00"
+      completenessScore="85"
+      consistencyScore="92"
+      hazardCoverage="0.83"
+      fmeaCoverage="0.75"
+      traceabilityDensity="0.68"
+      cyclomaticComplexity="15"/>
+  
+</unified:UnifiedSystemModel>
