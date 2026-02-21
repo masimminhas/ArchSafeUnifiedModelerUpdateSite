@@ -12,7 +12,7 @@
 
 ## Quick Install
 
-### Reviewers — fastest option (zero installation)
+### Fastest option (zero installation)
 
 ```bash
 docker run -p 6080:6080 ghcr.io/masimminhas/ArchSafeUnifiedModelerUpdateSite:latest
