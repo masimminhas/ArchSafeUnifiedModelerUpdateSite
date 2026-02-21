@@ -3,7 +3,7 @@
 # Sets background colour and cursor to make the desktop look clean
 # for reviewers accessing via noVNC.
 
-# Set a neutral dark-blue background (DSIS brand colour)
+# Set a neutral dark-blue background (ArchSafeUnified brand colour)
 xsetroot -solid "#1F4E79" &
 
 # Remove the default X cursor cross

@@ -1,7 +1,7 @@
 name: Build · Release · Publish
 
 # ╔══════════════════════════════════════════════════════════════════╗
-# ║  DSIS Unified – GitHub Actions CI/CD Pipeline                  ║
+# ║  ArchSafeUnified Modeling Workbench – GitHub Actions CI/CD Pipeline                  ║
 # ║                                                                 ║
 # ║  Triggers:                                                      ║
 # ║    • Every push to main     → build + publish update site       ║
@@ -21,7 +21,7 @@ on:
 
 env:
   REGISTRY: ghcr.io
-  IMAGE_NAME: ${{ github.repository_owner }}/dsis-unified-tool
+  IMAGE_NAME: masimminhas/ArchSafeUnifiedModelerUpdateSite
   JAVA_VERSION: "17"
   MAVEN_OPTS: >-
     -Xmx2g
@@ -208,7 +208,7 @@ jobs:
 
             #### Option 3 — Docker (zero installation, browser-based)
             ```bash
-            docker run -p 6080:6080 ghcr.io/kit-sdq/archsafe-unified-tool:${{ github.ref_name }}
+            docker run -p 6080:6080 ghcr.io/masimminhas/ArchSafeUnifiedModelerUpdateSite:${{ github.ref_name }}
             # Open http://localhost:6080 — password: dsis2024
             ```
 

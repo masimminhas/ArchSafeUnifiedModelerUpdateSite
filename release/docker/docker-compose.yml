@@ -1,7 +1,7 @@
 version: "3.9"
 
 # ╔══════════════════════════════════════════════════════════════╗
-# ║  DSIS Unified – Docker Compose                             ║
+# ║  ArchSafeUnified Modeling Workbench – Docker Compose                             ║
 # ║                                                            ║
 # ║  Reviewer launch (one command, zero config):               ║
 # ║    docker compose up                                       ║
@@ -12,8 +12,8 @@ version: "3.9"
 # ╚══════════════════════════════════════════════════════════════╝
 
 services:
-  dsis-unified:
-    image: ghcr.io/kit-sdq/ArchSafe-unified-tool:1.0.0
+  archsafe-unified:
+    image: ghcr.io/masimminhas/ArchSafeUnifiedModelerUpdateSite:latest
     container_name: ArchSafeUnified-Modeling-Workbench
 
     ports:
@@ -50,5 +50,5 @@ services:
       start_period: 40s
 
 volumes:
-  dsis-workspace:
+  archsafe-unified-workspace:
     driver: local

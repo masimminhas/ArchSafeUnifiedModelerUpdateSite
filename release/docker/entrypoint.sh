@@ -1,13 +1,13 @@
 #!/bin/bash
 # ╔══════════════════════════════════════════════════════════════╗
-# ║  DSIS Unified – Docker Entrypoint                          ║
+# ║  ArchSafeUnified Modeling Workbench – Docker Entrypoint                          ║
 # ║                                                            ║
 # ║  Start order:                                              ║
 # ║    1. Xvfb       (virtual display)                        ║
 # ║    2. Openbox    (window manager — keeps Eclipse alive)    ║
 # ║    3. x11vnc     (VNC server on display :1)               ║
 # ║    4. websockify (WebSocket bridge for noVNC)              ║
-# ║    5. Eclipse    (the DSIS Unified RCP product)            ║
+# ║    5. Eclipse    (the ArchSafeUnified Modeling Workbench)            ║
 # ║                                                            ║
 # ║  Browser URL:  http://localhost:6080                       ║
 # ║  VNC password: ${VNC_PASSWORD}  (default: dsis2024)       ║
@@ -62,7 +62,7 @@ websockify \
 sleep 1
 
 # ── 5. Launch ArchSafeUnified (Eclipse RCP) ─────────────────────
-echo "[5/5] Launching ArchSafeUnified..."
+echo "[5/5] [5/5] Launching ArchSafeUnified Modeling Workbench..."
 echo "      Workspace: ${TOOL_WORKSPACE}"
 
 # Set GTK theme to a clean, simple theme suitable for screenshots

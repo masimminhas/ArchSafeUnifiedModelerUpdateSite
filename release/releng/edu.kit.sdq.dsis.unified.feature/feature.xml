@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
   ╔══════════════════════════════════════════════════════════════╗
-  ║  DSIS Unified – Eclipse Feature Definition                  ║
+  ║  ArchSafeUnified Modeling Workbench – Eclipse Feature Definition                  ║
   ║                                                             ║
   ║  A Feature is the installable unit Eclipse shows users      ║
   ║  in Help > Install New Software.                            ║
@@ -16,12 +16,12 @@
 -->
 <feature
     id="edu.kit.sdq.dsis.unified.feature"
-    label="DSIS Unified Safety Modeling Tool"
+    label="ArchSafeUnified Modeling Workbench"
     version="1.0.0.qualifier"
-    provider-name="KIT – Software Design and Quality / DSIS"
+    provider-name="ArchSafeUnified Project"
     plugin="edu.kit.sdq.dsis.metamodel.unified">
 
-  <description url="https://github.com/kit-sdq/dsis-unified-tool">
+  <description url="https://github.com/masimminhas/ArchSafeUnifiedModelerUpdateSite">
     Unified ISO 26262 safety modeling tool for Eclipse Sirius.
     Supports 9 diagram types: Architecture, Safety, FMEA, Requirements,
     Traceability, Metrics Table, Metrics Dashboard, FMEA Table and
@@ -29,8 +29,8 @@
   </description>
 
   <copyright>
-    Copyright (c) 2024 Karlsruhe Institute of Technology (KIT).
-    Software Design and Quality / DSIS Group.
+    Copyright (c) 2024 ArchSafeUnified Project.
+    
     All rights reserved.
   </copyright>
 
@@ -41,7 +41,7 @@
   </license>
 
   <url>
-    <update label="DSIS Unified Tool Update Site"
+    <update label="ArchSafeUnified Modeling Workbench Update Site"
             url="https://github.com/masimminhas/ArchSafeUnifiedModelerUpdateSite"/>
     <discovery label="Project Homepage"
                url="https://github.com/masimminhas/ArchSafeUnifiedModelerUpdateSite"/>

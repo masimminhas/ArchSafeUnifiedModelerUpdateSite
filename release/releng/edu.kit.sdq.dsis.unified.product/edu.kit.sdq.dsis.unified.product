@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
   ╔══════════════════════════════════════════════════════════════╗
-  ║  DSIS Unified – Eclipse RCP Product Descriptor              ║
+  ║  ArchSafeUnified Modeling Workbench – Eclipse RCP Product Descriptor              ║
   ║                                                             ║
   ║  Tycho reads this file to assemble the standalone product.  ║
   ║  Also usable in Eclipse IDE: open in PDE Product Editor.    ║
@@ -14,7 +14,7 @@
   ╚══════════════════════════════════════════════════════════════╝
 -->
 <product
-    name="DSIS Unified Safety Modeling Tool"
+    name="ArchSafeUnified Modeling Workbench"
     uid="edu.kit.sdq.dsis.unified.product"
     id="edu.kit.sdq.dsis.metamodel.unified.design.dsisunified"
     application="org.eclipse.ui.ide.workbench"
@@ -25,16 +25,16 @@
   <aboutInfo>
     <image path="splash.bmp"/>
     <text>
-DSIS Unified Safety Modeling Tool  v1.0
-Karlsruhe Institute of Technology (KIT)
-Software Design and Quality – DSIS Group
+ArchSafeUnified Modeling Workbench  v1.0
+ArchSafeUnified Project
+
 
 ISO 26262 Functional Safety Modeling
 Diagrams: Architecture · Safety · FMEA
           Requirements · Traceability
           Failure Propagation Simulation
 
-https://github.com/kit-sdq/dsis-unified-tool
+https://github.com/masimminhas/ArchSafeUnifiedModelerUpdateSite
     </text>
   </aboutInfo>
 

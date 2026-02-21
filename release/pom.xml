@@ -7,8 +7,8 @@
 
   <!--
     ╔══════════════════════════════════════════════════════════════╗
-    ║  DSIS Unified Modeling Tool  –  Root Parent POM             ║
-    ║  KIT · SDQ · DSIS                                           ║
+    ║  ArchSafeUnified Modeling Workbench – Root Parent POM             ║
+    ║  ArchSafeUnified Project                                           ║
     ║                                                             ║
     ║  One command builds everything:                             ║
     ║    mvn clean package                                        ║
@@ -30,13 +30,13 @@
   <version>1.0.0-SNAPSHOT</version>
   <packaging>pom</packaging>
 
-  <name>DSIS Unified Safety Modeling Tool – Parent</name>
+  <name>ArchSafeUnified Modeling Workbench – Parent</name>
   <description>
     ISO 26262 unified safety modeling tool for Eclipse/Sirius.
     Covers Architecture, FMEA, Requirements, Hazard Analysis,
     Traceability and Failure Propagation Simulation.
   </description>
-  <url>https://github.com/kit-sdq/dsis-unified-tool</url>
+  <url> https://masimminhas.github.io/ArchSafeUnifiedModelerUpdateSite/</url>
 
   <licenses>
     <license>
@@ -46,13 +46,13 @@
   </licenses>
 
   <organization>
-    <name>Karlsruhe Institute of Technology – SDQ/DSIS</name>
+    <name>ArchSafeUnified Project</name>
     <url>https://sdq.kastel.kit.edu</url>
   </organization>
 
   <scm>
-    <connection>scm:git:https://github.com/kit-sdq/dsis-unified-tool.git</connection>
-    <url>https://github.com/kit-sdq/dsis-unified-tool</url>
+    <connection>scm:git:https://github.com/masimminhas/ArchSafeUnifiedModelerUpdateSite.git</connection>
+    <url> https://masimminhas.github.io/ArchSafeUnifiedModelerUpdateSite/</url>
   </scm>
 
   <!-- ── Global properties ──────────────────────────────────────── -->

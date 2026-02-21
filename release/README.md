@@ -1,9 +1,9 @@
-# DSIS Unified Safety Modeling Tool
+# ArchSafeUnified Modeling Workbench
 
 **ISO 26262 functional safety modeling for Eclipse**  
-Karlsruhe Institute of Technology · Software Design and Quality / DSIS Group
 
-[![Build](https://github.com/kit-sdq/dsis-unified-tool/actions/workflows/release.yml/badge.svg)](https://github.com/kit-sdq/dsis-unified-tool/actions)
+
+[![Build](https://github.com/masimminhas/ArchSafeUnifiedModelerUpdateSite/actions/workflows/release.yml/badge.svg)](https://github.com/masimminhas/ArchSafeUnifiedModelerUpdateSite/actions)
 [![License: EPL-2.0](https://img.shields.io/badge/License-EPL%202.0-blue.svg)](https://www.eclipse.org/legal/epl-2.0/)
 [![Eclipse](https://img.shields.io/badge/Eclipse-2024--03-orange)](https://www.eclipse.org/downloads/)
 [![Sirius](https://img.shields.io/badge/Sirius-7.3-brightgreen)](https://www.eclipse.org/sirius/)
@@ -15,31 +15,31 @@ Karlsruhe Institute of Technology · Software Design and Quality / DSIS Group
 ### Reviewers — fastest option (zero installation)
 
 ```bash
-docker run -p 6080:6080 ghcr.io/kit-sdq/dsis-unified-tool:latest
+docker run -p 6080:6080 ghcr.io/masimminhas/ArchSafeUnifiedModelerUpdateSite:latest
 # Open http://localhost:6080  |  Password: dsis2024
 ```
 
 ### Eclipse users — update site
 
 1. **Help → Install New Software → Add...**
-2. URL: `https://kit-sdq.github.io/dsis-unified-tool/updatesite/`
-3. Select **DSIS Unified Safety Modeling Tool** → Install → Restart
+2. URL: `https://masimminhas.github.io/ArchSafeUnifiedModelerUpdateSite/updatesite/`
+3. Select **ArchSafeUnified Modeling Workbench** → Install → Restart
 
 ### Standalone download (no Eclipse required)
 
 | Platform | Download |
 |---|---|
-| Windows x64 | [dsis-unified-win32.win32.x86_64.zip](https://github.com/kit-sdq/dsis-unified-tool/releases/latest) |
-| Linux x64 | [dsis-unified-linux.gtk.x86_64.tar.gz](https://github.com/kit-sdq/dsis-unified-tool/releases/latest) |
-| macOS Intel | [dsis-unified-macosx.cocoa.x86_64.tar.gz](https://github.com/kit-sdq/dsis-unified-tool/releases/latest) |
-| macOS Apple Silicon | [dsis-unified-macosx.cocoa.aarch64.tar.gz](https://github.com/kit-sdq/dsis-unified-tool/releases/latest) |
+| Windows x64 | [dsis-unified-win32.win32.x86_64.zip](https://github.com/masimminhas/ArchSafeUnifiedModelerUpdateSite/releases/latest) |
+| Linux x64 | [dsis-unified-linux.gtk.x86_64.tar.gz](https://github.com/masimminhas/ArchSafeUnifiedModelerUpdateSite/releases/latest) |
+| macOS Intel | [dsis-unified-macosx.cocoa.x86_64.tar.gz](https://github.com/masimminhas/ArchSafeUnifiedModelerUpdateSite/releases/latest) |
+| macOS Apple Silicon | [dsis-unified-macosx.cocoa.aarch64.tar.gz](https://github.com/masimminhas/ArchSafeUnifiedModelerUpdateSite/releases/latest) |
 
 ---
 
 ## Project Structure
 
 ```
-dsis-unified-tool/
+ArchSafeUnifiedModelerUpdateSite/
 ├── pom.xml                                      ← Root parent POM (Tycho build)
 │
 ├── plugins/
@@ -80,8 +80,8 @@ dsis-unified-tool/
 ### Build everything
 
 ```bash
-git clone https://github.com/kit-sdq/dsis-unified-tool.git
-cd dsis-unified-tool
+git clone https://github.com/masimminhas/ArchSafeUnifiedModelerUpdateSite.git
+cd ArchSafeUnifiedModelerUpdateSite
 mvn clean package
 ```
 

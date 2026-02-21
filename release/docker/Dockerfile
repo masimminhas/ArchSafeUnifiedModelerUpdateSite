@@ -1,16 +1,16 @@
 # ╔══════════════════════════════════════════════════════════════════╗
-# ║  DSIS Unified Safety Modeling Tool  –  Docker Image            ║
-# ║  KIT · SDQ · DSIS                                              ║
+# ║  ArchSafeUnified Modeling Workbench  –  Docker Image            ║
+# ║  ArchSafeUnified Modeling Workbench                                              ║
 # ║                                                                ║
 # ║  Provides a fully running Eclipse + ArchSafeUnified Modeling Tool║
 # ║  accessible via any web browser — zero installation required.  ║
 # ║                                                                ║
 # ║  Usage:                                                        ║
-# ║    docker run -p 6080:6080 ghcr.io/kit-sdq/ArchSafe-unified:1.0   ║
+# ║    docker run -p 6080:6080 ghcr.io/masimminhas/ArchSafeUnifiedModelerUpdateSite:latest   ║
 # ║    → Open http://localhost:6080 in your browser                ║
 # ║                                                                ║
 # ║  Stack:  Ubuntu 22.04 · Xvfb · Openbox · x11vnc · noVNC       ║
-# ║          OpenJDK 17 · Eclipse 2024-03 + DSIS Unified plugin    ║
+# ║          OpenJDK 17 · Eclipse 2024-03 + ArchSafeUnified Modeling Workbench plugin    ║
 # ╚══════════════════════════════════════════════════════════════════╝
 
 # ── Stage 1: Build the RCP product ──────────────────────────────────
@@ -41,7 +41,7 @@ LABEL org.opencontainers.image.description="ISO 26262 safety modeling for Eclips
 LABEL org.opencontainers.image.url="https://github.com/masimminhas/ArchSafeUnifiedModelerUpdateSite"
 LABEL org.opencontainers.image.source="https://github.com/masimminhas/ArchSafeUnifiedModelerUpdateSite"
 LABEL org.opencontainers.image.licenses="EPL-2.0"
-LABEL org.opencontainers.image.vendor="KIT – SDQ/DSIS"
+LABEL org.opencontainers.image.vendor="ArchSafeUnified Project"
 
 # ── System dependencies ──────────────────────────────────────────────
 ENV DEBIAN_FRONTEND=noninteractive
