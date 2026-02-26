@@ -26,7 +26,8 @@ RUN xvfb-run --auto-servernum --server-args="-screen 0 1024x768x24" \
 # ──────────────────────────────────────────────────────────────────────────────
 # Stage 2: Runtime – headless Eclipse RCP on Linux/GTK
 # ──────────────────────────────────────────────────────────────────────────────
-FROM eclipse-temurin:17-jre AS runtime
+# ✅ Pin to jammy (Ubuntu 22.04) explicitly and use webkit2gtk-4.1
+FROM eclipse-temurin:17-jre-jammy AS runtime
 
 LABEL org.opencontainers.image.title="ArchSafe Unified Modeler"
 LABEL org.opencontainers.image.description="Headless ArchSafe Unified Modeler Eclipse RCP"
@@ -34,8 +35,17 @@ LABEL org.opencontainers.image.source="https://github.com/masimminhas/ArchSafeUn
 
 RUN apt-get update -qq \
  && apt-get install -y --no-install-recommends \
-      libgtk-3-0 libwebkit2gtk-4.0-37 libglib2.0-0 libx11-6 libxext6 \
-      libxrender1 libxtst6 libxi6 libxrandr2 xvfb \
+      libgtk-3-0 \
+      # ✅ webkit2gtk-4.0-37 removed in Ubuntu 22.04 — use 4.1 instead
+      libwebkit2gtk-4.1-0 \
+      libglib2.0-0 \
+      libx11-6 \
+      libxext6 \
+      libxrender1 \
+      libxtst6 \
+      libxi6 \
+      libxrandr2 \
+      xvfb \
  && rm -rf /var/lib/apt/lists/*
 
 # Copy materialised Linux GTK product from builder
