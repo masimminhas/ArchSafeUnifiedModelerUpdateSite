@@ -56,7 +56,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 
 # ── copy built RCP product from builder stage ─────────────────
 COPY --from=builder \
-    /build/edu.kit.sdq.dsis.metamodel.unified.product/target/products/edu.kit.sdq.dsis.metamodel.unified.product/linux/gtk/x86_64/ \
+    /build/releng/edu.kit.sdq.dsis.product/target/products/edu.kit.sdq.dsis.product/linux/gtk/x86_64/ \
     /opt/ArchSafeUnifiedModeler/
 
 RUN chmod +x /opt/ArchSafeUnifiedModeler/ArchSafeUnifiedModeler
