@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title> ArchSafeUnified Modeling Workbench</title>
+  <style>
+    :root {
+      --blue:       #1F4E79;
+      --mid-blue:   #2E75B6;
+      --light-blue: #D6E4F0;
+      --cyan:       #00BCD4;
+      --green:      #2E7D32;
+      --light-green:#E8F5E9;
+      --orange:     #E65100;
+      --light-org:  #FFF3E0;
+      --purple:     #6A1B9A;
+      --light-purp: #F3E5F5;
+      --gray:       #616161;
+      --light-gray: #F5F5F5;
+      --white:      #FFFFFF;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Segoe UI', Arial, sans-serif;
+      font-size: 16px;
+      color: #212121;
+      background: #FAFAFA;
+    }
+
+    /* ── Header ── */
+    header {
+      background: linear-gradient(135deg, var(--blue) 0%, var(--mid-blue) 100%);
+      color: var(--white);
+      padding: 60px 40px 50px;
+      text-align: center;
+    }
+    header .kit-label {
+      font-size: 13px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      opacity: 0.7;
+      margin-bottom: 16px;
+    }
+    header h1 {
+      font-size: 2.6rem;
+      font-weight: 700;
+      margin-bottom: 12px;
+    }
+    header p {
+      font-size: 1.1rem;
+      opacity: 0.85;
+      max-width: 640px;
+      margin: 0 auto 28px;
+      line-height: 1.6;
+    }
+    .badges { display:flex; gap:10px; justify-content:center; flex-wrap:wrap; }
+    .badge {
+      background: rgba(255,255,255,0.15);
+      border: 1px solid rgba(255,255,255,0.3);
+      border-radius: 20px;
+      padding: 5px 14px;
+      font-size: 13px;
+      font-weight: 500;
+    }
+
+    /* ── Main layout ── */
+    main { max-width: 1040px; margin: 0 auto; padding: 60px 24px; }
+
+    /* ── Section titles ── */
+    .section-title {
+      font-size: 1.4rem;
+      font-weight: 700;
+      color: var(--blue);
+      margin: 48px 0 20px;
+      padding-bottom: 8px;
+      border-bottom: 3px solid var(--mid-blue);
+    }
+
+    /* ── Install option cards ── */
+    .options { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 24px; }
+    .card {
+      border-radius: 10px;
+      border: 2px solid #E0E0E0;
+      overflow: hidden;
+      transition: box-shadow .2s, transform .2s;
+    }
+    .card:hover { box-shadow: 0 8px 24px rgba(0,0,0,0.12); transform: translateY(-2px); }
+    .card-header {
+      padding: 20px 24px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+    .card-header .num {
+      width: 36px; height: 36px;
+      border-radius: 50%;
+      background: var(--white);
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 800; font-size: 1.1rem;
+      flex-shrink: 0;
+    }
+    .card-header h2 { font-size: 1.1rem; font-weight: 700; color: var(--white); }
+    .card-header .sub { font-size: 12px; opacity: 0.85; }
+    .card.update  .card-header { background: var(--mid-blue); }
+    .card.standalone .card-header { background: var(--green); }
+    .card.docker  .card-header { background: var(--purple); }
+    .card.update  .card-header .num { color: var(--mid-blue); }
+    .card.standalone .card-header .num { color: var(--green); }
+    .card.docker  .card-header .num { color: var(--purple); }
+    .card-body { padding: 20px 24px; }
+    .card-body ol { padding-left: 20px; }
+    .card-body li { margin-bottom: 10px; line-height: 1.5; }
+    .card-body .note {
+      font-size: 13px;
+      color: var(--gray);
+      margin-top: 14px;
+      padding: 10px 14px;
+      background: var(--light-gray);
+      border-radius: 6px;
+    }
+
+    /* ── Code blocks ── */
+    code {
+      font-family: 'Consolas', 'Courier New', monospace;
+      font-size: 13px;
+      background: #EEF2F7;
+      padding: 2px 6px;
+      border-radius: 4px;
+    }
+    pre {
+      background: #1A1A2E;
+      color: #E0E0E0;
+      border-radius: 8px;
+      padding: 18px 20px;
+      margin: 12px 0;
+      overflow-x: auto;
+      font-family: 'Consolas', 'Courier New', monospace;
+      font-size: 13px;
+      line-height: 1.6;
+    }
+    pre .comment { color: #78909C; }
+    pre .cmd     { color: #80CBC4; }
+    pre .url     { color: #FFD54F; }
+
+    /* ── Download buttons ── */
+    .dl-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin:14px 0; }
+    .dl-btn {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 14px;
+      border-radius: 8px;
+      text-decoration: none;
+      font-size: 13px;
+      font-weight: 600;
+      border: 2px solid;
+      transition: background .15s;
+    }
+    .dl-btn.win  { border-color:#0078D4; color:#0078D4; }
+    .dl-btn.lin  { border-color:#E65100; color:#E65100; }
+    .dl-btn.mac  { border-color:#555;    color:#555;    }
+    .dl-btn.maca { border-color:#6A1B9A; color:#6A1B9A; }
+    .dl-btn:hover { color: white; }
+    .dl-btn.win:hover  { background:#0078D4; }
+    .dl-btn.lin:hover  { background:#E65100; }
+    .dl-btn.mac:hover  { background:#555;    }
+    .dl-btn.maca:hover { background:#6A1B9A; }
+
+    /* ── Diagrams section ── */
+    .diagram-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(180px,1fr)); gap:14px; }
+    .diag-chip {
+      padding: 12px 16px;
+      border-radius: 8px;
+      background: var(--light-blue);
+      border-left: 4px solid var(--mid-blue);
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--blue);
+    }
+
+    /* ── Footer ── */
+    footer {
+      text-align: center;
+      padding: 40px 20px;
+      font-size: 13px;
+      color: var(--gray);
+      border-top: 1px solid #E0E0E0;
+    }
+    footer a { color: var(--mid-blue); text-decoration: none; }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="kit-label">A Model driven framework for codesign of architecture and safety</div>
+  <h1>ArchSafeUnified Modeling Tool</h1>
+  <p>
+    ISO 26262 functional safety modeling for Eclipse —
+    Architecture, FMEA, Requirements, Hazard Analysis,
+    Traceability and Failure Propagation Simulation.
+  </p>
+  <div class="badges">
+    <span class="badge">Eclipse 2024-03</span>
+    <span class="badge">Sirius 7.3</span>
+    <span class="badge">ISO 26262</span>
+    <span class="badge">EPL-2.0</span>
+    <span class="badge">Java 17</span>
+  </div>
+</header>
+
+<main>
+
+  <div class="section-title">Install the Tool</div>
+
+  <div class="options">
+
+    <!-- ── Option 1: Update Site ── -->
+    <div class="card update">
+      <div class="card-header">
+        <div class="num">1</div>
+        <div>
+          <h2>Eclipse Update Site</h2>
+          <div class="sub">Recommended for Eclipse users</div>
+        </div>
+      </div>
+      <div class="card-body">
+        <ol>
+          <li>Open <strong>Eclipse Modeling Tools 2024-03</strong> or later</li>
+          <li>Go to <strong>Help → Install New Software → Add…</strong></li>
+          <li>Enter this URL:</li>
+        </ol>
+        <pre><span class="url">https://github.com/masimminhas/ArchSafeUnifiedModelerUpdateSite</span></pre>
+        <ol start="4">
+          <li>Select <strong>ArchSafeUnified Modeling Workbench</strong></li>
+          <li>Click <strong>Next → Next → Finish</strong></li>
+          <li>Restart Eclipse when prompted</li>
+        </ol>
+        <div class="note">
+          ✓ Sirius and EMF dependencies are resolved automatically.
+          Requires an existing Eclipse Modeling Tools installation.
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Option 2: Standalone RCP ── -->
+    <div class="card standalone">
+      <div class="card-header">
+        <div class="num">2</div>
+        <div>
+          <h2>Standalone Application</h2>
+          <div class="sub">No Eclipse installation needed</div>
+        </div>
+      </div>
+      <div class="card-body">
+        <ol>
+          <li>Download the archive for your platform:</li>
+        </ol>
+        <div class="dl-grid">
+          <a class="dl-btn win"
+             href="https://github.com/masimminhas/ArchSafeUnifiedModelerUpdateSite/releases/latest/download/dsis-unified-win32.win32.x86_64.zip">
+            🪟 Windows x64
+          </a>
+          <a class="dl-btn lin"
+             href="https://github.com/masimminhas/ArchSafeUnifiedModelerUpdateSite/releases/latest/download/dsis-unified-linux.gtk.x86_64.tar.gz">
+            🐧 Linux x64
+          </a>
+          <a class="dl-btn mac"
+             href="https://github.com/masimminhas/ArchSafeUnifiedModelerUpdateSite/releases/latest/download/dsis-unified-macosx.cocoa.x86_64.tar.gz">
+            🍎 macOS Intel
+          </a>
+          <a class="dl-btn maca"
+             href="https://github.com/masimminhas/ArchSafeUnifiedModelerUpdateSite/releases/latest/download/dsis-unified-macosx.cocoa.aarch64.tar.gz">
+            🍎 macOS Apple Silicon
+          </a>
+        </div>
+        <ol start="2">
+          <li>Unzip the archive</li>
+          <li>Run <code>dsis-unified</code> (or <code>dsis-unified.exe</code> on Windows)</li>
+        </ol>
+        <div class="note">
+          ✓ Includes OpenJDK 17 — no Java installation required.
+          An example model opens automatically on first launch.
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Option 3: Docker ── -->
+    <div class="card docker">
+      <div class="card-header">
+        <div class="num">3</div>
+        <div>
+          <h2>Docker (Browser-Based)</h2>
+          <div class="sub">Zero installation — works on any OS</div>
+        </div>
+      </div>
+      <div class="card-body">
+        <ol>
+          <li>Run one command:</li>
+        </ol>
+        <pre><span class="cmd">docker run</span> -p 6080:6080 \
+  <span class="url">ghcr.io/masimminhas/ArchSafeUnifiedModelerUpdateSite:latest</span></pre>
+        <ol start="2">
+          <li>Open <code>http://localhost:6080</code> in your browser</li>
+          <li>Password: <code>dsis2024</code></li>
+          <li>The example model is already open and ready</li>
+        </ol>
+        <div class="note">
+          ✓ Best option for paper reviewers — nothing to install.
+          Uses noVNC: runs entirely in your web browser.
+          Requires Docker Desktop (free).
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /.options -->
+
+  <!-- ── Supported Diagrams ── -->
+  <div class="section-title">Supported Diagram Types</div>
+  <div class="diagram-grid">
+    <div class="diag-chip">Architecture Diagram</div>
+    <div class="diag-chip">Safety Diagram</div>
+    <div class="diag-chip">FMEA Diagram</div>
+    <div class="diag-chip">Requirements Diagram</div>
+    <div class="diag-chip">Traceability Diagram</div>
+    <div class="diag-chip">Failure Propagation Simulation</div>
+    <div class="diag-chip">Metrics Dashboard</div>
+    <div class="diag-chip">Metrics Table</div>
+    <div class="diag-chip">FMEA Table</div>
+  </div>
+
+  <!-- ── Links ── -->
+  <div class="section-title">Resources</div>
+  <p style="line-height:2">
+    <a href="https://github.com/masimminhas/ArchSafeUnifiedModelerUpdateSite">GitHub Repository</a> ·
+    <a href="https://github.com/masimminhas/ArchSafeUnifiedModelerUpdateSite/releases">All Releases</a> ·
+    <a href="https://github.com/masimminhas/ArchSafeUnifiedModelerUpdateSite/issues">Issue Tracker</a> ·
+    <a href="https://github.com/masimminhas/ArchSafeUnifiedModelerUpdateSite/blob/main/LICENSE">License (EPL-2.0)</a>
+  </p>
+
+</main>
+
+<footer>
+  <p>
+    ArchSafeUnified Modeling Workbench ·
+    <a href="https://sdq.kastel.kit.edu">Software Design and Quality Group</a> ·
+    ArchSafeUnified Project ·
+    Licensed under <a href="https://www.eclipse.org/legal/epl-2.0/">EPL-2.0</a>
+  </p>
+</footer>
+
+</body>
+</html>
