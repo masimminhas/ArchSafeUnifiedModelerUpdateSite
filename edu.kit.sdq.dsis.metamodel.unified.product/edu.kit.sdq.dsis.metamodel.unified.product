@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?pde version="3.5"?>
+
+<product name="ArchSafe Unified Modeler"
+         uid="edu.kit.sdq.dsis.metamodel.unified.product"
+         id="edu.kit.sdq.dsis.metamodel.unified.product"
+         application="org.eclipse.ui.ide.workbench"
+         version="1.0.0.qualifier"
+         useFeatures="true"
+         includeLaunchers="true">
+
+   <aboutInfo>
+      <image path="/edu.kit.sdq.dsis.metamodel.unified/icons/about.gif"/>
+      <text>
+         ArchSafe Unified Modeler %n
+         Version: {featureVersion} %n
+         %n
+         Eclipse-based modelling tool for the ArchSafe Unified Metamodel.%n
+         nsURI: http://edu.kit.sdq.dsis.metamodel/unified%n
+         %n
+         KIT – Karlsruhe Institute of Technology%n
+         Software Design and Quality (SDQ)
+      </text>
+   </aboutInfo>
+
+   <configIni use="default">
+   </configIni>
+
+   <launcherArgs>
+      <programArgs>-os ${target.os} -ws ${target.ws} -arch ${target.arch}</programArgs>
+      <vmArgs>-Dosgi.requiredJavaVersion=17
+              -Xms512m
+              -Xmx2048m
+              -XX:+UseG1GC
+              -Dorg.eclipse.swt.graphics.Resource.reportNonDisposed=false</vmArgs>
+      <vmArgsMac>-XstartOnFirstThread -Dorg.eclipse.swt.internal.carbon.smallFonts</vmArgsMac>
+   </launcherArgs>
+
+   <launcher name="ArchSafeUnifiedModeler">
+      <linux icon="/edu.kit.sdq.dsis.metamodel.unified/icons/launcher.xpm"/>
+      <win useIco="false">
+         <bmp/>
+      </win>
+   </launcher>
+
+   <vm>
+      <windows include="false"/>
+   </vm>
+
+   <features>
+      <!-- Core Eclipse RCP platform -->
+      <feature id="org.eclipse.rcp" installMode="root"/>
+      <feature id="org.eclipse.e4.rcp" installMode="root"/>
+      <feature id="org.eclipse.platform" installMode="root"/>
+
+      <!-- EMF runtime -->
+      <feature id="org.eclipse.emf.ecore" installMode="root"/>
+      <feature id="org.eclipse.emf.edit" installMode="root"/>
+      <feature id="org.eclipse.emf.common" installMode="root"/>
+
+      <!-- Sirius runtime -->
+      <feature id="org.eclipse.sirius.runtime" installMode="root"/>
+      <feature id="org.eclipse.sirius.runtime.ide.ui" installMode="root"/>
+      <feature id="org.eclipse.sirius.diagram" installMode="root"/>
+
+      <!-- ArchSafe Unified Modeler feature -->
+      <feature id="edu.kit.sdq.dsis.metamodel.unified.feature" installMode="root"/>
+   </features>
+
+   <configurations>
+      <plugin id="org.eclipse.core.runtime" autoStart="true" startLevel="0"/>
+      <plugin id="org.eclipse.equinox.common" autoStart="true" startLevel="2"/>
+      <plugin id="org.eclipse.equinox.ds" autoStart="true" startLevel="2"/>
+      <plugin id="org.eclipse.equinox.event" autoStart="true" startLevel="2"/>
+      <plugin id="org.eclipse.equinox.p2.reconciler.dropins" autoStart="true" startLevel="4"/>
+      <plugin id="org.eclipse.equinox.simpleconfigurator" autoStart="true" startLevel="1"/>
+      <plugin id="org.eclipse.osgi" autoStart="true" startLevel="-1"/>
+      <plugin id="org.eclipse.update.configurator" autoStart="true" startLevel="3"/>
+	  <configurations>
+   <!-- ✅ Force eager start of design bundle -->
+   <plugin id="edu.kit.sdq.dsis.metamodel.unified.design"  autoStart="true  startLevel="4"/>
+</configurations>
+   </configurations>
+
+   <preferencesInfo>
+      <targetfile overwrite="false"/>
+   </preferencesInfo>
+
+   <cssInfo>
+   </cssInfo>
+
+</product>

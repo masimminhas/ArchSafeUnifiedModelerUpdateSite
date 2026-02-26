@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<site>
+
+  <category-def name="edu.kit.sdq.dsis.metamodel.unified.category"
+                label="ArchSafe Unified Modeler">
+    <description>
+      ArchSafe Unified Modeler — Eclipse tooling for the unified metamodel.
+      Includes the core metamodel, EMF-generated editor and Sirius-based graphical designer.
+    </description>
+  </category-def>
+
+  <feature id="edu.kit.sdq.dsis.metamodel.unified.feature"        version="0.0.0">
+    <category name="edu.kit.sdq.dsis.metamodel.unified.category"/>
+  </feature>
+
+  <feature id="edu.kit.sdq.dsis.metamodel.unified.edit.feature"   version="0.0.0">
+    <category name="edu.kit.sdq.dsis.metamodel.unified.category"/>
+  </feature>
+
+  <feature id="edu.kit.sdq.dsis.metamodel.unified.editor.feature" version="0.0.0">
+    <category name="edu.kit.sdq.dsis.metamodel.unified.category"/>
+  </feature>
+
+  <feature id="edu.kit.sdq.dsis.metamodel.unified.design.feature" version="0.0.0">
+    <category name="edu.kit.sdq.dsis.metamodel.unified.category"/>
+  </feature>
+
+</site>

@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?pde version="3.5"?>
+<product
+      uid="edu.kit.sdq.dsis.product"
+      id="edu.kit.sdq.dsis.rcp.plugin.product"
+      name="ArchSafe Unified Modeler"
+      version="1.0.0.qualifier"
+      type="features"
+      includeLaunchers="true"
+      autoIncludeRequirements="true">
+
+   <features>
+      <!-- ✅ RCP feature -->
+      <feature id="edu.kit.sdq.dsis.rcp.feature"                        version="0.0.0"/>
+
+      <!-- ✅ ArchSafe features — ADD THESE -->
+      <feature id="edu.kit.sdq.dsis.metamodel.unified.feature"           version="0.0.0"/>
+      <feature id="edu.kit.sdq.dsis.metamodel.unified.editor.feature"    version="0.0.0"/>
+      <feature id="edu.kit.sdq.dsis.metamodel.unified.design.feature"    version="0.0.0"/>
+
+      <!-- Eclipse platform -->
+      <feature id="org.eclipse.platform"                                 version="0.0.0"/>
+      <feature id="org.eclipse.rcp"                                      version="0.0.0"/>
+      <feature id="org.eclipse.emf.sdk"                                  version="0.0.0"/>
+      <feature id="org.eclipse.equinox.p2.user.ui"                       version="0.0.0"/>
+      <feature id="org.eclipse.sirius.specifier"                         version="0.0.0"/>
+   </features>
+
+   <launcher name="ArchSafeUnifiedModeler">
+      <win useIco="false"/>
+   </launcher>
+
+  <configurations>
+   <plugin id="org.eclipse.equinox.simpleconfigurator"        autoStart="true" startLevel="1"/>
+   <plugin id="org.eclipse.equinox.common"                    autoStart="true" startLevel="2"/>
+   <plugin id="org.eclipse.equinox.event"                     autoStart="true" startLevel="2"/>
+   <plugin id="org.eclipse.equinox.ds"                        autoStart="true" startLevel="2"/>
+   <plugin id="org.apache.felix.scr"                          autoStart="true" startLevel="2"/>
+   <plugin id="org.eclipse.core.contenttype"                  autoStart="true" startLevel="2"/>
+   <plugin id="org.eclipse.core.jobs"                         autoStart="true" startLevel="2"/>
+   <plugin id="org.eclipse.osgi.services"                     autoStart="true" startLevel="2"/>
+   <plugin id="org.eclipse.core.runtime"                      autoStart="true" startLevel="4"/>
+   <plugin id="org.eclipse.core.resources"                    autoStart="true" startLevel="4"/>
+   <plugin id="org.eclipse.equinox.registry"                  autoStart="true" startLevel="4"/>
+   <plugin id="org.eclipse.equinox.preferences"               autoStart="true" startLevel="4"/>
+   <plugin id="org.eclipse.update.configurator"               autoStart="true" startLevel="3"/>
+   <plugin id="org.eclipse.sirius"                            autoStart="true" startLevel="5"/>
+   <plugin id="org.eclipse.sirius.common"                     autoStart="true" startLevel="5"/>
+   <plugin id="edu.kit.sdq.dsis.metamodel.unified"            autoStart="true" startLevel="4"/>
+   <plugin id="edu.kit.sdq.dsis.metamodel.unified.edit"       autoStart="true" startLevel="5"/>
+   <plugin id="edu.kit.sdq.dsis.metamodel.unified.editor"     autoStart="true" startLevel="5"/>
+   <plugin id="edu.kit.sdq.dsis.rcp.plugin"                   autoStart="true" startLevel="6"/>
+
+   <!-- ✅ THIS WAS MISSING — must explicitly set autoStart=true -->
+   <plugin id="edu.kit.sdq.dsis.metamodel.unified.design"     autoStart="true" startLevel="6"/>
+</configurations>
+
+</product>

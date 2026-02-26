@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feature
+      id="edu.kit.sdq.dsis.rcp.feature"
+      label="ArchSafe Unified Modeler RCP"
+      version="1.0.0.qualifier">
+
+   <plugin
+         id="edu.kit.sdq.dsis.rcp.plugin"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+</feature>

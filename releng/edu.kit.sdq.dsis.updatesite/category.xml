@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<site>
+  <description>ArchSafe Unified Modeler Update Site</description>
+
+  <category-def name="core" label="ArchSafe Unified Modeler Core"/>
+  <category-def name="design" label="ArchSafe Unified Modeler Sirius Design"/>
+
+  <feature url="features/edu.kit.sdq.dsis.metamodel.unified.feature_1.0.0.qualifier.jar"
+           id="edu.kit.sdq.dsis.metamodel.unified.feature"
+           version="0.0.0">
+    <category name="core"/>
+  </feature>
+
+  <feature url="features/edu.kit.sdq.dsis.metamodel.unified.edit.feature_1.0.0.qualifier.jar"
+           id="edu.kit.sdq.dsis.metamodel.unified.edit.feature"
+           version="0.0.0">
+    <category name="core"/>
+  </feature>
+
+  <feature url="features/edu.kit.sdq.dsis.metamodel.unified.editor.feature_1.0.0.qualifier.jar"
+           id="edu.kit.sdq.dsis.metamodel.unified.editor.feature"
+           version="0.0.0">
+    <category name="core"/>
+  </feature>
+
+  <feature url="features/edu.kit.sdq.dsis.metamodel.unified.design.feature_1.0.0.qualifier.jar"
+           id="edu.kit.sdq.dsis.metamodel.unified.design.feature"
+           version="0.0.0">
+    <category name="design"/>
+  </feature>
+</site>

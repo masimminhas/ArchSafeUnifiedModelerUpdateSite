@@ -1,0 +1,20 @@
+﻿# Maven build output
+target/
+**/target/
+
+# Eclipse project files
+.classpath
+.project
+.settings/
+bin/
+
+# p2 cache
+.metadata/
+.recommenders/
+
+# OS files
+Thumbs.db
+.DS_Store
+
+# Tycho
+*.class

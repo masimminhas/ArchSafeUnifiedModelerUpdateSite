@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feature
+      id="edu.kit.sdq.dsis.metamodel.unified.feature"
+      label="ArchSafe Unified Modeler Feature"
+      version="1.0.0.qualifier"
+      provider-name="KIT – Software Design and Quality (SDQ)">
+
+   <description url="https://github.com/masimminhas/ArchSafeUnifiedModelerUpdateSite">
+      ArchSafe Unified Modeler — Eclipse tooling for the ArchSafe Unified Metamodel.
+      nsURI: http://edu.kit.sdq.dsis.metamodel/unified
+   </description>
+
+   <copyright>
+      Copyright (c) KIT – Karlsruhe Institute of Technology, SDQ Group.
+      All rights reserved.
+   </copyright>
+
+   <license url="https://www.eclipse.org/legal/epl-2.0/">
+      Eclipse Public License - v 2.0
+   </license>
+   <!-- Core EMF metamodel plugin -->
+   <plugin
+         id="edu.kit.sdq.dsis.metamodel.unified"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <!-- EMF-generated item-provider (edit) plugin -->
+   <plugin
+         id="edu.kit.sdq.dsis.metamodel.unified.edit"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <!-- EMF-generated tree editor plugin -->
+   <plugin
+         id="edu.kit.sdq.dsis.metamodel.unified.editor"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <!-- Sirius-based graphical design plugin -->
+   <plugin
+         id="edu.kit.sdq.dsis.metamodel.unified.design"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+</feature>

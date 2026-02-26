@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feature
+    id="edu.kit.sdq.dsis.metamodel.unified.design.feature"
+    label="ArchSafe Unified Modeler Design Feature"
+    version="1.0.0.qualifier"
+    provider-name="KIT – DSIS">
+
+  <description>
+    Sirius-based graphical designer for the ArchSafe Unified Metamodel.
+  </description>
+
+  <copyright>
+    Copyright (c) 2024 KIT – DSIS
+  </copyright>
+
+  <license url="">
+    All rights reserved.
+  </license>
+
+  <!-- The Sirius Design bundle -->
+  <plugin
+      id="edu.kit.sdq.dsis.metamodel.unified.design"
+      download-size="0"
+      install-size="0"
+      version="0.0.0"
+      unpack="false"/>
+
+</feature>

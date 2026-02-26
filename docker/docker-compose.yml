@@ -1,0 +1,13 @@
+version: "3.9"
+
+services:
+  archsafe-modeler:
+    image: ghcr.io/masimminhas/archsafeunifiedmodeler:latest
+    container_name: archsafe-unified-modeler
+    environment:
+      - DISPLAY=:99
+    volumes:
+      # Mount your workspace/models into the container
+      - ./workspace:/workspace
+    command: ["--data", "/workspace"]
+    restart: unless-stopped

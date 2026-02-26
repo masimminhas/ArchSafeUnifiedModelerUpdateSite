@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<?pde version="3.8"?>
+<target name="edu.kit.sdq.dsis.metamodel.unified.target" sequenceNumber="1">
+  <locations>
+
+    <!-- Eclipse 2024-03 Release Train -->
+    <location includeAllPlatforms="false" includeConfigurePhase="true"
+              includeMode="planner" includeSource="true" type="InstallableUnit">
+      <unit id="org.eclipse.sdk.feature.group" version="0.0.0"/>
+      <unit id="org.eclipse.platform.feature.group" version="0.0.0"/>
+      <unit id="org.eclipse.rcp.feature.group" version="0.0.0"/>
+      <unit id="org.eclipse.e4.rcp.feature.group" version="0.0.0"/>
+      <repository location="https://download.eclipse.org/releases/2024-03/"/>
+    </location>
+
+   <locations>
+  <!-- Eclipse 2023-12 Platform + Sirius 7.3.0 (included in SimRel) -->
+  <location includeAllPlatforms="false" includeConfigurePhase="true"
+            includeMode="planner" includeSource="true" type="InstallableUnit">
+    <unit id="org.eclipse.sdk.feature.group"                    version="0.0.0"/>
+    <unit id="org.eclipse.platform.feature.group"               version="0.0.0"/>
+    <unit id="org.eclipse.rcp.feature.group"                    version="0.0.0"/>
+    <unit id="org.eclipse.e4.rcp.feature.group"                 version="0.0.0"/>
+    <unit id="org.eclipse.emf.sdk.feature.group"                version="0.0.0"/>
+    <unit id="org.eclipse.emf.codegen.ecore.feature.group"      version="0.0.0"/>
+    <unit id="org.eclipse.sirius.runtime.feature.group"         version="0.0.0"/>
+    <unit id="org.eclipse.sirius.runtime.ide.ui.feature.group"  version="0.0.0"/>
+    <unit id="org.eclipse.sirius.diagram.feature.group"         version="0.0.0"/>
+    <unit id="org.eclipse.sirius.properties.feature.group"      version="0.0.0"/>
+    <unit id="org.eclipse.sirius.aql.feature.group"             version="0.0.0"/>
+    <unit id="org.eclipse.eef.sdk.feature.feature.group"        version="0.0.0"/>
+    <repository location="https://download.eclipse.org/releases/2023-12/"/>
+  </location>
+</locations>
+
+    <!-- EEF (Extended Editing Framework for Sirius properties) -->
+    <location includeAllPlatforms="false" includeConfigurePhase="true"
+              includeMode="planner" includeSource="true" type="InstallableUnit">
+      <unit id="org.eclipse.eef.sdk.feature.group" version="0.0.0"/>
+      <repository location="https://download.eclipse.org/modeling/eef/updates/releases/2.1/"/>
+    </location>
+
+  </locations>
+
+  <environment>
+    <os>linux</os>
+    <ws>gtk</ws>
+    <arch>x86_64</arch>
+    <nl>en_US</nl>
+  </environment>
+
+  <launcherArgs>
+    <programArgs>-consoleLog</programArgs>
+    <vmArgs>-Xms512m -Xmx4096m -XX:+UseG1GC</vmArgs>
+  </launcherArgs>
+
+</target>

@@ -1,0 +1,369 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ecore:EPackage xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" name="unified" nsURI="http://edu.kit.sdq.dsis.metamodel/unified" nsPrefix="unified">
+  <eClassifiers xsi:type="ecore:EClass" name="UnifiedElement" abstract="true">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="id" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="description" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="UnifiedSystemModel">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="fmeaAnalysis" upperBound="-1"
+        eType="#//FMEAAnalysis" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="globalHazards" upperBound="-1"
+        eType="#//IntegratedHazard" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="rootBlocks" upperBound="-1"
+        eType="#//SafetyCriticalBlock" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="systemBlocks" upperBound="-1"
+        eType="#//SystemBlock" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="blockAssociations" upperBound="-1"
+        eType="#//BlockAssociation" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="blockConnections" upperBound="-1"
+        eType="#//BlockConnection" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="analysisMetadata" eType="#//AnalysisMetadata"
+        containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="modelVersion" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"
+        defaultValueLiteral="1.0"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="lastModified" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDate"/>
+	<eStructuralFeatures xsi:type="ecore:EReference" name="safetyGoals" 
+    upperBound="-1" eType="#//SafetyGoal" containment="true"/>
+<eStructuralFeatures xsi:type="ecore:EReference" name="functionalRequirements" 
+    upperBound="-1" eType="#//FunctionalSafetyRequirement" containment="true"/>
+<eStructuralFeatures xsi:type="ecore:EReference" name="technicalRequirements" 
+    upperBound="-1" eType="#//TechnicalSafetyRequirement" containment="true"/>
+<eStructuralFeatures xsi:type="ecore:EReference" name="safetyMechanisms" 
+    upperBound="-1" eType="#//SafetyMechanism" containment="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="FMEAAnalysis" eSuperTypes="#//UnifiedElement">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="rpnThreshold" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="fmeaItems" upperBound="-1"
+        eType="#//FMEAItem" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="analysisDate" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDate"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="analysisStatus" eType="#//AnalysisStatus"
+        defaultValueLiteral="DRAFT"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="reviewer" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="FMEAItem" eSuperTypes="#//UnifiedElement">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="severity" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="occurrence" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="detection" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="localEffect" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="systemEffect" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="recommendedAction" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="actionStatus" eType="#//ActionStatus"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="failureMode" eType="#//BlockFailureMode"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="analyzedComponent" lowerBound="1"
+        eType="#//SafetyCriticalBlock"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="autoGenerated" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"
+        defaultValueLiteral="false"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="relatedHazards" upperBound="-1"
+        eType="#//IntegratedHazard"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="responsiblePerson" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="dueDate" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDate"/>
+	<eStructuralFeatures xsi:type="ecore:EReference" name="validatesMechanisms" upperBound="-1" eType="#//SafetyMechanism" eOpposite="#//SafetyMechanism/validatedBy"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="IntegratedHazard" eSuperTypes="#//UnifiedElement">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="System-level dangers that span multiple components with risk level quantification"/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="riskLevel" eType="#//RiskLevel"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="relatedBlocks" upperBound="-1"
+        eType="#//SafetyCriticalBlock"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="mitigationStatus" eType="#//MitigationStatus"
+        defaultValueLiteral="NOT_MITIGATED"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="hazardCategory" eType="#//HazardCategory"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="severityJustification"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="SafetyCriticalBlock" eSuperTypes="#//SystemBlock">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="System components that require safety analysis with embedded failure modes and criticality levels"/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="safetyCriticality" eType="#//SafetyCriticalityLevel"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="failureModes" upperBound="-1"
+        eType="#//BlockFailureMode" containment="true" eOpposite="#//BlockFailureMode/affectedBlock"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="hasRedundancy" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"
+        defaultValueLiteral="false"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="redundancyType" eType="#//RedundancyType"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="asilLevel" eType="#//ASILLevel"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="SystemBlock" eSuperTypes="#//UnifiedElement">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="Regular system components without mandatory safety annotations for non-critical parts"/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="subBlocks" upperBound="-1"
+        eType="#//SystemBlock" containment="true" eOpposite="#//SystemBlock/parentBlock"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="parentBlock" eType="#//SystemBlock"
+        eOpposite="#//SystemBlock/subBlocks"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="associationAsSource" upperBound="-1"
+        eType="#//BlockAssociation" eOpposite="#//BlockAssociation/sourceBlock"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="associationAsTarget" upperBound="-1"
+        eType="#//BlockAssociation" eOpposite="#//BlockAssociation/targetBlock"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="connectionAsSource" upperBound="-1"
+        eType="#//BlockConnection" eOpposite="#//BlockConnection/fromBlock"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="connectionAsTarget" upperBound="-1"
+        eType="#//BlockConnection" eOpposite="#//BlockConnection/toBlock"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="blockType" eType="#//BlockType"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="BlockAssociation" eSuperTypes="#//UnifiedElement">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="associationType" eType="#//AssociationType"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="sourceBlock" eType="#//SystemBlock"
+        eOpposite="#//SystemBlock/associationAsSource"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="targetBlock" eType="#//SystemBlock"
+        eOpposite="#//SystemBlock/associationAsTarget"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="BlockConnection" eSuperTypes="#//UnifiedElement">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="connectionType" eType="#//ConnectionType"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="fromBlock" lowerBound="1"
+        upperBound="-1" eType="#//SystemBlock" eOpposite="#//SystemBlock/connectionAsSource"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="toBlock" lowerBound="1"
+        upperBound="-1" eType="#//SystemBlock" eOpposite="#//SystemBlock/connectionAsTarget"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="BlockFailureMode" eSuperTypes="#//UnifiedElement">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="Specific failure scenarios attached directly to system components with detectability and severity metrics"/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="affectedBlock" eType="#//SafetyCriticalBlock"
+        eOpposite="#//SafetyCriticalBlock/failureModes"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="failureRate" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="failureEffect" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="AnalysisMetadata">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="Stores computed analysis metrics and metadata"/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="lastAnalysisDate" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDate"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="completenessScore" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"
+        defaultValueLiteral="0"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="consistencyScore" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"
+        defaultValueLiteral="0"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="hazardCoverage" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"
+        defaultValueLiteral="0.0"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="fmeaCoverage" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"
+        defaultValueLiteral="0.0"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="traceabilityDensity" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"
+        defaultValueLiteral="0.0"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="cyclomaticComplexity" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"
+        defaultValueLiteral="0"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="mcr" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"
+        defaultValueLiteral="0"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="hti" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"
+        defaultValueLiteral="0"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="rar" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"
+        defaultValueLiteral="0"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="flc" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"
+        defaultValueLiteral="0"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="tds" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"
+        defaultValueLiteral="0"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="mvr" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"
+        defaultValueLiteral="0"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EEnum" name="SafetyCriticalityLevel">
+    <eLiterals name="LOW"/>
+    <eLiterals name="MEDIUM" value="1"/>
+    <eLiterals name="HIGH" value="2"/>
+    <eLiterals name="CRITICAL" value="3"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EEnum" name="ActionStatus">
+    <eLiterals name="OPEN"/>
+    <eLiterals name="IN_PROGRESS" value="1"/>
+    <eLiterals name="COMPLETED" value="2"/>
+    <eLiterals name="VERIFIED" value="3"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EEnum" name="RiskLevel">
+    <eLiterals name="NEGLIGIBLE"/>
+    <eLiterals name="MARGINAL" value="1"/>
+    <eLiterals name="CRITICAL_RISK" value="2"/>
+    <eLiterals name="CATASTROPHIC" value="3"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EEnum" name="ConnectionType">
+    <eLiterals name="DATA_FLOW"/>
+    <eLiterals name="CONTROL_FLOW" value="1"/>
+    <eLiterals name="POWER_FLOW" value="2"/>
+    <eLiterals name="SIGNAL_FLOW" value="3"/>
+    <eLiterals name="MECHANICAL" value="4"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EEnum" name="AssociationType">
+    <eLiterals name="DEPENDENCY"/>
+    <eLiterals name="AGGREGATION" value="1"/>
+    <eLiterals name="COMPOSITION" value="2"/>
+    <eLiterals name="ASSOCIATION" value="3"/>
+    <eLiterals name="REALIZATION" value="4"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EEnum" name="AnalysisStatus">
+    <eLiterals name="DRAFT"/>
+    <eLiterals name="IN_REVIEW" value="1"/>
+    <eLiterals name="APPROVED" value="2"/>
+    <eLiterals name="ARCHIVED" value="3"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EEnum" name="MitigationStatus">
+    <eLiterals name="NOT_MITIGATED"/>
+    <eLiterals name="PARTIALLY_MITIGATED" value="1"/>
+    <eLiterals name="FULLY_MITIGATED" value="2"/>
+    <eLiterals name="ACCEPTED" value="3"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EEnum" name="HazardCategory">
+    <eLiterals name="FUNCTIONAL_FAILURE"/>
+    <eLiterals name="TIMING_FAILURE" value="1"/>
+    <eLiterals name="ERRONEOUS_OUTPUT" value="2"/>
+    <eLiterals name="LOSS_OF_FUNCTION" value="3"/>
+    <eLiterals name="UNINTENDED_FUNCTION" value="4"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EEnum" name="RedundancyType">
+    <eLiterals name="NONE"/>
+    <eLiterals name="COLD_REDUNDANCY" value="1"/>
+    <eLiterals name="HOT_REDUNDANCY" value="2"/>
+    <eLiterals name="TMR" value="3"/>
+    <eLiterals name="DIVERSIFIED" value="4"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EEnum" name="ASILLevel">
+    <eLiterals name="QM"/>
+    <eLiterals name="ASIL_A" value="1"/>
+    <eLiterals name="ASIL_B" value="2"/>
+    <eLiterals name="ASIL_C" value="3"/>
+    <eLiterals name="ASIL_D" value="4"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EEnum" name="BlockType">
+    <eLiterals name="SENSOR"/>
+    <eLiterals name="ACTUATOR" value="1"/>
+    <eLiterals name="CONTROLLER" value="2"/>
+    <eLiterals name="COMMUNICATION" value="3"/>
+    <eLiterals name="POWER_SUPPLY" value="4"/>
+    <eLiterals name="PROCESSING_UNIT" value="5"/>
+    <eLiterals name="STORAGE" value="6"/>
+    <eLiterals name="USER_INTERFACE" value="7"/>
+  </eClassifiers>
+  
+<eClassifiers xsi:type="ecore:EClass" name="Requirement" eSuperTypes="#//UnifiedElement" abstract="true">
+  <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+    <details key="documentation" value="Base class for all requirements in the safety lifecycle"/>
+  </eAnnotations>
+  <eStructuralFeatures xsi:type="ecore:EAttribute" name="requirementId" 
+      eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+  <eStructuralFeatures xsi:type="ecore:EAttribute" name="requirementText" 
+      eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+  <eStructuralFeatures xsi:type="ecore:EAttribute" name="status" 
+      eType="#//RequirementStatus" defaultValueLiteral="DRAFT"/>
+  <eStructuralFeatures xsi:type="ecore:EAttribute" name="verificationMethod" 
+      eType="#//VerificationMethod"/>
+  <eStructuralFeatures xsi:type="ecore:EAttribute" name="rationale" 
+      eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+  <eStructuralFeatures xsi:type="ecore:EReference" name="derivedFrom" 
+      upperBound="-1" eType="#//Requirement"/>
+  <eStructuralFeatures xsi:type="ecore:EReference" name="satisfiedBy" 
+      upperBound="-1" eType="#//SystemBlock"/>
+</eClassifiers>
+
+<eClassifiers xsi:type="ecore:EClass" name="SafetyGoal" eSuperTypes="#//Requirement">
+  <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+    <details key="documentation" value="Top-level safety requirement from HARA (ISO 26262-3)"/>
+  </eAnnotations>
+  <eStructuralFeatures xsi:type="ecore:EAttribute" name="asilLevel" 
+      eType="#//ASILLevel"/>
+  <eStructuralFeatures xsi:type="ecore:EReference" name="relatedHazard" 
+      eType="#//IntegratedHazard"/>
+  <eStructuralFeatures xsi:type="ecore:EAttribute" name="safeState" 
+      eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+  <eStructuralFeatures xsi:type="ecore:EReference" name="allocatedTo" 
+      upperBound="-1" eType="#//FunctionalSafetyRequirement" 
+      eOpposite="#//FunctionalSafetyRequirement/allocatedFrom"/>
+</eClassifiers>
+
+<eClassifiers xsi:type="ecore:EClass" name="FunctionalSafetyRequirement" 
+    eSuperTypes="#//Requirement">
+  <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+    <details key="documentation" value="Functional safety requirement (ISO 26262-4)"/>
+  </eAnnotations>
+  <eStructuralFeatures xsi:type="ecore:EAttribute" name="requirementType" 
+      eType="#//FunctionalRequirementType"/>
+  <eStructuralFeatures xsi:type="ecore:EReference" name="allocatedFrom" 
+      eType="#//SafetyGoal" eOpposite="#//SafetyGoal/allocatedTo"/>
+  <eStructuralFeatures xsi:type="ecore:EReference" name="refinedTo" 
+      upperBound="-1" eType="#//TechnicalSafetyRequirement" 
+      eOpposite="#//TechnicalSafetyRequirement/refinesFrom"/>
+  <eStructuralFeatures xsi:type="ecore:EReference" name="implementedBy" 
+      upperBound="-1" eType="#//SafetyCriticalBlock"/>
+</eClassifiers>
+
+<eClassifiers xsi:type="ecore:EClass" name="TechnicalSafetyRequirement" 
+    eSuperTypes="#//Requirement">
+  <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+    <details key="documentation" value="Technical safety requirement at system level (ISO 26262-4)"/>
+  </eAnnotations>
+  <eStructuralFeatures xsi:type="ecore:EAttribute" name="technicalCategory" 
+      eType="#//TechnicalRequirementCategory"/>
+  <eStructuralFeatures xsi:type="ecore:EAttribute" name="allocatedASIL" 
+      eType="#//ASILLevel"/>
+  <eStructuralFeatures xsi:type="ecore:EReference" name="refinesFrom" 
+      eType="#//FunctionalSafetyRequirement" 
+      eOpposite="#//FunctionalSafetyRequirement/refinedTo"/>
+  <eStructuralFeatures xsi:type="ecore:EReference" name="realizedBy" 
+      upperBound="-1" eType="#//SafetyCriticalBlock"/>
+  <eStructuralFeatures xsi:type="ecore:EReference" name="verifiedBy" 
+      upperBound="-1" eType="#//FMEAItem"/>
+</eClassifiers>
+
+<eClassifiers xsi:type="ecore:EClass" name="SafetyMechanism" 
+    eSuperTypes="#//UnifiedElement">
+  <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+    <details key="documentation" value="Safety mechanism implementing safety requirements"/>
+  </eAnnotations>
+  <eStructuralFeatures xsi:type="ecore:EAttribute" name="mechanismType" 
+      eType="#//SafetyMechanismType"/>
+  <eStructuralFeatures xsi:type="ecore:EAttribute" name="diagnosticCoverage" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+  <eStructuralFeatures xsi:type="ecore:EReference" name="implements" 
+      upperBound="-1" eType="#//TechnicalSafetyRequirement"/>
+  <eStructuralFeatures xsi:type="ecore:EReference" name="implementedIn" 
+      eType="#//SafetyCriticalBlock"/>
+	  <!-- Add to SafetyMechanism class: -->
+<eStructuralFeatures xsi:type="ecore:EReference" name="validatedBy" upperBound="-1" eType="#//FMEAItem" eOpposite="#//FMEAItem/validatesMechanisms"/>
+</eClassifiers>
+
+<!-- ============================================ -->
+<!-- ENUMERATIONS -->
+<!-- ============================================ -->
+
+<eClassifiers xsi:type="ecore:EEnum" name="RequirementStatus">
+  <eLiterals name="DRAFT"/>
+  <eLiterals name="UNDER_REVIEW" value="1"/>
+  <eLiterals name="APPROVED" value="2"/>
+  <eLiterals name="IMPLEMENTED" value="3"/>
+  <eLiterals name="VERIFIED" value="4"/>
+  <eLiterals name="DEPRECATED" value="5"/>
+</eClassifiers>
+
+<eClassifiers xsi:type="ecore:EEnum" name="VerificationMethod">
+  <eLiterals name="INSPECTION"/>
+  <eLiterals name="ANALYSIS" value="1"/>
+  <eLiterals name="SIMULATION" value="2"/>
+  <eLiterals name="TEST" value="3"/>
+  <eLiterals name="FORMAL_PROOF" value="4"/>
+</eClassifiers>
+
+<eClassifiers xsi:type="ecore:EEnum" name="FunctionalRequirementType">
+  <eLiterals name="FAULT_DETECTION"/>
+  <eLiterals name="FAULT_HANDLING" value="1"/>
+  <eLiterals name="ARBITRATION" value="2"/>
+  <eLiterals name="WARNING_INDICATION" value="3"/>
+  <eLiterals name="SAFE_STATE_TRANSITION" value="4"/>
+</eClassifiers>
+
+<eClassifiers xsi:type="ecore:EEnum" name="TechnicalRequirementCategory">
+  <eLiterals name="HARDWARE_REQUIREMENT"/>
+  <eLiterals name="SOFTWARE_REQUIREMENT" value="1"/>
+  <eLiterals name="SYSTEM_REQUIREMENT" value="2"/>
+  <eLiterals name="INTERFACE_REQUIREMENT" value="3"/>
+</eClassifiers>
+
+<eClassifiers xsi:type="ecore:EEnum" name="SafetyMechanismType">
+  <eLiterals name="REDUNDANCY"/>
+  <eLiterals name="PLAUSIBILITY_CHECK" value="1"/>
+  <eLiterals name="WATCHDOG" value="2"/>
+  <eLiterals name="SELF_TEST" value="3"/>
+  <eLiterals name="GRACEFUL_DEGRADATION" value="4"/>
+  <eLiterals name="ERROR_DETECTION_CODE" value="5"/>
+  <eLiterals name="LOCKSTEP" value="6"/>
+</eClassifiers>
+
+  
+</ecore:EPackage>

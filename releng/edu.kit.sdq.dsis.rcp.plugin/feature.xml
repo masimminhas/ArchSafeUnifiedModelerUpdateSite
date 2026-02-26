@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feature
+    id="edu.kit.sdq.dsis.rcp"
+    label="ArchSafe Unified Modeler RCP Feature"
+    version="1.0.0.qualifier"
+    provider-name="KIT – DSIS">
+
+  <description>Eclipse RCP application feature for the ArchSafe Unified Modeler.</description>
+  <copyright>Copyright 2024 Karlsruhe Institute of Technology – DSIS</copyright>
+  <license url="https://www.eclipse.org/legal/epl-2.0/">EPL-2.0</license>
+
+  <plugin id="edu.kit.sdq.dsis.metamodel.unified"         download-size="0" install-size="0" version="0.0.0" unpack="false"/>
+  <plugin id="edu.kit.sdq.dsis.metamodel.unified.edit"    download-size="0" install-size="0" version="0.0.0" unpack="false"/>
+  <plugin id="edu.kit.sdq.dsis.metamodel.unified.editor"  download-size="0" install-size="0" version="0.0.0" unpack="false"/>
+  <plugin id="edu.kit.sdq.dsis.metamodel.unified.design"  download-size="0" install-size="0" version="0.0.0" unpack="false"/>
+  <plugin id="edu.kit.sdq.dsis.rcp" download-size="0" install-size="0" version="0.0.0" unpack="false"/>
+</feature>
