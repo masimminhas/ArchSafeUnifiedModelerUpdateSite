@@ -74,6 +74,7 @@ WORKDIR /home/archsafe
 
 # ── ports ─────────────────────────────────────────────────────
 # 5900 → VNC  |  6080 → noVNC (browser-based)
+RUN mkdir -p /var/log/supervisor /var/run
 EXPOSE 5900 6080
 
 ENTRYPOINT ["/entrypoint.sh"]
