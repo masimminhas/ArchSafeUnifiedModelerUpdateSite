@@ -39,10 +39,10 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     xvfb \
     x11vnc \
     xterm \
-    fluxbox \
+    xfwm4 \
     # noVNC web-based VNC client
     novnc \
-    websockify \
+     \
     # SWT / GTK dependencies
     libgtk-3-0 \
     libwebkit2gtk-4.1-0 \
