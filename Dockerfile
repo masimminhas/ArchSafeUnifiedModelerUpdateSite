@@ -45,7 +45,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     websockify \
     # SWT / GTK dependencies
     libgtk-3-0 \
-    libwebkit2gtk-4.0-37 \
+    libwebkit2gtk-4.1-0 \
     libcanberra-gtk-module \
     libcanberra-gtk3-module \
     libglu1-mesa \
@@ -70,7 +70,6 @@ RUN chmod +x /entrypoint.sh
 
 # ── create a non-root user ────────────────────────────────────
 RUN useradd -m -s /bin/bash archsafe
-USER archsafe
 WORKDIR /home/archsafe
 
 # ── ports ─────────────────────────────────────────────────────
