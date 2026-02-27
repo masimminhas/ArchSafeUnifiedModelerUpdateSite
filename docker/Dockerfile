@@ -1,12 +1,11 @@
 # ──────────────────────────────────────────────────────────────────────────────
 # Stage 1: Build
 # ──────────────────────────────────────────────────────────────────────────────
-FROM eclipse-temurin:17-jdk AS builder
+FROM eclipse-temurin:17-jdk-jammy AS builder
 
 LABEL org.opencontainers.image.title="ArchSafe Unified Modeler – Builder"
 LABEL org.opencontainers.image.source="https://github.com/masimminhas/ArchSafeUnifiedModelerUpdateSite"
 
-# Maven
 ARG MAVEN_VERSION=3.9.6
 RUN apt-get update -qq && apt-get install -y --no-install-recommends curl ca-certificates xvfb \
  && curl -fsSL "https://archive.apache.org/dist/maven/maven-3/${MAVEN_VERSION}/binaries/apache-maven-${MAVEN_VERSION}-bin.tar.gz" \
@@ -17,16 +16,14 @@ RUN apt-get update -qq && apt-get install -y --no-install-recommends curl ca-cer
 WORKDIR /build
 COPY . .
 
-# Build: update site + RCP products
 RUN xvfb-run --auto-servernum --server-args="-screen 0 1024x768x24" \
     mvn -B -ntp clean verify \
         -Dtycho.disableP2Mirrors=false \
         -Dmaven.test.skip=true
 
 # ──────────────────────────────────────────────────────────────────────────────
-# Stage 2: Runtime – headless Eclipse RCP on Linux/GTK
+# Stage 2: Runtime
 # ──────────────────────────────────────────────────────────────────────────────
-# ✅ Pin to jammy (Ubuntu 22.04) explicitly and use webkit2gtk-4.1
 FROM eclipse-temurin:17-jre-jammy AS runtime
 
 LABEL org.opencontainers.image.title="ArchSafe Unified Modeler"
@@ -36,28 +33,39 @@ LABEL org.opencontainers.image.source="https://github.com/masimminhas/ArchSafeUn
 RUN apt-get update -qq \
  && apt-get install -y --no-install-recommends \
       libgtk-3-0 \
-      # ✅ webkit2gtk-4.0-37 removed in Ubuntu 22.04 — use 4.1 instead
       libwebkit2gtk-4.1-0 \
       libglib2.0-0 \
-      libx11-6 \
-      libxext6 \
-      libxrender1 \
-      libxtst6 \
-      libxi6 \
-      libxrandr2 \
+      libx11-6 libxext6 libxrender1 libxtst6 libxi6 libxrandr2 \
       xvfb \
+      supervisor \
+      x11vnc \
+      xfce4 xfce4-terminal \
+      wget \
+ && wget -qO- https://github.com/novnc/noVNC/archive/refs/tags/v1.4.0.tar.gz \
+    | tar -xzC /opt && mv /opt/noVNC-1.4.0 /opt/novnc \
+ && ln -s /opt/novnc/vnc.html /opt/novnc/index.html \
  && rm -rf /var/lib/apt/lists/*
 
-# Copy materialised Linux GTK product from builder
+# Copy RCP product
 COPY --from=builder \
   /build/releng/edu.kit.sdq.dsis.product/target/products/edu.kit.sdq.dsis.product/linux/gtk/x86_64 \
   /opt/archsafe
 
 RUN chmod +x /opt/archsafe/ArchSafeUnifiedModeler
 
-# Entry point: start headless via Xvfb or accept a real DISPLAY
-ENV DISPLAY=:99
-EXPOSE 0
+# Copy supervisord config and entrypoint
+COPY docker/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
+COPY entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
 
-ENTRYPOINT ["sh", "-c", "Xvfb :99 -screen 0 1024x768x24 & exec /opt/archsafe/ArchSafeUnifiedModeler \"$@\"", "--"]
-CMD ["--help"]
+# ✅ Must run as ROOT so supervisord can manage child processes
+USER root
+
+ENV DISPLAY=:99
+ENV VNC_PORT=5900
+ENV NOVNC_PORT=6080
+ENV VNC_PW=archsafe
+
+EXPOSE 5900 6080
+
+ENTRYPOINT ["/entrypoint.sh"]
