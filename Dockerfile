@@ -65,7 +65,7 @@ RUN chmod +x /opt/ArchSafeUnifiedModeler/ArchSafeUnifiedModeler
 COPY docker/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
 # ── startup script ────────────────────────────────────────────
-COPY docker/entrypoint.sh /entrypoint.sh
+COPY entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
 
 # ── create a non-root user ────────────────────────────────────
