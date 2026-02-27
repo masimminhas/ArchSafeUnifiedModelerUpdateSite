@@ -43,6 +43,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     # noVNC web-based VNC client
     novnc \
     websockify \\
+    websockify \\
      \
     # SWT / GTK dependencies
     libgtk-3-0 \
