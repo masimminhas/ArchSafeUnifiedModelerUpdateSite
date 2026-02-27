@@ -39,7 +39,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     xvfb \
     x11vnc \
     xterm \
-    openbox \
+    fluxbox \
     # noVNC web-based VNC client
     novnc \
     websockify \
@@ -57,9 +57,9 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 # ── copy built RCP product from builder stage ─────────────────
 COPY --from=builder \
     /build/releng/edu.kit.sdq.dsis.product/target/products/edu.kit.sdq.dsis.product/linux/gtk/x86_64/ \
-    /opt/ArchSafeUnifiedModeler/
+    /opt/archsafe/ArchSafeUnifiedModeler/
 
-RUN chmod +x /opt/ArchSafeUnifiedModeler/ArchSafeUnifiedModeler
+RUN chmod +x /opt/archsafe/ArchSafeUnifiedModeler/ArchSafeUnifiedModeler
 
 # ── supervisord configuration ─────────────────────────────────
 COPY docker/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
