@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title> ArchSafeUnified Modeling Workbench</title>
+  <title>ArchSafe Unified Modeling Workbench</title>
   <style>
     :root {
       --blue:       #1F4E79;
@@ -64,6 +64,33 @@
       font-weight: 500;
     }
 
+    /* ── Update site URL bar ── */
+    .url-bar {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      background: rgba(255,255,255,0.12);
+      border: 1px solid rgba(255,255,255,0.28);
+      border-radius: 8px;
+      padding: 10px 18px;
+      margin-top: 24px;
+      font-family: 'Consolas', monospace;
+      font-size: 0.88rem;
+      word-break: break-all;
+    }
+    .url-bar button {
+      background: rgba(255,255,255,0.22);
+      border: none;
+      border-radius: 6px;
+      color: #fff;
+      cursor: pointer;
+      padding: 4px 12px;
+      font-size: 0.78rem;
+      white-space: nowrap;
+      transition: background 0.2s;
+    }
+    .url-bar button:hover { background: rgba(255,255,255,0.38); }
+
     /* ── Main layout ── */
     main { max-width: 1040px; margin: 0 auto; padding: 60px 24px; }
 
@@ -101,13 +128,13 @@
       flex-shrink: 0;
     }
     .card-header h2 { font-size: 1.1rem; font-weight: 700; color: var(--white); }
-    .card-header .sub { font-size: 12px; opacity: 0.85; }
-    .card.update  .card-header { background: var(--mid-blue); }
+    .card-header .sub { font-size: 12px; opacity: 0.85; color: var(--white); }
+    .card.update     .card-header { background: var(--mid-blue); }
     .card.standalone .card-header { background: var(--green); }
-    .card.docker  .card-header { background: var(--purple); }
-    .card.update  .card-header .num { color: var(--mid-blue); }
+    .card.docker     .card-header { background: var(--purple); }
+    .card.update     .card-header .num { color: var(--mid-blue); }
     .card.standalone .card-header .num { color: var(--green); }
-    .card.docker  .card-header .num { color: var(--purple); }
+    .card.docker     .card-header .num { color: var(--purple); }
     .card-body { padding: 20px 24px; }
     .card-body ol { padding-left: 20px; }
     .card-body li { margin-bottom: 10px; line-height: 1.5; }
@@ -141,7 +168,25 @@
     }
     pre .comment { color: #78909C; }
     pre .cmd     { color: #80CBC4; }
+    pre .flag    { color: #FFAB70; }
     pre .url     { color: #FFD54F; }
+    pre .value   { color: #A5D6FF; }
+
+    /* ── Copy button inside pre ── */
+    .pre-wrap { position: relative; }
+    .copy-btn {
+      position: absolute;
+      top: 8px; right: 8px;
+      background: rgba(255,255,255,0.12);
+      border: 1px solid rgba(255,255,255,0.2);
+      border-radius: 5px;
+      color: #ccc;
+      cursor: pointer;
+      font-size: 11px;
+      padding: 3px 9px;
+      transition: background 0.2s;
+    }
+    .copy-btn:hover { background: rgba(255,255,255,0.25); color: #fff; }
 
     /* ── Download buttons ── */
     .dl-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin:14px 0; }
@@ -155,7 +200,7 @@
       font-size: 13px;
       font-weight: 600;
       border: 2px solid;
-      transition: background .15s;
+      transition: background .15s, color .15s;
     }
     .dl-btn.win  { border-color:#0078D4; color:#0078D4; }
     .dl-btn.lin  { border-color:#E65100; color:#E65100; }
@@ -188,13 +233,22 @@
       border-top: 1px solid #E0E0E0;
     }
     footer a { color: var(--mid-blue); text-decoration: none; }
+    footer a:hover { text-decoration: underline; }
+
+    /* ── Responsive ── */
+    @media (max-width: 640px) {
+      header { padding: 40px 20px 36px; }
+      header h1 { font-size: 1.9rem; }
+      main { padding: 36px 16px; }
+      .dl-grid { grid-template-columns: 1fr; }
+    }
   </style>
 </head>
 <body>
 
 <header>
-  <div class="kit-label">A Model driven framework for codesign of architecture and safety</div>
-  <h1>ArchSafeUnified Modeling Tool</h1>
+  <div class="kit-label">A Model-Driven Framework for Co-Design of Architecture and Safety</div>
+  <h1>ArchSafe Unified Modeling Tool</h1>
   <p>
     ISO 26262 functional safety modeling for Eclipse —
     Architecture, FMEA, Requirements, Hazard Analysis,
@@ -206,6 +260,10 @@
     <span class="badge">ISO 26262</span>
     <span class="badge">EPL-2.0</span>
     <span class="badge">Java 17</span>
+  </div>
+  <div class="url-bar">
+    <span id="p2url">https://masimminhas.github.io/ArchSafeUnifiedModelerUpdateSite/</span>
+    <button onclick="copyP2()">Copy URL</button>
   </div>
 </header>
 
@@ -228,11 +286,14 @@
         <ol>
           <li>Open <strong>Eclipse Modeling Tools 2024-03</strong> or later</li>
           <li>Go to <strong>Help → Install New Software → Add…</strong></li>
-          <li>Enter this URL:</li>
+          <li>Enter this URL in the <em>Location</em> field:</li>
         </ol>
-        <pre><span class="url">https://github.com/masimminhas/ArchSafeUnifiedModelerUpdateSite</span></pre>
+        <div class="pre-wrap">
+          <pre><span class="url">https://masimminhas.github.io/ArchSafeUnifiedModelerUpdateSite/</span></pre>
+          <button class="copy-btn" onclick="copyText('https://masimminhas.github.io/ArchSafeUnifiedModelerUpdateSite/', this)">Copy</button>
+        </div>
         <ol start="4">
-          <li>Select <strong>ArchSafeUnified Modeling Workbench</strong></li>
+          <li>Select <strong>ArchSafe Unified Modeling Workbench</strong></li>
           <li>Click <strong>Next → Next → Finish</strong></li>
           <li>Restart Eclipse when prompted</li>
         </ol>
@@ -258,28 +319,28 @@
         </ol>
         <div class="dl-grid">
           <a class="dl-btn win"
-             href="https://github.com/masimminhas/ArchSafeUnifiedModelerUpdateSite/releases/latest/download/dsis-unified-win32.win32.x86_64.zip">
+             href="https://github.com/masimminhas/ArchSafeUnifiedModelerUpdateSite/releases/latest">
             🪟 Windows x64
           </a>
           <a class="dl-btn lin"
-             href="https://github.com/masimminhas/ArchSafeUnifiedModelerUpdateSite/releases/latest/download/dsis-unified-linux.gtk.x86_64.tar.gz">
+             href="https://github.com/masimminhas/ArchSafeUnifiedModelerUpdateSite/releases/latest">
             🐧 Linux x64
           </a>
           <a class="dl-btn mac"
-             href="https://github.com/masimminhas/ArchSafeUnifiedModelerUpdateSite/releases/latest/download/dsis-unified-macosx.cocoa.x86_64.tar.gz">
+             href="https://github.com/masimminhas/ArchSafeUnifiedModelerUpdateSite/releases/latest">
             🍎 macOS Intel
           </a>
           <a class="dl-btn maca"
-             href="https://github.com/masimminhas/ArchSafeUnifiedModelerUpdateSite/releases/latest/download/dsis-unified-macosx.cocoa.aarch64.tar.gz">
+             href="https://github.com/masimminhas/ArchSafeUnifiedModelerUpdateSite/releases/latest">
             🍎 macOS Apple Silicon
           </a>
         </div>
         <ol start="2">
-          <li>Unzip the archive</li>
-          <li>Run <code>dsis-unified</code> (or <code>dsis-unified.exe</code> on Windows)</li>
+          <li>Unzip / extract the archive</li>
+          <li>Run <code>ArchSafeUnifiedModeler</code> (or <code>.exe</code> on Windows)</li>
         </ol>
         <div class="note">
-          ✓ Includes OpenJDK 17 — no Java installation required.
+          ✓ Includes OpenJDK 17 — no separate Java installation required.
           An example model opens automatically on first launch.
         </div>
       </div>
@@ -298,17 +359,22 @@
         <ol>
           <li>Run one command:</li>
         </ol>
-        <pre><span class="cmd">docker run</span> -p 6080:6080 \
-  <span class="url">ghcr.io/masimminhas/ArchSafeUnifiedModelerUpdateSite:latest</span></pre>
+        <div class="pre-wrap">
+          <pre><span class="cmd">docker</span> run <span class="flag">-d</span> \
+  <span class="flag">-p</span> <span class="value">6080:6080</span> <span class="flag">-p</span> <span class="value">5900:5900</span> \
+  <span class="flag">--name</span> <span class="value">archsafe-modeler</span> \
+  <span class="url">ghcr.io/masimminhas/archsafeunifiedmodeler:latest</span></pre>
+          <button class="copy-btn" onclick="copyText('docker run -d -p 6080:6080 -p 5900:5900 --name archsafe-modeler ghcr.io/masimminhas/archsafeunifiedmodeler:latest', this)">Copy</button>
+        </div>
         <ol start="2">
-          <li>Open <code>http://localhost:6080</code> in your browser</li>
-          <li>Password: <code>dsis2024</code></li>
-          <li>The example model is already open and ready</li>
+          <li>Open <code>http://localhost:6080/vnc.html</code> in your browser</li>
+          <li>Password: <code>archsafe</code></li>
+          <li>The tool launches automatically — ready to use</li>
         </ol>
         <div class="note">
-          ✓ Best option for paper reviewers — nothing to install.
+          ✓ Best option for reviewers — nothing to install locally.
           Uses noVNC: runs entirely in your web browser.
-          Requires Docker Desktop (free).
+          Requires <a href="https://www.docker.com/products/docker-desktop/" target="_blank">Docker Desktop</a> (free).
         </div>
       </div>
     </div>
@@ -329,25 +395,39 @@
     <div class="diag-chip">FMEA Table</div>
   </div>
 
-  <!-- ── Links ── -->
+  <!-- ── Resources ── -->
   <div class="section-title">Resources</div>
   <p style="line-height:2">
-    <a href="https://github.com/masimminhas/ArchSafeUnifiedModelerUpdateSite">GitHub Repository</a> ·
-    <a href="https://github.com/masimminhas/ArchSafeUnifiedModelerUpdateSite/releases">All Releases</a> ·
-    <a href="https://github.com/masimminhas/ArchSafeUnifiedModelerUpdateSite/issues">Issue Tracker</a> ·
-    <a href="https://github.com/masimminhas/ArchSafeUnifiedModelerUpdateSite/blob/main/LICENSE">License (EPL-2.0)</a>
+    <a href="https://github.com/masimminhas/ArchSafeUnifiedModelerUpdateSite" target="_blank">GitHub Repository</a> ·
+    <a href="https://github.com/masimminhas/ArchSafeUnifiedModelerUpdateSite/releases" target="_blank">All Releases</a> ·
+    <a href="https://github.com/masimminhas/ArchSafeUnifiedModelerUpdateSite/issues" target="_blank">Issue Tracker</a> ·
+    <a href="https://github.com/masimminhas/ArchSafeUnifiedModelerUpdateSite/blob/main/LICENSE" target="_blank">License (EPL-2.0)</a>
   </p>
 
 </main>
 
 <footer>
   <p>
-    ArchSafeUnified Modeling Workbench ·
-    <a href="https://sdq.kastel.kit.edu">Software Design and Quality Group</a> ·
-    ArchSafeUnified Project ·
-    Licensed under <a href="https://www.eclipse.org/legal/epl-2.0/">EPL-2.0</a>
+    ArchSafe Unified Modeling Workbench ·
+    <a href="https://sdq.kastel.kit.edu" target="_blank">Software Design and Quality Group</a> ·
+    ArchSafe Project ·
+    Licensed under <a href="https://www.eclipse.org/legal/epl-2.0/" target="_blank">EPL-2.0</a>
   </p>
 </footer>
+
+<script>
+  function copyText(text, btn) {
+    navigator.clipboard.writeText(text).then(() => {
+      const orig = btn.textContent;
+      btn.textContent = 'Copied!';
+      setTimeout(() => btn.textContent = orig, 2000);
+    });
+  }
+  function copyP2() {
+    copyText(document.getElementById('p2url').textContent.trim(),
+             document.querySelector('.url-bar button'));
+  }
+</script>
 
 </body>
 </html>
