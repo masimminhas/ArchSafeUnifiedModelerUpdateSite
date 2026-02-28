@@ -106,18 +106,18 @@ jobs:
   # ────────────────────────────────────────────────────────────────────────────
   # JOB 2 – Publish Update Site to GitHub Pages
   # ────────────────────────────────────────────────────────────────────────────
-pages:
+  pages:                                                        # ← 2 spaces ✅
     name: Publish Update Site to GitHub Pages
     runs-on: ubuntu-latest
     needs: build
     if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
     permissions:
       contents: read
-      pages:    write
+      pages: write
       id-token: write
     environment:
       name: github-pages
-      url:  ${{ steps.deployment.outputs.page_url }}
+      url: ${{ steps.deployment.outputs.page_url }}
 
     steps:
       - name: Checkout
