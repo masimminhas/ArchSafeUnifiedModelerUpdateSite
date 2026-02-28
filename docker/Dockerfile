@@ -55,6 +55,9 @@ COPY --from=builder \
 
 RUN chmod +x /opt/archsafe/ArchSafeUnifiedModeler
 
+# ── Copy case study models into the default workspace ──────────────────────────
+COPY casestudies/ /home/archsafe/workspace/
+
 # Copy supervisord config and entrypoint
 COPY docker/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 COPY entrypoint.sh /entrypoint.sh
