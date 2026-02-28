@@ -41,6 +41,8 @@ RUN apt-get update -qq \
       x11vnc \
       xfce4 xfce4-terminal \
       wget \
+      git \
+      python3-websockify \
  && wget -qO- https://github.com/novnc/noVNC/archive/refs/tags/v1.4.0.tar.gz \
     | tar -xzC /opt && mv /opt/noVNC-1.4.0 /opt/novnc \
  && ln -s /opt/novnc/vnc.html /opt/novnc/index.html \
