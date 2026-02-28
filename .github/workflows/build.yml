@@ -1,10 +1,10 @@
 # ──────────────────────────────────────────────────────────────────────────────
 # GitHub Actions – ArchSafe Unified Modeler CI/CD
 #
-# Outputs
-#   1. Maven Update Site  →  releng/edu.kit.sdq.dsis.updatesite/target/repository/
-#   2. Eclipse RCP ZIPs   →  releng/edu.kit.sdq.dsis.product/target/products/*.zip
-#   3. Docker image       →  ghcr.io/<owner>/archsafeunifiedmodeler:<tag>
+# Outputs:
+#   1. Maven Update Site  → GitHub Pages (p2 repository)
+#   2. Eclipse RCP ZIPs   → GitHub Release assets
+#   3. Docker image       → ghcr.io/masimminhas/archsafeunifiedmodeler:<tag>
 # ──────────────────────────────────────────────────────────────────────────────
 name: Build & Release
 
@@ -17,10 +17,13 @@ on:
   workflow_dispatch:
 
 env:
-  REGISTRY: ghcr.io
+  REGISTRY:   ghcr.io
   IMAGE_NAME: ${{ github.repository_owner }}/archsafeunifiedmodeler
 
 jobs:
+
+  # ────────────────────────────────────────────────────────────────────────────
+  # JOB 1 – Maven / Tycho Build → Update Site + RCP Products
   # ────────────────────────────────────────────────────────────────────────────
   build:
     name: Maven / Tycho Build
@@ -31,7 +34,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0            # full history for version qualifiers
+          fetch-depth: 0
 
       - name: Set up JDK 17
         uses: actions/setup-java@v4
@@ -40,8 +43,8 @@ jobs:
           java-version: 17
           cache: maven
 
-      - name: Install virtual framebuffer (Xvfb)
-        run: sudo apt-get install -y xvfb
+      - name: Install Xvfb
+        run: sudo apt-get install -y --no-install-recommends xvfb libgtk-3-0
 
       - name: Cache Maven / p2 artefacts
         uses: actions/cache@v4
@@ -50,8 +53,7 @@ jobs:
             ~/.m2/repository
             ~/.m2/.cache
           key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml', '**/*.target') }}
-          restore-keys: |
-            ${{ runner.os }}-m2-
+          restore-keys: ${{ runner.os }}-m2-
 
       - name: Build (Update Site + RCP Products)
         run: |
@@ -61,49 +63,89 @@ jobs:
               -Dmaven.test.skip=true \
               -Dqualifier=$(date +%Y%m%d%H%M%S)
 
-      # ── Upload Update Site ──────────────────────────────────────────────────
       - name: Upload Update Site artifact
         uses: actions/upload-artifact@v4
         with:
           name: update-site
           path: releng/edu.kit.sdq.dsis.updatesite/target/repository/
           retention-days: 90
+          if-no-files-found: error
 
-      # ── Upload RCP ZIPs (all platforms) ────────────────────────────────────
       - name: Upload RCP – Linux
         uses: actions/upload-artifact@v4
         with:
           name: rcp-linux-gtk-x86_64
-          path: releng/edu.kit.sdq.dsis.product/target/products/ArchSafeUnifiedModeler*linux*.zip
+          path: releng/edu.kit.sdq.dsis.product/target/products/*linux.gtk.x86_64.tar.gz
           retention-days: 90
+          if-no-files-found: warn
 
       - name: Upload RCP – Windows
         uses: actions/upload-artifact@v4
         with:
           name: rcp-win32-x86_64
-          path: releng/edu.kit.sdq.dsis.product/target/products/ArchSafeUnifiedModeler*win32*.zip
+          path: releng/edu.kit.sdq.dsis.product/target/products/*win32.win32.x86_64.zip
           retention-days: 90
+          if-no-files-found: warn
 
       - name: Upload RCP – macOS x86_64
         uses: actions/upload-artifact@v4
         with:
           name: rcp-macos-x86_64
-          path: releng/edu.kit.sdq.dsis.product/target/products/ArchSafeUnifiedModeler*macosx*x86_64*.zip
+          path: releng/edu.kit.sdq.dsis.product/target/products/*macosx.cocoa.x86_64.tar.gz
           retention-days: 90
+          if-no-files-found: warn
 
       - name: Upload RCP – macOS Apple Silicon
         uses: actions/upload-artifact@v4
         with:
           name: rcp-macos-aarch64
-          path: releng/edu.kit.sdq.dsis.product/target/products/ArchSafeUnifiedModeler*macosx*aarch64*.zip
+          path: releng/edu.kit.sdq.dsis.product/target/products/*macosx.cocoa.aarch64.tar.gz
           retention-days: 90
+          if-no-files-found: warn
 
+  # ────────────────────────────────────────────────────────────────────────────
+  # JOB 2 – Publish Update Site to GitHub Pages
+  # ────────────────────────────────────────────────────────────────────────────
+  pages:
+    name: Publish Update Site to GitHub Pages
+    runs-on: ubuntu-latest
+    needs: build
+    if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+    permissions:
+      contents: read
+      pages:    write
+      id-token: write
+    environment:
+      name: github-pages
+      url:  ${{ steps.deployment.outputs.page_url }}
+
+    steps:
+      - name: Download Update Site artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: update-site
+          path: ./update-site
+
+      - name: Setup GitHub Pages
+        uses: actions/configure-pages@v4
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: ./update-site
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
+
+  # ────────────────────────────────────────────────────────────────────────────
+  # JOB 3 – Docker Build & Push
   # ────────────────────────────────────────────────────────────────────────────
   docker:
     name: Docker Build & Push
     runs-on: ubuntu-latest
-    timeout-minutes: 90
     needs: build
+    timeout-minutes: 90
     permissions:
       contents: read
       packages: write
@@ -149,6 +191,8 @@ jobs:
           platforms:  linux/amd64
 
   # ────────────────────────────────────────────────────────────────────────────
+  # JOB 4 – GitHub Release (only on v*.*.* tags)
+  # ────────────────────────────────────────────────────────────────────────────
   release:
     name: GitHub Release
     runs-on: ubuntu-latest
@@ -163,17 +207,45 @@ jobs:
         with:
           path: dist/
 
-      - name: List artefacts
-        run: find dist/ -type f
+      - name: Zip Update Site
+        run: |
+          cd dist
+          zip -r ArchSafeUnifiedModeler-UpdateSite-${{ github.ref_name }}.zip update-site/
+          rm -rf update-site/
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
+          name: "ArchSafe Unified Modeler ${{ github.ref_name }}"
           generate_release_notes: true
-          files: |
-            dist/rcp-linux-gtk-x86_64/*.zip
-            dist/rcp-win32-x86_64/*.zip
-            dist/rcp-macos-x86_64/*.zip
-            dist/rcp-macos-aarch64/*.zip
+          draft: false
+          prerelease: ${{ contains(github.ref_name, '-') }}
+          body: |
+            ## ArchSafe Unified Modeler ${{ github.ref_name }}
+
+            ### Downloads
+            | Platform | File |
+            |---|---|
+            | 🐧 Linux (x86_64) | `*linux.gtk.x86_64.tar.gz` |
+            | 🪟 Windows (x86_64) | `*win32.win32.x86_64.zip` |
+            | 🍎 macOS (Intel) | `*macosx.cocoa.x86_64.tar.gz` |
+            | 🍎 macOS (Apple Silicon) | `*macosx.cocoa.aarch64.tar.gz` |
+            | 📦 Update Site (p2) | `ArchSafeUnifiedModeler-UpdateSite-${{ github.ref_name }}.zip` |
+
+            ### Docker
+            ```bash
+            docker pull ghcr.io/masimminhas/archsafeunifiedmodeler:${{ github.ref_name }}
+            docker run -d -p 6080:6080 -p 5900:5900 \
+              ghcr.io/masimminhas/archsafeunifiedmodeler:${{ github.ref_name }}
+            ```
+            Open **http://localhost:6080/vnc.html** (password: `archsafe`)
+
+            ### Update Site (Eclipse)
+            `https://masimminhas.github.io/ArchSafeUnifiedModelerUpdateSite/`
+
+            ---
+            *Built from commit `${{ github.sha }}`*
+          files: dist/**
+          fail_on_unmatched_files: false
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
