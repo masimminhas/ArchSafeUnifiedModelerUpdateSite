@@ -7,8 +7,8 @@ pre-loaded into the workspace when running the Docker image.
 
 | Project | Description |
 |---------|-------------|
-| `automotive-brake-system/` | ISO 26262 safety analysis of an automotive brake system |
-| `autonomous-driving/` | Architecture and FMEA for an autonomous driving system |
+| `automotive-brake-system/` | ISO 26262 safety analysis of an automotive emergency brake system |
+| `autonomous-driving/` | ISO 26262 safety and architectural modeling of medical infusion pump|
 
 ## How to Use
 
