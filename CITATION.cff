@@ -1,0 +1,60 @@
+# This CITATION.cff file allows ArchSafe Unified Modeler to be cited in academic work.
+# GitHub renders a "Cite this repository" button from this file.
+# Schema: https://citation-file-format.github.io/
+
+cff-version: 1.2.0
+message: "If you use ArchSafe Unified Modeler in academic work, please cite it using the metadata below."
+title: "ArchSafe Unified Modeler"
+abstract: >-
+  ArchSafe Unified Modeler is a Sirius-based Eclipse modeling workbench
+  for safety-critical systems engineering. It defines a unified metamodel
+  that combines SysML block-definition semantics with RAAML / ISO 26262
+  safety concepts (ASIL levels, hazards, safety goals, functional and
+  technical safety requirements, safety mechanisms, FMEA). The workbench
+  provides nine integrated representations — architecture, safety, FMEA
+  diagram and table, requirements, traceability, metrics dashboard, and
+  an interactive failure-propagation simulation — together with 45
+  semantic validation rules aligned to ISO 26262 clauses. Two reference
+  case studies are included: an automotive Autonomous Emergency Braking
+  (AEB) system and a medical infusion pump.
+type: software
+version: "1.0.0"
+date-released: "2026-04-21"
+license: EPL-2.0
+repository-code: "https://github.com/masimminhas/ArchSafeUnifiedModelerUpdateSite"
+url: "https://masimminhas.github.io/ArchSafeUnifiedModelerUpdateSite/"
+keywords:
+  - model-based-systems-engineering
+  - MBSE
+  - safety-engineering
+  - ISO-26262
+  - SysML
+  - RAAML
+  - FMEA
+  - failure-propagation
+  - Eclipse-Sirius
+  - EMF
+  - functional-safety
+  - safety-critical-systems
+authors:
+  - family-names: "Minhas"
+    given-names: "Muhammad Asim"
+    email: "masimminhas@gmail.com"
+    affiliation: "KIT – Karlsruhe Institute of Technology, Software Design and Quality Group (SDQ)"
+
+# When the companion paper is published, uncomment and complete the block below.
+# GitHub's "Cite this repository" button will then surface the paper citation
+# alongside the software citation.
+#
+# preferred-citation:
+#   type: conference-paper   # or: article, proceedings-paper
+#   title: "ArchSafe Unified Modeler: An Integrated Workbench for Architecture, Safety, and Failure-Propagation Analysis of Safety-Critical Systems"
+#   authors:
+#     - family-names: "Minhas"
+#       given-names: "Muhammad Asim"
+#       affiliation: "KIT – Karlsruhe Institute of Technology, SDQ Group"
+#   year: 2026
+#   conference:
+#     name: "ACM/IEEE International Conference on Model Driven Engineering Languages and Systems (MODELS)"
+#   # doi: "10.xxxx/xxxxxx"
+#   # url: "https://doi.org/10.xxxx/xxxxxx"
