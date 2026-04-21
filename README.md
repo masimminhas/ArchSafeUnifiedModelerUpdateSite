@@ -9,6 +9,7 @@
 - 📐 **[Metamodel reference (PDF)](docs/unifiedmetamodel.pdf)** — full class diagram of the unified metamodel
 - ✅ **[Validation rules catalogue](rules.md)** — 45 semantic rules with ISO 26262 citations
 - 🧪 **[Case studies](casestudies/README.md)** — AEB (ISO 26262) and medical infusion pump (IEC 62304)
+- ⚖️ **[Tool evaluation](docs/EVALUATION.md)** — positioning vs. Capella, Papyrus-SysML, CHESS, EAST-ADL, Medini Analyze
 
 ## Project Structure
 

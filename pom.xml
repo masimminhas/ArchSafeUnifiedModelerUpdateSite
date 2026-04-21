@@ -26,6 +26,7 @@
     <module>edu.kit.sdq.dsis.metamodel.unified.edit</module>
     <module>edu.kit.sdq.dsis.metamodel.unified.editor</module>
     <module>edu.kit.sdq.dsis.metamodel.unified.design</module>
+    <module>edu.kit.sdq.dsis.metamodel.unified.tests</module>
 	<module>edu.kit.sdq.dsis.metamodel.unified.feature</module>
 	<module>edu.kit.sdq.dsis.metamodel.unified.edit.feature</module>
 	<module>edu.kit.sdq.dsis.metamodel.unified.editor.feature</module>  

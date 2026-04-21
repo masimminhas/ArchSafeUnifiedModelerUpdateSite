@@ -1,0 +1,15 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: ArchSafe Unified Modeler Tests
+Bundle-SymbolicName: edu.kit.sdq.dsis.metamodel.unified.tests
+Bundle-Version: 1.0.0.qualifier
+Bundle-Vendor: KIT – Software Design and Quality (SDQ)
+Bundle-RequiredExecutionEnvironment: JavaSE-17
+Automatic-Module-Name: edu.kit.sdq.dsis.metamodel.unified.tests
+Fragment-Host: edu.kit.sdq.dsis.metamodel.unified.design
+Require-Bundle: edu.kit.sdq.dsis.metamodel.unified,
+ org.eclipse.emf.ecore,
+ org.eclipse.emf.ecore.xmi,
+ org.eclipse.core.runtime,
+ org.junit;bundle-version="4.13.0"
+Bundle-ActivationPolicy: lazy
