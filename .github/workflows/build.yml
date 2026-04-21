@@ -129,8 +129,10 @@ jobs:
           name: update-site
           path: ./update-site
 
-      - name: Copy landing page from docs/
-        run: cp docs/index.html ./update-site/index.html
+      - name: Copy landing page and docs/ assets into Pages site
+        # Ships everything under docs/ (index.html, PDFs, images, ...) alongside
+        # the P2 update site so links in index.html resolve on GitHub Pages.
+        run: cp -R docs/. ./update-site/
 
       - name: Setup GitHub Pages
         uses: actions/configure-pages@v4
