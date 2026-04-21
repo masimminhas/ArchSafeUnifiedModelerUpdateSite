@@ -55,13 +55,21 @@ jobs:
           key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml', '**/*.target') }}
           restore-keys: ${{ runner.os }}-m2-
 
-      - name: Build (Update Site + RCP Products)
+      - name: Build (Update Site + RCP Products + Tests)
         run: |
           xvfb-run --auto-servernum --server-args="-screen 0 1024x768x24" \
             mvn -B -ntp clean verify \
               -Dtycho.disableP2Mirrors=false \
-              -Dmaven.test.skip=true \
               -Dqualifier=$(date +%Y%m%d%H%M%S)
+
+      - name: Upload test reports (on failure)
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: surefire-reports
+          path: "**/target/surefire-reports/"
+          retention-days: 14
+          if-no-files-found: ignore
 
       - name: Upload Update Site artifact
         uses: actions/upload-artifact@v4
