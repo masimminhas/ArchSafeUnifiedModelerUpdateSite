@@ -3,6 +3,13 @@
 > **Metamodel:** `nsURI="http://edu.kit.sdq.dsis.metamodel/unified"`
 > **Source:** <https://github.com/masimminhas/ArchSafeUnifiedModelerUpdateSite>
 
+## Documentation
+
+- 📘 **[User Guide](docs/USER_GUIDE.md)** — installation, first model, every diagram, FMEA, failure-propagation simulation, validation, troubleshooting
+- 📐 **[Metamodel reference (PDF)](docs/unifiedmetamodel.pdf)** — full class diagram of the unified metamodel
+- ✅ **[Validation rules catalogue](rules.md)** — 45 semantic rules with ISO 26262 citations
+- 🧪 **[Case studies](casestudies/README.md)** — AEB (ISO 26262) and medical infusion pump (IEC 62304)
+
 ## Project Structure
 
 ```
