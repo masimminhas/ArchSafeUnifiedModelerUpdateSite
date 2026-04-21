@@ -87,3 +87,23 @@ cd docker && docker compose up
 ## Contributing
 
 Import all four plug-in projects plus the `releng/` modules into an Eclipse IDE with Tycho support.
+
+## Citation
+
+If you use ArchSafe Unified Modeler in academic work, please cite it using the metadata in [CITATION.cff](CITATION.cff) (GitHub renders a *"Cite this repository"* button from that file).
+
+```bibtex
+@software{minhas_archsafe_2026,
+  title   = {ArchSafe Unified Modeler},
+  author  = {Minhas, Muhammad Asim},
+  year    = {2026},
+  version = {1.0.0},
+  license = {EPL-2.0},
+  url     = {https://github.com/masimminhas/ArchSafeUnifiedModelerUpdateSite},
+  organization = {KIT – Karlsruhe Institute of Technology, Software Design and Quality Group}
+}
+```
+
+## License
+
+ArchSafe Unified Modeler is released under the **Eclipse Public License 2.0** — see [LICENSE](LICENSE) for the full text. Copyright © KIT – Karlsruhe Institute of Technology, SDQ Group.
