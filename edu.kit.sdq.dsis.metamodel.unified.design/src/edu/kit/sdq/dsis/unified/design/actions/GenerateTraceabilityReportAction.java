@@ -1,7 +1,11 @@
 package edu.kit.sdq.dsis.unified.design.actions;
 
-import java.io.FileWriter;
+import java.io.BufferedWriter;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
+import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -121,7 +125,8 @@ public class GenerateTraceabilityReportAction extends AbstractExternalJavaAction
         // Gap analysis
         List<String> gaps = buildGapList(model);
 
-        try (FileWriter w = new FileWriter(filePath)) {
+        try (Writer w = new BufferedWriter(new OutputStreamWriter(
+                new FileOutputStream(filePath), StandardCharsets.UTF_8))) {
             w.write(htmlHead());
             w.write("<body>\n");
 
@@ -748,13 +753,13 @@ public class GenerateTraceabilityReportAction extends AbstractExternalJavaAction
     // =========================================================================
     // HTML helpers
     // =========================================================================
-    private void statCard(FileWriter w, String val, String label, String cls) throws IOException {
+    private void statCard(Writer w, String val, String label, String cls) throws IOException {
         w.write("<div class='stat-card " + cls + "'>" +
                 "<div class='stat-value'>" + val + "</div>" +
                 "<div class='stat-label'>" + label + "</div></div>\n");
     }
 
-    private void metricCard(FileWriter w, String code, String name, String desc,
+    private void metricCard(Writer w, String code, String name, String desc,
                              int pct, String threshold, boolean pass) throws IOException {
         String colour = pass ? "#28a745" : pct >= 70 ? "#ffc107" : "#dc3545";
         String tick   = pass ? "✅" : "❌";
@@ -773,7 +778,7 @@ public class GenerateTraceabilityReportAction extends AbstractExternalJavaAction
                 "</div>\n");
     }
 
-    private void traceRow(FileWriter w, String srcType, String srcName, String rel,
+    private void traceRow(Writer w, String srcType, String srcName, String rel,
                            String tgtType, String tgtName, String info,
                            String srcCls, String tgtCls) throws IOException {
         w.write("<tr>" +

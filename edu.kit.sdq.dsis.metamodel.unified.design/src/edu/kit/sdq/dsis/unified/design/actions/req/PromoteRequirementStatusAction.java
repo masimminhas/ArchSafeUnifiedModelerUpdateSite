@@ -3,6 +3,9 @@ package edu.kit.sdq.dsis.unified.design.actions.req;
 import java.util.*;
 
 import org.eclipse.emf.ecore.EObject;
+import org.eclipse.emf.transaction.RecordingCommand;
+import org.eclipse.emf.transaction.TransactionalEditingDomain;
+import org.eclipse.emf.transaction.util.TransactionUtil;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.sirius.business.api.action.AbstractExternalJavaAction;
 import org.eclipse.sirius.business.api.session.Session;
@@ -16,14 +19,14 @@ import unified.*;
  * Batch-promotes safety requirement work products through the ISO 26262
  * approval lifecycle:
  *
- *   DRAFT  →  IN_REVIEW  →  APPROVED
+ *   DRAFT  →  UNDER_REVIEW  →  APPROVED
  *
  * The user selects a target status from a dialog. Only work products in the
  * immediately preceding status are promoted (e.g. selecting "Promote to
- * IN_REVIEW" only advances DRAFT items; it does not skip IN_REVIEW items to
- * APPROVED). Items already at the target status or beyond are not touched.
- * Items in REJECTED status are excluded from automatic promotion and listed
- * for manual rework.
+ * UNDER_REVIEW" only advances DRAFT items; it does not skip UNDER_REVIEW items
+ * to APPROVED). Items already at the target status or beyond are not touched.
+ * (The RequirementStatus enum has no REJECTED literal, so the rework branch is
+ * inert unless such a literal is added to the metamodel.)
  *
  * After promotion, a summary lists every promoted item with the ISO 26262
  * clause justifying the status change.
@@ -35,12 +38,14 @@ import unified.*;
  */
 public class PromoteRequirementStatusAction extends AbstractExternalJavaAction {
 
-    // Target status options shown to the user
-    private static final String[] TARGETS    = {"IN_REVIEW", "APPROVED"};
-    private static final String[] PREREQS    = {"DRAFT",     "IN_REVIEW"};   // predecessor status
+    // Target status options shown to the user.
+    // Values MUST match the RequirementStatus enum literals (DRAFT, UNDER_REVIEW,
+    // APPROVED, IMPLEMENTED, VERIFIED, DEPRECATED).
+    private static final String[] TARGETS    = {"UNDER_REVIEW", "APPROVED"};
+    private static final String[] PREREQS    = {"DRAFT",        "UNDER_REVIEW"};   // predecessor status
     private static final String[] LABELS     = {
-        "Promote DRAFT → IN_REVIEW\n(Send for confirmation review — ISO 26262-2:2018 §6.4.9)",
-        "Promote IN_REVIEW → APPROVED\n(Mark confirmation review complete — ISO 26262-2:2018 §6.4)"
+        "Promote DRAFT → UNDER_REVIEW\n(Send for confirmation review — ISO 26262-2:2018 §6.4.9)",
+        "Promote UNDER_REVIEW → APPROVED\n(Mark confirmation review complete — ISO 26262-2:2018 §6.4)"
     };
 
     @Override
@@ -78,39 +83,46 @@ public class PromoteRequirementStatusAction extends AbstractExternalJavaAction {
             ? Iso26262Reference.PART2_CONFIRMATION_REVIEW
             : Iso26262Reference.PART2_SAFETY_PLAN;
 
-        // ── Perform promotion ─────────────────────────────────────────────────
-        List<String> promoted  = new ArrayList<>();
-        List<String> skipped   = new ArrayList<>();
-        List<String> rejected  = new ArrayList<>();
+        // ── Perform promotion (model mutation must run in a write transaction) ──
+        final List<String> promoted  = new ArrayList<>();
+        final List<String> skipped   = new ArrayList<>();
+        final List<String> rejected  = new ArrayList<>();
+        final String prereq = prereqStatus;
+        final String target = targetStatus;
 
-        // Safety Goals
-        for (SafetyGoal sg : model.getSafetyGoals()) {
-            String label = "Safety Goal [" + sg.getRequirementId() + "] " + name(sg);
-            String result = tryPromote(sg, "status", prereqStatus, targetStatus);
-            categorise(result, label, promoted, skipped, rejected);
+        final UnifiedSystemModel m = model;
+        Runnable promotion = () -> {
+            for (SafetyGoal sg : m.getSafetyGoals()) {
+                categorise(tryPromote(sg, "status", prereq, target),
+                    "Safety Goal [" + sg.getRequirementId() + "] " + name(sg), promoted, skipped, rejected);
+            }
+            for (FunctionalSafetyRequirement fsr : m.getFunctionalRequirements()) {
+                categorise(tryPromote(fsr, "status", prereq, target),
+                    "FSR [" + fsr.getRequirementId() + "] " + name(fsr), promoted, skipped, rejected);
+            }
+            for (TechnicalSafetyRequirement tsr : m.getTechnicalRequirements()) {
+                categorise(tryPromote(tsr, "status", prereq, target),
+                    "TSR [" + tsr.getRequirementId() + "] " + name(tsr), promoted, skipped, rejected);
+            }
+        };
+
+        Session session = SessionManager.INSTANCE.getSession(model);
+        TransactionalEditingDomain domain = session != null
+            ? session.getTransactionalEditingDomain()
+            : TransactionUtil.getEditingDomain(model);
+
+        if (domain != null) {
+            domain.getCommandStack().execute(new RecordingCommand(domain, "Promote Requirement Status") {
+                @Override protected void doExecute() { promotion.run(); }
+            });
+        } else {
+            promotion.run(); // no transactional domain (e.g. standalone) — direct edit
         }
 
-        // Functional Safety Requirements
-        for (FunctionalSafetyRequirement fsr : model.getFunctionalRequirements()) {
-            String label = "FSR [" + fsr.getRequirementId() + "] " + name(fsr);
-            String result = tryPromote(fsr, "status", prereqStatus, targetStatus);
-            categorise(result, label, promoted, skipped, rejected);
-        }
-
-        // Technical Safety Requirements
-        for (TechnicalSafetyRequirement tsr : model.getTechnicalRequirements()) {
-            String label = "TSR [" + tsr.getRequirementId() + "] " + name(tsr);
-            String result = tryPromote(tsr, "status", prereqStatus, targetStatus);
-            categorise(result, label, promoted, skipped, rejected);
-        }
-
-        // Trigger Sirius session save if any changes were made
-        if (!promoted.isEmpty()) {
+        // Persist the change if anything was promoted
+        if (!promoted.isEmpty() && session != null) {
             try {
-                Session session = SessionManager.INSTANCE.getSession(model);
-                if (session != null) {
-                    session.save(new org.eclipse.core.runtime.NullProgressMonitor());
-                }
+                session.save(new org.eclipse.core.runtime.NullProgressMonitor());
             } catch (Exception ignored) { /* best effort */ }
         }
 

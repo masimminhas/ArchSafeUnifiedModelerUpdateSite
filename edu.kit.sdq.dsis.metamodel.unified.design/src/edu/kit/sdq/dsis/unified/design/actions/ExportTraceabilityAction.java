@@ -1,7 +1,11 @@
 package edu.kit.sdq.dsis.unified.design.actions;
 
-import java.io.FileWriter;
+import java.io.BufferedWriter;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
+import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import org.eclipse.emf.ecore.EObject;
@@ -57,7 +61,8 @@ public class ExportTraceabilityAction extends AbstractExternalJavaAction {
     }
 
     private void exportTraceabilityMatrix(UnifiedSystemModel model, String filePath) throws IOException {
-        FileWriter writer = new FileWriter(filePath);
+        try (Writer writer = new BufferedWriter(new OutputStreamWriter(
+                new FileOutputStream(filePath), StandardCharsets.UTF_8))) {
 
         writer.append("Source Type,Source ID,Source Name,Relationship,Target Type,Target ID,Target Name,Additional Info\n");
 
@@ -216,7 +221,7 @@ public class ExportTraceabilityAction extends AbstractExternalJavaAction {
                         "Block",
                         escapeCsv(from.getId()),
                         escapeCsv(from.getName()),
-                        conn.getConnectionType().toString(),
+                        conn.getConnectionType() != null ? conn.getConnectionType().toString() : "",
                         "Block",
                         escapeCsv(to.getId()),
                         escapeCsv(to.getName()),
@@ -227,7 +232,7 @@ public class ExportTraceabilityAction extends AbstractExternalJavaAction {
         }
 
         writer.flush();
-        writer.close();
+        }
     }
 
     private String escapeCsv(String value) {

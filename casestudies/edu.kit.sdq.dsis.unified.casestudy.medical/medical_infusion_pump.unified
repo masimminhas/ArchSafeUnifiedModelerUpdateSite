@@ -7,25 +7,30 @@
 
   <!-- ============================================================ -->
   <!-- ANALYSIS METADATA                                            -->
-  <!-- MCR=100  HTI=100  RAR=100  FLC=100  TDS=100  MVR=100       -->
-  <!-- HTI: 5/5 hazards linked to Safety Goals                     -->
-  <!-- RAR: 9/9 TSRs realizedBy a block                           -->
-  <!-- FLC: 6/6 FMEA items have failureMode                       -->
-  <!-- TDS: 9/9 TSRs verifiedBy a FMEA item                       -->
-  <!-- MVR: 7/7 mechanisms validatedBy a FMEA item                -->
+  <!-- This model includes an in-progress cybersecurity work-stream -->
+  <!-- (connected-pump remote-tampering hazard H6) that is NOT yet  -->
+  <!-- fully traced, so the model shows PARTIAL conformance:        -->
+  <!--   MCR=100 PASS   (all concept types present)                 -->
+  <!--   HTI= 83 GAP    (5/6 hazards linked to a Safety Goal)       -->
+  <!--   RAR= 90 GAP    (9/10 TSRs realizedBy a block)              -->
+  <!--   FLC= 86 GAP    (6/7 FMEA items have a failureMode)         -->
+  <!--   TDS=100 PASS   (over-linked; capped at 1.0)                -->
+  <!--   MVR=100 PASS   (7/7 mechanisms validatedBy a FMEA item)    -->
+  <!-- Values are recomputed live by MetricsService; the fields     -->
+  <!-- below are a snapshot refreshed by "Refresh All Metrics".     -->
   <!-- ============================================================ -->
   <analysisMetadata
       lastAnalysisDate="2025-01-20T00:00:00.000+0100"
-      completenessScore="100"
-      consistencyScore="95"
-      hazardCoverage="1.0"
-      fmeaCoverage="1.0"
+      completenessScore="97"
+      consistencyScore="60"
+      hazardCoverage="0.83"
+      fmeaCoverage="0.86"
       traceabilityDensity="1.0"
       cyclomaticComplexity="10"
       mcr="100"
-      hti="100"
-      rar="100"
-      flc="100"
+      hti="83"
+      rar="90"
+      flc="86"
       tds="100"
       mvr="100"/>
 
@@ -228,8 +233,18 @@
       severityJustification="A 10x dose error is feasible and rapidly fatal for concentrated medications"
       relatedBlocks="scb_drug_library scb_main_ctrl"/>
 
+  <!-- H6: newly identified (FDA premarket cybersecurity). NOT yet addressed by a    -->
+  <!-- Safety Goal and NOT_MITIGATED -> drives the HTI gap and a validation warning. -->
+  <globalHazards xmi:id="haz_cyber" name="H6: Unauthorized Remote Dose Modification"
+      description="A network-connected attacker modifies infusion parameters or drug library limits without authorization (FDA premarket cybersecurity concern)"
+      riskLevel="CATASTROPHIC"
+      hazardCategory="ERRONEOUS_OUTPUT"
+      mitigationStatus="NOT_MITIGATED"
+      severityJustification="Remote dose tampering could cause overdose across many networked pumps simultaneously"
+      relatedBlocks="scb_drug_library scb_main_ctrl"/>
+
   <!-- ============================================================ -->
-  <!-- SAFETY GOALS  (5/5 hazards covered — HTI=100%)             -->
+  <!-- SAFETY GOALS  (5/6 hazards covered — H6 pending — HTI=83%) -->
   <!-- ============================================================ -->
 
   <safetyGoals xmi:id="sg_od" name="SG1: Prevent Medication Overdose"
@@ -450,6 +465,17 @@
       realizedBy="scb_alarm_system scb_main_ctrl"
       verifiedBy="fmea_med5"/>
 
+  <!-- TSR10: draft mitigation for H6. NOT yet allocated to a block (no realizedBy) -->
+  <!-- and still DRAFT -> drives the RAR gap. -->
+  <technicalRequirements xmi:id="tsr_cyber_auth" name="TSR10: Remote Command Authentication"
+      requirementId="TSR-PUMP-010"
+      requirementText="All remote configuration and drug-library update commands shall be cryptographically signed and rejected if signature verification fails"
+      status="DRAFT"
+      verificationMethod="ANALYSIS"
+      technicalCategory="SOFTWARE_REQUIREMENT"
+      allocatedASIL="ASIL_D"
+      rationale="Newly derived from H6; cybersecurity mitigation not yet allocated to an architecture block"/>
+
   <!-- ============================================================ -->
   <!-- FMEA ANALYSIS                                                -->
   <!-- All 6 items: failureMode + actionStatus +                   -->
@@ -540,6 +566,20 @@
         relatedHazards="haz_overdose haz_underdose"
         responsiblePerson="Sensor SW Team"
         dueDate="2025-09-30T00:00:00.000+0200"/>
+
+    <!-- Cybersecurity FMEA started for H6 but the corresponding block-level -->
+    <!-- failure mode has not been modeled yet (no failureMode) -> FLC gap. -->
+    <fmeaItems xmi:id="fmea_med7" name="Remote Tampering FMEA"
+        description="Analysis of unauthorized remote modification of infusion parameters or drug-library limits"
+        severity="10" occurrence="2" detection="6"
+        localEffect="Infusion parameters or library limits altered without authorization"
+        systemEffect="Clinically unsafe dose delivered without clinician awareness; potential overdose"
+        recommendedAction="Authenticate all remote commands; add intrusion detection; audit-log all configuration changes"
+        actionStatus="OPEN"
+        analyzedComponent="scb_drug_library"
+        relatedHazards="haz_cyber"
+        responsiblePerson="Product Security Team"
+        dueDate="2026-06-30T00:00:00.000+0200"/>
 
   </fmeaAnalysis>
 

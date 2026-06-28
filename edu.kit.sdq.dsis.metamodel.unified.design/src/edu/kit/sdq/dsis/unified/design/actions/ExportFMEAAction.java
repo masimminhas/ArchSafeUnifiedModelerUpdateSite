@@ -1,8 +1,10 @@
 package edu.kit.sdq.dsis.unified.design.actions;
 
 import java.io.BufferedWriter;
-import java.io.FileWriter;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.nio.charset.StandardCharsets;
 import java.util.Collection;
 import java.util.Map;
 
@@ -78,7 +80,8 @@ public class ExportFMEAAction implements IExternalJavaAction {
     }
     
     private void exportFMEAToCSV(FMEAAnalysis analysis, String filepath) throws IOException {
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(filepath))) {
+        try (BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(
+                new FileOutputStream(filepath), StandardCharsets.UTF_8))) {
             
             // Header Information
             writer.write("=== FMEA ANALYSIS REPORT ===\n");

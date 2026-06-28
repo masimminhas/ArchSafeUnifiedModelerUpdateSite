@@ -60,8 +60,8 @@ public class CheckArchitectureConsistencyAction extends AbstractExternalJavaActi
         for (TechnicalSafetyRequirement tsr : model.getTechnicalRequirements()) {
             List<?> realizedBy = safeList(tsr, "realizedBy");
             if (realizedBy.isEmpty()) {
-                String asil = ((SafetyCriticalBlock) tsr).getAsilLevel() != null ? ((SafetyCriticalBlock) tsr).getAsilLevel().toString() : "unset";
-                boolean isHighAsil = asilRank(((SafetyCriticalBlock) tsr).getAsilLevel()) >= 3;
+                String asil = tsr.getAllocatedASIL() != null ? tsr.getAllocatedASIL().toString() : "unset";
+                boolean isHighAsil = asilRank(tsr.getAllocatedASIL()) >= 3;
                 (isHighAsil ? failures : warnings).add(Iso26262Reference.checkRow(
                     isHighAsil ? "✘ FAIL" : "⚠ WARNING",
                     "TSR '" + name(tsr) + "' [" + tsr.getRequirementId() + "] ASIL=" + asil
@@ -141,7 +141,7 @@ public class CheckArchitectureConsistencyAction extends AbstractExternalJavaActi
                 for (Object implObj : implements_) {
                     if (implObj instanceof TechnicalSafetyRequirement) {
                         TechnicalSafetyRequirement tsr = (TechnicalSafetyRequirement) implObj;
-                        if (asilRank(((SafetyCriticalBlock) tsr).getAsilLevel()) >= 4) { // ASIL D
+                        if (asilRank(tsr.getAllocatedASIL()) >= 4) { // ASIL D
                             // verify it's realized on an ASIL D block
                             safeList(tsr, "realizedBy").stream()
                                 .filter(b -> b instanceof SafetyCriticalBlock)

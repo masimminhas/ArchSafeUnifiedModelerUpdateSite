@@ -78,11 +78,11 @@ public class PropagateASILAction extends AbstractExternalJavaAction {
             if (fsrs.size() == 1) {
                 // Single FSR — must carry the same ASIL as the goal (no decomposition)
                 FunctionalSafetyRequirement fsr = fsrs.get(0);
-                int fsrRank = asilRank(((SafetyGoal) fsr).getAsilLevel());
+                int fsrRank = asilRank(fsrAsil(fsr));
                 if (fsrRank > goalRank) {
                     failures.add(Iso26262Reference.checkRow(
                         "✘ FAIL",
-                        "FSR '" + name(fsr) + "' ASIL=" + asilStr(((SafetyGoal) fsr).getAsilLevel())
+                        "FSR '" + name(fsr) + "' ASIL=" + asilStr(fsrAsil(fsr))
                             + " is HIGHER than parent Safety Goal '" + name(sg)
                             + "' ASIL=" + goalAsilStr + ".",
                         Iso26262Reference.PART9_ASIL_PROPAGATION,
@@ -92,7 +92,7 @@ public class PropagateASILAction extends AbstractExternalJavaAction {
                     passes.add(Iso26262Reference.checkRow(
                         "✔ PASS",
                         "SG '" + name(sg) + "' [" + goalAsilStr + "] → FSR '"
-                            + name(fsr) + "' [" + asilStr(((SafetyGoal) fsr).getAsilLevel()) + "] — propagation OK.",
+                            + name(fsr) + "' [" + asilStr(fsrAsil(fsr)) + "] — propagation OK.",
                         Iso26262Reference.PART9_ASIL_PROPAGATION, null
                     ));
                 }
@@ -102,9 +102,9 @@ public class PropagateASILAction extends AbstractExternalJavaAction {
                 int minChildRank = Integer.MAX_VALUE;
                 StringBuilder childSummary = new StringBuilder();
                 for (FunctionalSafetyRequirement fsr : fsrs) {
-                    int r = asilRank(((SafetyGoal) fsr).getAsilLevel());
+                    int r = asilRank(fsrAsil(fsr));
                     minChildRank = Math.min(minChildRank, r);
-                    childSummary.append(name(fsr)).append("[").append(asilStr(((SafetyGoal) fsr).getAsilLevel())).append("] ");
+                    childSummary.append(name(fsr)).append("[").append(asilStr(fsrAsil(fsr))).append("] ");
                 }
 
                 boolean decompositionValid = isValidDecomposition(goalRank, minChildRank, fsrs.size());
@@ -130,24 +130,24 @@ public class PropagateASILAction extends AbstractExternalJavaAction {
         // ── Rule 3: FSR → TSR ASIL propagation ───────────────────────────────
         for (FunctionalSafetyRequirement fsr : model.getFunctionalRequirements()) {
             if (fsr.getRefinedTo() == null) continue;
-            int fsrRank = asilRank(((SafetyGoal) fsr).getAsilLevel());
+            int fsrRank = asilRank(fsrAsil(fsr));
 
             for (TechnicalSafetyRequirement tsr : fsr.getRefinedTo()) {
-                int tsrRank = asilRank(((SafetyGoal) tsr).getAsilLevel());
+                int tsrRank = asilRank(tsrAsil(tsr));
                 if (tsrRank > fsrRank) {
                     failures.add(Iso26262Reference.checkRow(
                         "✘ FAIL",
-                        "TSR '" + name(tsr) + "' ASIL=" + asilStr(((SafetyGoal) tsr).getAsilLevel())
+                        "TSR '" + name(tsr) + "' ASIL=" + asilStr(tsrAsil(tsr))
                             + " exceeds parent FSR '" + name(fsr)
-                            + "' ASIL=" + asilStr(((SafetyGoal) fsr).getAsilLevel()) + ".",
+                            + "' ASIL=" + asilStr(fsrAsil(fsr)) + ".",
                         Iso26262Reference.PART9_ASIL_PROPAGATION,
                         "Derived requirements must not escalate the ASIL of their parent."
                     ));
                 } else {
                     passes.add(Iso26262Reference.checkRow(
                         "✔ PASS",
-                        "FSR '" + name(fsr) + "' [" + asilStr(((SafetyGoal) fsr).getAsilLevel()) + "] → TSR '"
-                            + name(tsr) + "' [" + asilStr(((SafetyGoal) tsr).getAsilLevel()) + "] — propagation OK.",
+                        "FSR '" + name(fsr) + "' [" + asilStr(fsrAsil(fsr)) + "] → TSR '"
+                            + name(tsr) + "' [" + asilStr(tsrAsil(tsr)) + "] — propagation OK.",
                         Iso26262Reference.PART9_ASIL_PROPAGATION, null
                     ));
                 }
@@ -156,7 +156,7 @@ public class PropagateASILAction extends AbstractExternalJavaAction {
 
         // ── Rule 4: ASIL D TSRs must be realizedBy ASIL D/C blocks ──────────
         for (TechnicalSafetyRequirement tsr : model.getTechnicalRequirements()) {
-            int tsrRank = asilRank(((SafetyGoal) tsr).getAsilLevel());
+            int tsrRank = asilRank(tsrAsil(tsr));
             if (tsrRank < 3) continue; // Only care about ASIL C and D
 
             if (tsr.getRealizedBy() == null || tsr.getRealizedBy().isEmpty()) continue;
@@ -168,7 +168,7 @@ public class PropagateASILAction extends AbstractExternalJavaAction {
                     if (blockRank < tsrRank) {
                         warnings.add(Iso26262Reference.checkRow(
                             "⚠ WARNING",
-                            "TSR '" + name(tsr) + "' [" + asilStr(((SafetyGoal) tsr).getAsilLevel())
+                            "TSR '" + name(tsr) + "' [" + asilStr(tsrAsil(tsr))
                                 + "] is realized by block '" + name(scb)
                                 + "' with lower ASIL=" + asilStr(scb.getAsilLevel()) + ".",
                             Iso26262Reference.PART4_TSR_ALLOCATION,
@@ -222,6 +222,21 @@ public class PropagateASILAction extends AbstractExternalJavaAction {
         if (asilLevel == null) return 0;
         String key = asilLevel.toString().toUpperCase().trim();
         return ASIL_RANK.getOrDefault(key, 0);
+    }
+
+    /**
+     * Effective ASIL of a Functional Safety Requirement. FSRs do not carry an
+     * own ASIL attribute in the unified metamodel; they inherit the ASIL of the
+     * Safety Goal they are allocated from ({@code allocatedFrom}).
+     */
+    private ASILLevel fsrAsil(FunctionalSafetyRequirement fsr) {
+        SafetyGoal sg = fsr != null ? fsr.getAllocatedFrom() : null;
+        return sg != null ? sg.getAsilLevel() : null;
+    }
+
+    /** ASIL allocated to a Technical Safety Requirement. */
+    private ASILLevel tsrAsil(TechnicalSafetyRequirement tsr) {
+        return tsr != null ? tsr.getAllocatedASIL() : null;
     }
 
     private String asilStr(Object asilLevel) {

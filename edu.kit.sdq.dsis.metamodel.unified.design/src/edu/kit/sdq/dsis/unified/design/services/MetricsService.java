@@ -324,6 +324,80 @@ public class MetricsService {
     }
 
     // ════════════════════════════════════════════════════════════════════════
+    // 7b.  QUALITY METRICS DASHBOARD cell services
+    //
+    //  The MetricsDashboard table (unified.odesign) calls these with the model
+    //  as self and the row's line-mapping name (e.g. 'MD_MCR_Line') so each cell
+    //  knows which metric it represents. All thresholds come from the
+    //  THRESHOLD_* constants above — change a threshold there and BOTH the
+    //  "Threshold" column and the PASS/GAP status update automatically.
+    // ════════════════════════════════════════════════════════════════════════
+
+    /** Value cell: the metric as a rounded percentage, e.g. "83%". Empty for the Overall row. */
+    public String metricValuePct(UnifiedSystemModel model, String lineMapping) {
+        Double v = metricFraction(model, lineMapping);
+        return v == null ? "" : pctLabel(v);
+    }
+
+    /** Threshold cell: the target for the metric, e.g. ">= 90%" or "= 100%". */
+    public String metricThreshold(UnifiedSystemModel model, String lineMapping) {
+        switch (metricCode(lineMapping)) {
+            case "MCR": return ">= " + pctLabel(THRESHOLD_MCR);
+            case "HTI": return "= "  + pctLabel(THRESHOLD_HTI);
+            case "RAR": return ">= " + pctLabel(THRESHOLD_RAR);
+            case "FLC": return "= "  + pctLabel(THRESHOLD_FLC);
+            case "TDS": return ">= " + pctLabel(THRESHOLD_TDS);
+            case "MVR": return ">= " + pctLabel(THRESHOLD_MVR);
+            default:    return "";
+        }
+    }
+
+    /** Status cell: "PASS"/"GAP" per metric, or the overall label on the Overall row. */
+    public String metricStatus(UnifiedSystemModel model, String lineMapping) {
+        if ("OVERALL".equals(metricCode(lineMapping))) return overallStatusLabel(model);
+        return metricPass(model, lineMapping) ? "PASS" : "GAP";
+    }
+
+    /** True when the metric meets its threshold (drives the green/red status styling). */
+    public boolean metricPass(UnifiedSystemModel model, String lineMapping) {
+        switch (metricCode(lineMapping)) {
+            case "MCR": return computeMCR(model) >= THRESHOLD_MCR;
+            case "HTI": return computeHTI(model) >= THRESHOLD_HTI;
+            case "RAR": return computeRAR(model) >= THRESHOLD_RAR;
+            case "FLC": return computeFLC(model) >= THRESHOLD_FLC;
+            case "TDS": return computeTDS(model) >= THRESHOLD_TDS;
+            case "MVR": return computeMVR(model) >= THRESHOLD_MVR;
+            case "OVERALL": return overallStatusLabel(model).startsWith("✓"); // ✓
+            default:    return true;
+        }
+    }
+
+    private Double metricFraction(UnifiedSystemModel model, String lineMapping) {
+        switch (metricCode(lineMapping)) {
+            case "MCR": return computeMCR(model);
+            case "HTI": return computeHTI(model);
+            case "RAR": return computeRAR(model);
+            case "FLC": return computeFLC(model);
+            case "TDS": return computeTDS(model);
+            case "MVR": return computeMVR(model);
+            default:    return null; // OVERALL / unknown -> no single value
+        }
+    }
+
+    /** Maps a line-mapping name like 'MD_MCR_Line' / 'MD_Overall_Line' to 'MCR' / 'OVERALL'. */
+    private String metricCode(String lineMapping) {
+        if (lineMapping == null) return "";
+        String c = lineMapping;
+        if (c.startsWith("MD_"))   c = c.substring(3);
+        if (c.endsWith("_Line"))   c = c.substring(0, c.length() - 5);
+        return c.toUpperCase();
+    }
+
+    private String pctLabel(double fraction) {
+        return Math.round(fraction * 100) + "%";
+    }
+
+    // ════════════════════════════════════════════════════════════════════════
     // 8.  WRITE-BACK — refreshAllMetrics
     //
     //     Computes all metrics and writes them back to the model's

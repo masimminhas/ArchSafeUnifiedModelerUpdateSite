@@ -18,3 +18,26 @@ Thumbs.db
 
 # Tycho
 *.class
+
+# Generated at build time: case studies copied into the RCP feature as product root files
+releng/edu.kit.sdq.dsis.rcp/rootfiles/
+
+# Research paper material / docs — kept LOCAL only, never published to the remote
+docs/
+
+# LaTeX build intermediates (keep .tex/.bib/.pdf sources/outputs, ignore the rest)
+*.aux
+*.bbl
+*.blg
+*.fdb_latexmk
+*.fls
+*.lof
+*.lot
+*.log
+*.nav
+*.out
+*.run.xml
+*.snm
+*.synctex.gz
+*.toc
+docs/comment.cut

@@ -7,9 +7,12 @@
 
 - 📘 **[User Guide](docs/USER_GUIDE.md)** — installation, first model, every diagram, FMEA, failure-propagation simulation, validation, troubleshooting
 - 📐 **[Metamodel reference (PDF)](docs/unifiedmetamodel.pdf)** — full class diagram of the unified metamodel
+- 🎨 **Picto live class diagrams** — open [`unified.ecore`](edu.kit.sdq.dsis.metamodel.unified/model/unified.ecore) with Picto installed; the sibling [`unified.ecore.picto`](edu.kit.sdq.dsis.metamodel.unified/model/unified.ecore.picto) activates a Graphviz-DOT class-diagram view with 10 togglable layers (features, supertypes, subtypes, inline refs, reference labels, inherited features, operations, derived features, references-to-self, documentation), plus one drill-in diagram per EClass
 - ✅ **[Validation rules catalogue](rules.md)** — 45 semantic rules with ISO 26262 citations
 - 🧪 **[Case studies](casestudies/README.md)** — AEB (ISO 26262) and medical infusion pump (IEC 62304)
 - ⚖️ **[Tool evaluation](docs/EVALUATION.md)** — positioning vs. Capella, Papyrus-SysML, CHESS, EAST-ADL, Medini Analyze
+- 🎤 **[ECMFA / JOT 2026 talk slides](docs/ecmfa-presentation.tex)** + [BibTeX](docs/ecmfa-presentation.bib) — 20-slide Beamer deck for the unified-framework paper
+- 🏛️ **Architecture diagrams** — [plug-in topology](docs/architecture.puml) and [build/distribution pipeline](docs/pipeline.puml) (PlantUML; open in VS Code with `Alt+D` or render via `plantuml -tsvg`)
 
 ## Project Structure
 

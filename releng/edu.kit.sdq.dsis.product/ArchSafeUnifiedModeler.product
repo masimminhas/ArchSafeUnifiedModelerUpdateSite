@@ -9,6 +9,8 @@
       includeLaunchers="true"
       autoIncludeRequirements="true">
 
+   <splash location="edu.kit.sdq.dsis.rcp.plugin"/>
+
    <features>
       <!-- ✅ RCP feature -->
       <feature id="edu.kit.sdq.dsis.rcp.feature"                        version="0.0.0"/>

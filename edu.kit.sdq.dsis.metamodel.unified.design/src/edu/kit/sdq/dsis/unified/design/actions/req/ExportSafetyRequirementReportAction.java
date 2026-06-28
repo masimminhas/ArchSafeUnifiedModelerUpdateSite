@@ -77,7 +77,8 @@ public class ExportSafetyRequirementReportAction extends AbstractExternalJavaAct
     private void writeReport(UnifiedSystemModel model, String path) throws IOException {
         String now = new SimpleDateFormat(DATE_FORMAT).format(new Date());
 
-        try (BufferedWriter w = new BufferedWriter(new FileWriter(path))) {
+        try (BufferedWriter w = new BufferedWriter(new OutputStreamWriter(
+                new FileOutputStream(path), java.nio.charset.StandardCharsets.UTF_8))) {
 
             // ── Section 1: Header & Executive Summary ─────────────────────────
             w.write("ISO 26262:2018 SAFETY REQUIREMENT REVIEW REPORT\n");
@@ -150,7 +151,7 @@ public class ExportSafetyRequirementReportAction extends AbstractExternalJavaAct
 
                 w.write(csv(fsr.getRequirementId()) + ","
                       + csv(name(fsr)) + ","
-                      + csv(asilStr(((SafetyGoal) fsr).getAsilLevel())) + ","
+                      + csv(asilStr(fsrAsil(fsr))) + ","
                       + csv(parentGoal) + ","
                       + tsrCount + ","
                       + csv(statusStr(fsr.getStatus())) + ","
@@ -167,16 +168,10 @@ public class ExportSafetyRequirementReportAction extends AbstractExternalJavaAct
             w.write("TSR ID,TSR Name,ASIL Level,Parent FSR,Realized By Block,FMEA Verified,"
                   + "Status,Requirement Text,Allocation Compliant,Clause\n");
 
-            // pre-build FMEA verification lookup
+            // pre-build FMEA verification lookup from each TSR's verifiedBy reference
             Map<TechnicalSafetyRequirement, Integer> tsrFMEACount = new HashMap<>();
-            for (FMEAAnalysis analysis : model.getFmeaAnalysis()) {
-                for (FMEAItem item : analysis.getFmeaItems()) {
-                    for (Object req : safeList(item, "relatedRequirements")) {
-                        if (req instanceof TechnicalSafetyRequirement) {
-                            tsrFMEACount.merge((TechnicalSafetyRequirement) req, 1, Integer::sum);
-                        }
-                    }
-                }
+            for (TechnicalSafetyRequirement tsr : model.getTechnicalRequirements()) {
+                tsrFMEACount.put(tsr, tsr.getVerifiedBy() != null ? tsr.getVerifiedBy().size() : 0);
             }
 
             for (TechnicalSafetyRequirement tsr : model.getTechnicalRequirements()) {
@@ -198,7 +193,7 @@ public class ExportSafetyRequirementReportAction extends AbstractExternalJavaAct
 
                 w.write(csv(tsr.getRequirementId()) + ","
                       + csv(name(tsr)) + ","
-                      + csv(asilStr(((SafetyGoal) tsr).getAsilLevel())) + ","
+                      + csv(asilStr(tsr.getAllocatedASIL())) + ","
                       + csv(parentFSR) + ","
                       + csv(blockNames) + ","
                       + fmeaCount + ","
@@ -287,6 +282,12 @@ public class ExportSafetyRequirementReportAction extends AbstractExternalJavaAct
 
     private String asilStr(Object asil) {
         return asil != null ? asil.toString() : "unset";
+    }
+
+    /** FSRs inherit the ASIL of the Safety Goal they are allocated from. */
+    private ASILLevel fsrAsil(FunctionalSafetyRequirement fsr) {
+        SafetyGoal sg = fsr != null ? fsr.getAllocatedFrom() : null;
+        return sg != null ? sg.getAsilLevel() : null;
     }
 
     @SuppressWarnings({"rawtypes"})

@@ -14,6 +14,17 @@ Require-Bundle: org.eclipse.sirius;bundle-version="7.3.0",
  org.eclipse.sirius.ecore.extender;bundle-version="7.3.0",
  org.eclipse.sirius.diagram;bundle-version="7.3.0",
  org.eclipse.sirius.diagram.ui;bundle-version="7.3.0",
- org.eclipse.jface.databinding;bundle-version="1.14.100"
+ org.eclipse.jface.databinding;bundle-version="1.14.100",
+ org.eclipse.emf.ecore,
+ org.eclipse.core.runtime,
+ org.eclipse.swt,
+ org.eclipse.jface,
+ org.eclipse.e4.ui.css.swt.theme
 Bundle-RequiredExecutionEnvironment: JavaSE-17
+Export-Package: edu.kit.sdq.dsis.metamodel.unified.design,
+ edu.kit.sdq.dsis.unified.design.actions,
+ edu.kit.sdq.dsis.unified.design.actions.metrics,
+ edu.kit.sdq.dsis.unified.design.actions.req,
+ edu.kit.sdq.dsis.unified.design.actions.sim,
+ edu.kit.sdq.dsis.unified.design.services
 Bundle-Vendor: %providerName

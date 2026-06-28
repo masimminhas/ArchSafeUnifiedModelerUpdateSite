@@ -303,6 +303,152 @@ public class AdvancedAnalysisServices {
     }
 
     // =========================================================================
+    // Semantic validation rule services (invoked via service: in unified.odesign)
+    // Each returns TRUE when the rule is SATISFIED (no violation reported).
+    // =========================================================================
+
+    /** ASILDRequires80PercentFMEA: ASIL D blocks need >=80% of failure modes covered by an FMEA item. */
+    public boolean asilDHasFMEACoverage(SafetyCriticalBlock block) {
+        if (block.getAsilLevel() != ASILLevel.ASIL_D) return true; // rule applies only to ASIL D
+        List<BlockFailureMode> fms = block.getFailureModes();
+        if (fms == null || fms.isEmpty()) return true;             // nothing to cover
+        UnifiedSystemModel model = getModel(block);
+        if (model == null) return true;
+        int covered = 0;
+        for (BlockFailureMode fm : fms) {
+            if (hasFMEAItemFor(model, block, fm)) covered++;
+        }
+        return (covered * 1.0 / fms.size()) >= 0.80;
+    }
+
+    private boolean hasFMEAItemFor(UnifiedSystemModel model, SafetyCriticalBlock block, BlockFailureMode fm) {
+        for (FMEAAnalysis a : model.getFmeaAnalysis()) {
+            for (FMEAItem item : a.getFmeaItems()) {
+                if (item.getAnalyzedComponent() == block && item.getFailureMode() == fm) return true;
+            }
+        }
+        return false;
+    }
+
+    /** NoCircularDependencies: TRUE (valid) when the block is NOT part of a connection cycle. */
+    public boolean checkCircularDependency(SystemBlock block) {
+        UnifiedSystemModel model = getModel(block);
+        if (model == null) return true;
+        Set<SystemBlock> visited = new HashSet<>();
+        Deque<SystemBlock> stack = new ArrayDeque<>(successors(model, block));
+        while (!stack.isEmpty()) {
+            SystemBlock cur = stack.pop();
+            if (cur == block) return false; // reached self again -> cycle -> violation
+            if (!visited.add(cur)) continue;
+            stack.addAll(successors(model, cur));
+        }
+        return true;
+    }
+
+    private List<SystemBlock> successors(UnifiedSystemModel model, SystemBlock from) {
+        List<SystemBlock> result = new ArrayList<>();
+        for (BlockConnection c : model.getBlockConnections()) {
+            if (c.getFromBlock().contains(from)) result.addAll(c.getToBlock());
+        }
+        return result;
+    }
+
+    /** BlockNameMustBeUnique: TRUE when no other block in the model shares this name. */
+    public boolean hasUniqueName(SystemBlock block) {
+        UnifiedSystemModel model = getModel(block);
+        if (model == null || block.getName() == null) return true;
+        int count = 0;
+        for (SystemBlock b : allBlocks(model)) {
+            if (block.getName().equals(b.getName())) count++;
+        }
+        return count <= 1;
+    }
+
+    private List<SystemBlock> allBlocks(UnifiedSystemModel model) {
+        List<SystemBlock> all = new ArrayList<>(model.getSystemBlocks());
+        all.addAll(model.getRootBlocks());
+        return all;
+    }
+
+    /** ModelTraceabilityAdequate: TRUE when traceability density >= 30%. */
+    public boolean checkTraceabilityCompleteness(UnifiedSystemModel model) {
+        Double d = computeTraceabilityDensity(model);
+        return d == null || d >= 0.30;
+    }
+
+    /** CriticalBlockRequiresRedundancy: CRITICAL blocks must declare a redundancy mechanism. */
+    public boolean highCriticalityHasRedundancy(SafetyCriticalBlock block) {
+        if (block.getSafetyCriticality() != SafetyCriticalityLevel.CRITICAL) return true;
+        return block.isHasRedundancy();
+    }
+
+    /** FailureModeHasProperDescription: description must be at least 5 characters. */
+    public boolean hasProperDescription(BlockFailureMode fm) {
+        String d = fm.getDescription();
+        return d != null && d.trim().length() >= 5;
+    }
+
+    /** CriticalHazardsMustBeMitigated: CRITICAL/CATASTROPHIC hazards must have a mitigation state set. */
+    public boolean criticalHazardHasMitigation(IntegratedHazard hazard) {
+        RiskLevel risk = hazard.getRiskLevel();
+        boolean highRisk = risk == RiskLevel.CATASTROPHIC || risk == RiskLevel.CRITICAL_RISK;
+        if (!highRisk) return true;
+        MitigationStatus ms = hazard.getMitigationStatus();
+        return ms != null && ms != MitigationStatus.NOT_MITIGATED;
+    }
+
+    /**
+     * FSRASILNotLowerThanGoalWithoutJustification: in the unified metamodel an FSR
+     * inherits the ASIL of its Safety Goal (it has no own asilLevel attribute), so an
+     * ASIL downgrade is not representable and the rule is satisfied by construction.
+     */
+    public boolean asilDowngradeHasJustification(FunctionalSafetyRequirement fsr) {
+        return true;
+    }
+
+    /** RequirementIdMustBeUnique: requirementId unique across SafetyGoals, FSRs and TSRs. */
+    public boolean requirementIdIsUnique(Requirement req) {
+        String id = req.getRequirementId();
+        if (id == null || id.trim().isEmpty()) return true; // emptiness handled by RequirementHasId
+        UnifiedSystemModel model = getModel(req);
+        if (model == null) return true;
+        int count = 0;
+        for (Requirement r : allRequirements(model)) {
+            if (id.equals(r.getRequirementId())) count++;
+        }
+        return count <= 1;
+    }
+
+    private List<Requirement> allRequirements(UnifiedSystemModel model) {
+        List<Requirement> all = new ArrayList<>();
+        all.addAll(model.getSafetyGoals());
+        all.addAll(model.getFunctionalRequirements());
+        all.addAll(model.getTechnicalRequirements());
+        return all;
+    }
+
+    /** RequirementChainContinuous: a complete SafetyGoal -> FSR -> TSR -> SafetyMechanism path must exist. */
+    public boolean requirementChainIsComplete(SafetyGoal sg) {
+        UnifiedSystemModel model = getModel(sg);
+        if (model == null) return true;
+        if (sg.getAllocatedTo() == null || sg.getAllocatedTo().isEmpty()) return false;
+        for (FunctionalSafetyRequirement fsr : sg.getAllocatedTo()) {
+            if (fsr.getRefinedTo() == null || fsr.getRefinedTo().isEmpty()) continue;
+            for (TechnicalSafetyRequirement tsr : fsr.getRefinedTo()) {
+                if (isImplementedByMechanism(model, tsr)) return true; // complete chain found
+            }
+        }
+        return false;
+    }
+
+    private boolean isImplementedByMechanism(UnifiedSystemModel model, TechnicalSafetyRequirement tsr) {
+        for (SafetyMechanism sm : model.getSafetyMechanisms()) {
+            if (sm.getImplements() != null && sm.getImplements().contains(tsr)) return true;
+        }
+        return false;
+    }
+
+    // =========================================================================
     // FMEA item generation
     // =========================================================================
 
@@ -336,18 +482,11 @@ public class AdvancedAnalysisServices {
     }
 
     /**
-     * Resolves the default ActionStatus enum literal used when creating auto-generated
-     * FMEA items. Tries PENDING first; falls back to the first available literal if
-     * PENDING does not exist in this version of the metamodel.
+     * Default ActionStatus for auto-generated FMEA items. New items start as OPEN
+     * (not yet actioned) so the safety engineer can triage them.
      */
     private ActionStatus resolveDefaultActionStatus() {
-        try {
-            return ActionStatus.IN_PROGRESS;
-        } catch (IllegalArgumentException | NullPointerException e) {
-            // PENDING literal not present — use first available value as a safe default
-            ActionStatus[] values = ActionStatus.values();
-            return values.length > 0 ? values[0] : null;
-        }
+        return ActionStatus.OPEN;
     }
 
     // =========================================================================
@@ -668,11 +807,48 @@ public class AdvancedAnalysisServices {
         return total == 0 ? 0.0 : sum / total;
     }
 
-    /** Cyclomatic complexity: edges - nodes + 2. */
+    /**
+     * McCabe cyclomatic complexity of the block graph: M = E - N + 2P, where P is
+     * the number of connected components. Using P (rather than the single-component
+     * "+2") keeps the value well-defined and non-negative for sparse/disconnected
+     * architectures; floored at 1.
+     */
     public Integer computeCyclomaticComplexity(UnifiedSystemModel model) {
         int nodes = model.getSystemBlocks().size() + model.getRootBlocks().size();
+        if (nodes == 0) return 0;
         int edges = model.getBlockConnections().size();
-        return edges - nodes + 2;
+        int components = countBlockComponents(model);
+        return Math.max(1, edges - nodes + 2 * components);
+    }
+
+    /** Number of weakly-connected components among the model's top-level blocks. */
+    private int countBlockComponents(UnifiedSystemModel model) {
+        List<SystemBlock> nodes = allBlocks(model);
+        Map<SystemBlock, SystemBlock> parent = new IdentityHashMap<>();
+        for (SystemBlock b : nodes) parent.put(b, b);
+        for (BlockConnection c : model.getBlockConnections()) {
+            SystemBlock prev = null;
+            List<SystemBlock> endpoints = new ArrayList<>();
+            endpoints.addAll(c.getFromBlock());
+            endpoints.addAll(c.getToBlock());
+            for (SystemBlock ep : endpoints) {
+                if (!parent.containsKey(ep)) continue; // skip nested/unknown endpoints
+                if (prev != null) union(parent, prev, ep);
+                prev = ep;
+            }
+        }
+        Set<SystemBlock> roots = Collections.newSetFromMap(new IdentityHashMap<>());
+        for (SystemBlock b : nodes) roots.add(find(parent, b));
+        return roots.isEmpty() ? 1 : roots.size();
+    }
+
+    private SystemBlock find(Map<SystemBlock, SystemBlock> p, SystemBlock x) {
+        while (p.get(x) != x) { p.put(x, p.get(p.get(x))); x = p.get(x); }
+        return x;
+    }
+
+    private void union(Map<SystemBlock, SystemBlock> p, SystemBlock a, SystemBlock b) {
+        p.put(find(p, a), find(p, b));
     }
 
     /** Average block degree: 2*edges / nodes. */

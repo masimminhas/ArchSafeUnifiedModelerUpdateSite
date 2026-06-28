@@ -4,11 +4,12 @@
       label="ArchSafe Unified Modeler RCP"
       version="1.0.0.qualifier">
 
+   <!-- unpack=true so splash.bmp is on disk for the native launcher to show. -->
    <plugin
          id="edu.kit.sdq.dsis.rcp.plugin"
          download-size="0"
          install-size="0"
          version="0.0.0"
-         unpack="false"/>
+         unpack="true"/>
 
 </feature>

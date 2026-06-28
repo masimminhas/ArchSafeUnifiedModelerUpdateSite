@@ -1,0 +1,111 @@
+// ─────────────────────────────────────────────────────────────────────────────
+//  ArchSafe Unified Metamodel — Picto orchestration
+//
+//  Follows the proven pattern from raaml-picto-studio:
+//    • All Picto-specific config (format, path, icon, layers) is passed via
+//      the rule's `parameters` Map — NOT as direct EGX slots.
+//    • Uses Picto's generic classdiagram.egl template which already supports
+//      togglable layers via the `layers` parameter (Picto built-in).
+//    • Renderer is Picto's Graphviz-DOT backend, giving auto-layouted,
+//      paper-grade class diagrams without manual positioning.
+//
+//  Outline produced in the Picto view:
+//      Unified Metamodel
+//        ├── Overview            (full metamodel, all classes)
+//        └── Classes
+//             ├── BlockAssociation
+//             ├── BlockConnection
+//             ├── BlockFailureMode
+//             ├── FMEAAnalysis
+//             ├── FMEAItem
+//             ├── FunctionalSafetyRequirement
+//             ├── IntegratedHazard
+//             ├── Requirement                 (abstract)
+//             ├── SafetyCriticalBlock
+//             ├── SafetyGoal
+//             ├── SafetyMechanism
+//             ├── SystemBlock
+//             ├── TechnicalSafetyRequirement
+//             ├── UnifiedElement              (abstract)
+//             └── UnifiedSystemModel
+//
+//  Each diagram exposes 10 togglable layers (eye-icons in Picto):
+//      ☑ Features              — class attributes
+//      ☑ Supertypes            — inheritance edges to parents
+//      ☑ Subtypes              — inheritance edges to children (per-class only)
+//      ☑ Inline references     — non-containment references
+//      ☑ Reference labels      — show feature names + cardinalities on edges
+//      ☐ Inherited features    — show attributes inherited from supertypes
+//      ☐ Operations            — show EOperations
+//      ☐ Derived features      — show /derived features
+//      ☐ References to self    — self-loops (e.g. SystemBlock.subBlocks)
+//      ☐ Documentation         — show genmodel documentation annotations
+// ─────────────────────────────────────────────────────────────────────────────
+
+pre {
+    var emfTool : new Native("org.eclipse.epsilon.emc.emf.tools.EmfTool");
+    emfTool.eCoreUtil.resolveAll(M.resource.resourceSet);
+
+    var classes = EClass.all.sortBy(c | c.name);
+}
+
+// ── Rule 1: Full-metamodel overview ───────────────────────────────────────────
+rule UnifiedMetamodelOverview {
+
+    parameters : Map {
+        "mainClassName" = "",
+        "classNames"    = EClass.all.name,
+        "format"        = "graphviz-dot",
+        "path"          = List {"Unified Metamodel", "Overview"},
+        "icon"          = "diagram-ff0000",
+        "layers" = Sequence {
+            Map {"id"="features",              "title"="Features",               "active"=true},
+            Map {"id"="supertypes",            "title"="Supertypes",             "active"=true},
+            Map {"id"="inlineReferences",      "title"="Inline references",      "active"=true},
+            Map {"id"="referenceLabels",       "title"="Reference labels",       "active"=true},
+            Map {"id"="inherited",             "title"="Inherited features",     "active"=false},
+            Map {"id"="operations",            "title"="Operations",             "active"=false},
+            Map {"id"="derived",               "title"="Derived features",       "active"=false},
+            Map {"id"="referencesToSelf",      "title"="References to self",     "active"=false},
+            Map {"id"="documentation",         "title"="Documentation",          "active"=false}
+        }
+    }
+
+    template : "classdiagram.egl"
+}
+
+// ── Rule 2: One drill-in diagram per EClass ───────────────────────────────────
+//   Clicking a class in the outline shows that class plus its direct
+//   supertypes, subtypes and referenced classes — much easier to read
+//   than the full-metamodel overview.
+rule EClass2ClassDiagram
+    transform c : EClass
+    in : classes {
+
+    parameters {
+        return Map {
+            "mainClassName" = c.name,
+            "classNames"    = Sequence {},
+            "format"        = "graphviz-dot",
+            "path"          = Sequence {
+                "Unified Metamodel",
+                "Classes",
+                c.name
+            },
+            "icon" = "diagram-fffbd7",
+            "layers" = Sequence {
+                Map {"id"="features",              "title"="Features",               "active"=true},
+                Map {"id"="supertypes",            "title"="Supertypes",             "active"=true},
+                Map {"id"="subtypes",              "title"="Subtypes",               "active"=true},
+                Map {"id"="inlineReferences",      "title"="Inline references",      "active"=true},
+                Map {"id"="referenceLabels",       "title"="Reference labels",       "active"=true},
+                Map {"id"="inherited",             "title"="Inherited features",     "active"=false},
+                Map {"id"="operations",            "title"="Operations",             "active"=false},
+                Map {"id"="derived",               "title"="Derived features",       "active"=false},
+                Map {"id"="documentation",         "title"="Documentation",          "active"=false}
+            }
+        };
+    }
+
+    template : "classdiagram.egl"
+}

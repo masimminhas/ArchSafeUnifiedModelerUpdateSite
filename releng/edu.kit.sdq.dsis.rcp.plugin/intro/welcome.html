@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<title>Welcome to ArchSafe Unified Modeler</title>
+<style>
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: "Segoe UI", Tahoma, Arial, sans-serif;
+    color: #1f2733;
+    background: #f4f7fb;
+  }
+  .hero {
+    background: linear-gradient(135deg, #1f4e79 0%, #2e7d9a 100%);
+    color: #ffffff;
+    padding: 28px 40px 24px 40px;
+  }
+  .hero h1 { margin: 0 0 6px 0; font-size: 26px; font-weight: 700; }
+  .hero p  { margin: 0; font-size: 14px; opacity: 0.92; max-width: 880px; }
+  .wrap { padding: 22px 40px 40px 40px; max-width: 1100px; margin: 0 auto; }
+  h2 { font-size: 17px; color: #1f4e79; border-bottom: 2px solid #d8e2ee;
+       padding-bottom: 6px; margin: 26px 0 14px 0; }
+  .grid { display: flex; flex-wrap: wrap; gap: 14px; }
+  .card {
+    background: #ffffff; border: 1px solid #e1e8f0; border-radius: 8px;
+    padding: 14px 16px; width: 330px; box-shadow: 0 1px 2px rgba(31,78,121,0.06);
+  }
+  .card h3 { margin: 0 0 6px 0; font-size: 14px; color: #20486f; }
+  .card p  { margin: 0; font-size: 12.5px; color: #44505f; line-height: 1.45; }
+  .tag {
+    display: inline-block; font-size: 10.5px; font-weight: 700; color: #fff;
+    background: #2e7d9a; border-radius: 10px; padding: 1px 9px; margin-bottom: 8px;
+    letter-spacing: 0.3px;
+  }
+  .feat { display: flex; flex-wrap: wrap; gap: 10px 26px; }
+  .feat li { width: 480px; font-size: 13px; line-height: 1.5; color: #33414f; }
+  ul.feat { list-style: none; padding: 0; margin: 0; display: flex; flex-wrap: wrap; gap: 8px 26px; }
+  ul.feat li::before { content: "\2714"; color: #2e7d32; font-weight: 700; margin-right: 8px; }
+  .start {
+    margin-top: 30px; padding: 18px 20px; background: #eef4fb;
+    border: 1px solid #d8e2ee; border-radius: 8px;
+  }
+  .start ol { margin: 8px 0 14px 20px; font-size: 13px; line-height: 1.6; color: #33414f; }
+  a.btn {
+    display: inline-block; background: #1f4e79; color: #ffffff; text-decoration: none;
+    font-weight: 700; font-size: 14px; padding: 10px 22px; border-radius: 6px;
+  }
+  a.btn:hover { background: #173a5c; }
+  .muted { color: #6b7785; font-size: 12px; margin-top: 8px; }
+</style>
+</head>
+<body>
+  <div class="hero">
+    <h1>ArchSafe Unified Modeler</h1>
+    <p>A model-driven workbench for <b>co-designing system architecture and safety analysis</b>
+       of cyber-physical systems. ArchSafe semantically unifies SysML architecture concepts and
+       RAAML safety-analysis concepts in a <b>single EMF model</b>, projecting multiple synchronized
+       views that stay consistent <i>by construction</i>.</p>
+  </div>
+
+  <div class="wrap">
+
+    <h2>Modeling &amp; Analysis Views</h2>
+    <div class="grid">
+      <div class="card"><span class="tag">ARCHITECTURE</span>
+        <h3>Architecture Diagram</h3>
+        <p>System and safety-critical blocks with typed connections (DATA / CONTROL / SIGNAL /
+           POWER / MECHANICAL) and structural associations.</p></div>
+
+      <div class="card"><span class="tag">SAFETY</span>
+        <h3>Safety Diagram</h3>
+        <p>Integrated hazards linked to the blocks they affect, with failure modes contained
+           inside their safety-critical blocks.</p></div>
+
+      <div class="card"><span class="tag">REQUIREMENTS</span>
+        <h3>Requirements Diagram</h3>
+        <p>The ISO&nbsp;26262 chain: Safety Goals &rarr; Functional &rarr; Technical Safety
+           Requirements &rarr; Safety Mechanisms, traced to hazards and blocks.</p></div>
+
+      <div class="card"><span class="tag">FMEA</span>
+        <h3>FMEA Diagram &amp; Table</h3>
+        <p>Failure Mode &amp; Effects Analysis with automatic RPN (S&times;O&times;D), risk
+           categorization, and one-click auto-generation from failure modes.</p></div>
+
+      <div class="card"><span class="tag">METRICS</span>
+        <h3>Quality Metrics Dashboard</h3>
+        <p>Live GQM scorecard (MCR, HTI, RAR, FLC, TDS, MVR) with PASS/GAP status against
+           configurable thresholds.</p></div>
+
+      <div class="card"><span class="tag">SIMULATION</span>
+        <h3>Failure Propagation Simulation</h3>
+        <p>Interactive BFS what-if analysis: pick a failure source and watch effects propagate
+           forward / backward across connections, revealing activated hazards.</p></div>
+
+      <div class="card"><span class="tag">TRACEABILITY</span>
+        <h3>Automated Traceability Diagram</h3>
+        <p>End-to-end, auto-generated trace network across hazards, requirements, architecture,
+           FMEA, and mechanisms &mdash; no manual link maintenance.</p></div>
+    </div>
+
+    <h2>Key Features</h2>
+    <ul class="feat">
+      <li>One <b>unified metamodel</b> (SysML &cup; RAAML) as a single source of truth.</li>
+      <li><b>Semantic validation rules</b> aligned with ISO&nbsp;26262 clauses.</li>
+      <li><b>Consistency by construction</b> &mdash; architecture changes propagate to safety views.</li>
+      <li><b>Bidirectional, automated traceability</b> via EMF references (eOpposites).</li>
+      <li><b>Interactive failure-propagation</b> simulation built directly on the model.</li>
+      <li><b>Report export</b>: Safety Case, FMEA, Traceability matrix, and Metrics (CSV/HTML).</li>
+    </ul>
+
+    <div class="start">
+      <h2 style="margin-top:0;border:none;">Getting Started</h2>
+      <ol>
+        <li>Use the bundled case studies in the install's <code>casestudies/</code> folder
+            (Automotive AEB and Medical Infusion Pump).</li>
+        <li><b>File &rarr; Open Projects from File System&hellip;</b> and select a case-study folder.</li>
+        <li>Open its <code>*.aird</code> and pick a representation (Architecture, Safety,
+            Requirements, FMEA, Metrics, Simulation, Traceability).</li>
+      </ol>
+      <a class="btn" href="http://org.eclipse.ui.intro/close">Enter the Workbench &rarr;</a>
+      <div class="muted">You can reopen this page anytime via <b>Help &rarr; Welcome</b>.</div>
+    </div>
+
+  </div>
+</body>
+</html>

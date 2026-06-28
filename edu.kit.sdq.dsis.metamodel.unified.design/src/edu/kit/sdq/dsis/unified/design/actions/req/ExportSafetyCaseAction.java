@@ -65,7 +65,8 @@ public class ExportSafetyCaseAction extends AbstractExternalJavaAction {
     private void writeSafetyCase(UnifiedSystemModel model, String path) throws IOException {
         String now = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
 
-        try (PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter(path)))) {
+        try (PrintWriter pw = new PrintWriter(new BufferedWriter(new OutputStreamWriter(
+                new FileOutputStream(path), java.nio.charset.StandardCharsets.UTF_8)))) {
 
             pw.println("╔══════════════════════════════════════════════════════════════════╗");
             pw.println("║         ISO 26262:2018 SAFETY CASE FRAGMENT                      ║");
@@ -165,8 +166,9 @@ public class ExportSafetyCaseAction extends AbstractExternalJavaAction {
             pw.println("    ✘ No FSRs allocated — compliance gap.");
         } else {
             for (FunctionalSafetyRequirement fsr : fsrs) {
+                // FSRs inherit the ASIL of the Safety Goal they are allocated from.
                 pw.println("    ✔ FSR [" + fsr.getRequirementId() + "] " + name(fsr)
-                    + " | ASIL=" + asilStr(((SafetyGoal) fsr).getAsilLevel())
+                    + " | ASIL=" + asilStr(sg.getAsilLevel())
                     + " | Status=" + statusStr(fsr.getStatus()));
 
                 // Derived TSRs
@@ -183,7 +185,7 @@ public class ExportSafetyCaseAction extends AbstractExternalJavaAction {
                         int fmeaCount = countFMEAForTSR(model, tsr);
 
                         pw.println("       ├─ TSR [" + tsr.getRequirementId() + "] " + name(tsr));
-                        pw.println("       │   ASIL=" + asilStr(((SafetyGoal) tsr).getAsilLevel())
+                        pw.println("       │   ASIL=" + asilStr(tsr.getAllocatedASIL())
                             + " | Status=" + statusStr(tsr.getStatus()));
 
                         if (realizedBy.isEmpty()) {
@@ -222,13 +224,9 @@ public class ExportSafetyCaseAction extends AbstractExternalJavaAction {
     }
 
     private int countFMEAForTSR(UnifiedSystemModel model, TechnicalSafetyRequirement tsr) {
-        int count = 0;
-        for (FMEAAnalysis analysis : model.getFmeaAnalysis()) {
-            for (FMEAItem item : analysis.getFmeaItems()) {
-                if (safeList(item, "relatedRequirements").contains(tsr)) count++;
-            }
-        }
-        return count;
+        // FMEA verification evidence is recorded on the TSR's verifiedBy reference
+        // (eOpposite of FMEAItem.validatesMechanisms chain). model param kept for API symmetry.
+        return tsr.getVerifiedBy() != null ? tsr.getVerifiedBy().size() : 0;
     }
 
     private List<SafetyMechanism> getMechanismsForTSR(UnifiedSystemModel model, TechnicalSafetyRequirement tsr) {
