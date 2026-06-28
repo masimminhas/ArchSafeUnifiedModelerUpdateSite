@@ -1,7 +1,11 @@
 package edu.kit.sdq.dsis.unified.design.actions;
 
-import java.io.FileWriter;
+import java.io.BufferedWriter;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
+import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import org.eclipse.emf.ecore.EObject;
@@ -314,7 +318,8 @@ public class TraceabilityQueryAction extends AbstractExternalJavaAction {
 
         String filePath = dialog.open();
         if (filePath != null) {
-            try (FileWriter writer = new FileWriter(filePath)) {
+            try (Writer writer = new BufferedWriter(new OutputStreamWriter(
+                    new FileOutputStream(filePath), StandardCharsets.UTF_8))) {
                 writer.write(report);
                 MessageDialog.openInformation(shell, "Export Successful",
                     "Gap analysis report exported to:\n" + filePath);

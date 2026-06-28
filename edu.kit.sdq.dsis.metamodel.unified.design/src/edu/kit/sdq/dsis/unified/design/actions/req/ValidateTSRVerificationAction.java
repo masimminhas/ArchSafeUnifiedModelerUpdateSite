@@ -43,13 +43,11 @@ public class ValidateTSRVerificationAction extends AbstractExternalJavaAction {
         List<String> warnings = new ArrayList<>();
         List<String> passes   = new ArrayList<>();
 
-        // Pre-build lookup: TSR → FMEA items that verify it
+        // Pre-build lookup: TSR → FMEA items that verify it (TSR.verifiedBy reference)
         Map<TechnicalSafetyRequirement, List<FMEAItem>> tsrToFMEA = new HashMap<>();
-        for (FMEAAnalysis analysis : model.getFmeaAnalysis()) {
-            for (FMEAItem item : analysis.getFmeaItems()) {
-                for (TechnicalSafetyRequirement tsr : getVerifiedTSRs(item)) {
-                    tsrToFMEA.computeIfAbsent(tsr, k -> new ArrayList<>()).add(item);
-                }
+        for (TechnicalSafetyRequirement tsr : model.getTechnicalRequirements()) {
+            if (tsr.getVerifiedBy() != null && !tsr.getVerifiedBy().isEmpty()) {
+                tsrToFMEA.put(tsr, new ArrayList<>(tsr.getVerifiedBy()));
             }
         }
 
@@ -143,28 +141,6 @@ public class ValidateTSRVerificationAction extends AbstractExternalJavaAction {
 
         report.append("\n").append(Iso26262Reference.REPORT_DISCLAIMER);
         showInfo("TSR Verification Coverage", report.toString());
-    }
-
-    /** Retrieves TSRs that a given FMEAItem verifies via the 'verifiedBy' reference. */
-    @SuppressWarnings("unchecked")
-    private List<TechnicalSafetyRequirement> getVerifiedTSRs(FMEAItem item) {
-        try {
-            Object result = item.getClass().getMethod("getVerifiedRequirements").invoke(item);
-            if (result instanceof List) return (List<TechnicalSafetyRequirement>) result;
-        } catch (Exception ignored) { /* method not yet generated */ }
-        // Fallback: check relatedRequirements for TSR instances
-        List<TechnicalSafetyRequirement> tsrs = new ArrayList<>();
-        try {
-            java.lang.reflect.Method m = item.getClass().getMethod("getRelatedRequirements");
-            Object result = m.invoke(item);
-            if (result instanceof List) {
-                for (Object req : (List<?>) result) {
-                    if (req instanceof TechnicalSafetyRequirement)
-                        tsrs.add((TechnicalSafetyRequirement) req);
-                }
-            }
-        } catch (Exception ignored) { /* reflective fallback also unavailable */ }
-        return tsrs;
     }
 
     private void appendSection(StringBuilder sb, String title, List<String> items) {

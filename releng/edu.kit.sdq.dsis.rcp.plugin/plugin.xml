@@ -8,7 +8,29 @@
             name="ArchSafe Unified Modeler">
          <property name="appName"                value="ArchSafe Unified Modeler"/>
          <property name="preferenceCustomization" value="plugin_customization.ini"/>
+         <property name="introTitle"             value="ArchSafe Unified Modeler"/>
       </product>
+   </extension>
+
+   <!-- Welcome / Intro page describing ArchSafe features and view types -->
+   <extension point="org.eclipse.ui.intro">
+      <intro
+            id="edu.kit.sdq.dsis.intro"
+            class="org.eclipse.ui.intro.config.CustomizableIntroPart"/>
+      <introProductBinding
+            productId="edu.kit.sdq.dsis.rcp.plugin.product"
+            introId="edu.kit.sdq.dsis.intro"/>
+   </extension>
+
+   <extension point="org.eclipse.ui.intro.config">
+      <config
+            id="edu.kit.sdq.dsis.introConfig"
+            introId="edu.kit.sdq.dsis.intro"
+            content="intro/introContent.xml">
+         <presentation home-page-id="root">
+            <implementation kind="html"/>
+         </presentation>
+      </config>
    </extension>
 
 </plugin>

@@ -65,38 +65,44 @@ public class FailurePropagationEngine {
                 if (!(raw instanceof EObject)) continue;
                 EObject conn = (EObject) raw;
 
-                // fromBlock and toBlock are upperBound=-1 (EList) in the metamodel —
-                // ref() returns null for multi-valued refs because EList is not EObject.
-                // Use listF() and take the first element (lowerBound=1 guarantees one exists).
-                EObject from = firstOf(listF(conn, "fromBlock"));
-                EObject to   = firstOf(listF(conn, "toBlock"));
-                if (from == null || to == null) continue;
+                // fromBlock and toBlock are upperBound=-1 (ELists) in the metamodel.
+                // Traverse every from→to endpoint pair so multi-endpoint connections
+                // are not silently truncated to their first element.
+                for (Object fo : listF(conn, "fromBlock")) {
+                    if (!(fo instanceof EObject)) continue;
+                    EObject from = (EObject) fo;
+                    String fromFrag = SimulationState.frag(from);
+                    if (fromFrag == null) continue;
 
-                String fromFrag = SimulationState.frag(from);
-                String toFrag   = SimulationState.frag(to);
-                if (fromFrag == null || toFrag == null) continue;
+                    for (Object tobj : listF(conn, "toBlock")) {
+                        if (!(tobj instanceof EObject)) continue;
+                        EObject to = (EObject) tobj;
+                        String toFrag = SimulationState.frag(to);
+                        if (toFrag == null) continue;
 
-                boolean fromIsCurrent = fromFrag.equals(currentFrag);
-                boolean toIsCurrent   = toFrag.equals(currentFrag);
-                boolean toVisited     = visited.containsKey(toFrag);
-                boolean fromVisited   = visited.containsKey(fromFrag);
+                        boolean fromIsCurrent = fromFrag.equals(currentFrag);
+                        boolean toIsCurrent   = toFrag.equals(currentFrag);
+                        boolean toVisited     = visited.containsKey(toFrag);
+                        boolean fromVisited   = visited.containsKey(fromFrag);
 
-                if (forward && fromIsCurrent && !toVisited) {
-                    visited.put(toFrag, depth + 1);
-                    state.addPropagatedBlock(to);
-                    state.addActiveEdge(conn);
-                    state.addPropagationStep(buildStep(from, to, conn, depth + 1, true));
-                    queue.add(to);
+                        if (forward && fromIsCurrent && !toVisited) {
+                            visited.put(toFrag, depth + 1);
+                            state.addPropagatedBlock(to);
+                            state.addActiveEdge(conn);
+                            state.addPropagationStep(buildStep(from, to, conn, depth + 1, true));
+                            queue.add(to);
 
-                } else if (backward && toIsCurrent && !fromVisited) {
-                    visited.put(fromFrag, depth + 1);
-                    state.addPropagatedBlock(from);
-                    state.addActiveEdge(conn);
-                    state.addPropagationStep(buildStep(to, from, conn, depth + 1, false));
-                    queue.add(from);
+                        } else if (backward && toIsCurrent && !fromVisited) {
+                            visited.put(fromFrag, depth + 1);
+                            state.addPropagatedBlock(from);
+                            state.addActiveEdge(conn);
+                            state.addPropagationStep(buildStep(to, from, conn, depth + 1, false));
+                            queue.add(from);
 
-                } else if ((fromIsCurrent && toVisited) || (toIsCurrent && fromVisited)) {
-                    state.addActiveEdge(conn);
+                        } else if ((fromIsCurrent && toVisited) || (toIsCurrent && fromVisited)) {
+                            state.addActiveEdge(conn);
+                        }
+                    }
                 }
             }
         }
@@ -159,22 +165,6 @@ public class FailurePropagationEngine {
     }
 
     // ── EMF helpers ───────────────────────────────────────────────────────────
-
-    /** Returns the first element of a list, or null if empty. */
-    private EObject firstOf(List<?> list) {
-        if (list == null || list.isEmpty()) return null;
-        Object first = list.get(0);
-        return (first instanceof EObject) ? (EObject) first : null;
-    }
-
-    private EObject ref(EObject obj, String feature) {
-        try {
-            var f = obj.eClass().getEStructuralFeature(feature);
-            if (f == null) return null;
-            Object v = obj.eGet(f, true);
-            return (v instanceof EObject) ? (EObject) v : null;
-        } catch (Exception e) { return null; }
-    }
 
     @SuppressWarnings("unchecked")
     private List<?> listF(EObject obj, String feature) {

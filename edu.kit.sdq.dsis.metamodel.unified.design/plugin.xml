@@ -11,17 +11,14 @@
       </viewpoint>
    </extension>
 
-   <!-- ── IStartup: register viewpoint programmatically after workspace ready -->
+   <!-- ── IStartup: activates this bundle early and registers the viewpoint
+        auto-selector so case-study representations are enabled by default. ── -->
    <extension point="org.eclipse.ui.startup">
       <startup class="edu.kit.sdq.dsis.metamodel.unified.design.ViewpointStartup"/>
    </extension>
 
    <!-- ── External Java Actions ─────────────────────────────────── -->
    <extension point="org.eclipse.sirius.externalJavaAction">
-      <javaActions
-            id="edu.kit.sdq.dsis.unified.design.actions.TestAction"
-            actionClass="edu.kit.sdq.dsis.unified.design.actions.TestAction">
-      </javaActions>
       <javaActions
             id="edu.kit.sdq.dsis.unified.design.actions.ValidateConsistencyAction"
             actionClass="edu.kit.sdq.dsis.unified.design.actions.ValidateConsistencyAction">

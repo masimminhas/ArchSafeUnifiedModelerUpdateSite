@@ -16,6 +16,7 @@ import org.eclipse.swt.widgets.Display;
 import edu.kit.sdq.dsis.unified.design.services.AdvancedAnalysisServices;
 import unified.FMEAAnalysis;
 import unified.FMEAItem;
+import unified.UnifiedElement;
 import unified.UnifiedFactory;
 import unified.UnifiedSystemModel;
 
@@ -78,12 +79,13 @@ public class GenerateFMEAAction implements IExternalJavaAction {
                 return;
             }
             
+            final int[] addedCount = {0};
             RecordingCommand command = new RecordingCommand(domain, "Generate FMEA Items") {
                 @Override
                 protected void doExecute() {
                     AdvancedAnalysisServices service = new AdvancedAnalysisServices();
                     List<FMEAItem> generatedItems = service.generateFMEAItems(model);
-                    
+
                     // Create or get FMEA analysis container
                     FMEAAnalysis analysis;
                     if (model.getFmeaAnalysis().isEmpty()) {
@@ -94,17 +96,29 @@ public class GenerateFMEAAction implements IExternalJavaAction {
                     } else {
                         analysis = model.getFmeaAnalysis().get(0);
                     }
-                    
-                    // Add generated items
-                    analysis.getFmeaItems().addAll(generatedItems);
+
+                    // Dedup on re-run: skip (component, failureMode) pairs that already
+                    // have an FMEA item, so regeneration is idempotent and does not
+                    // duplicate items or overwrite manually-created ones.
+                    java.util.Set<String> existing = new java.util.HashSet<>();
+                    for (FMEAItem it : analysis.getFmeaItems()) {
+                        existing.add(pairKey(it));
+                    }
+                    for (FMEAItem gen : generatedItems) {
+                        if (existing.add(pairKey(gen))) {
+                            analysis.getFmeaItems().add(gen);
+                            addedCount[0]++;
+                        }
+                    }
                 }
             };
-            
+
             // Execute the command
             domain.getCommandStack().execute(command);
-            
-            showInfo("FMEA Generation Complete", 
-                    "✅ Generated FMEA items successfully\n\n" +
+
+            showInfo("FMEA Generation Complete",
+                    "✅ Added " + addedCount[0] + " new FMEA item(s)"
+                    + " (existing items for the same component/failure mode were kept).\n\n" +
                     "Please review and refine:\n" +
                     "• Severity values\n" +
                     "• Occurrence estimates\n" +
@@ -116,6 +130,21 @@ public class GenerateFMEAAction implements IExternalJavaAction {
         }
     }
     
+    /** Identity key for an FMEA item's (analyzedComponent, failureMode) pair. */
+    private static String pairKey(FMEAItem it) {
+        return key(it.getAnalyzedComponent()) + "::" + key(it.getFailureMode());
+    }
+
+    private static String key(EObject e) {
+        if (e == null) return "?";
+        if (e instanceof UnifiedElement) {
+            UnifiedElement u = (UnifiedElement) e;
+            if (u.getId() != null)   return u.getId();
+            if (u.getName() != null) return u.getName();
+        }
+        return Integer.toHexString(System.identityHashCode(e));
+    }
+
     private UnifiedSystemModel getModelFromSelections(Collection<? extends EObject> selections) {
         if (selections == null || selections.isEmpty()) {
             return null;

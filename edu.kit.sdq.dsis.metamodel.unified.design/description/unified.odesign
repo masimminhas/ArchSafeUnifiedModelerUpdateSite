@@ -1421,7 +1421,7 @@
           </style>
         </nodeMappings>
         <nodeMappings name="REQ_Hazard_Node" semanticCandidatesExpression="feature:globalHazards" domainClass="unified::IntegratedHazard">
-          <style xsi:type="style:EllipseNodeDescription" labelSize="9" showIcon="false" labelExpression="aql:self.name" labelPosition="node" resizeKind="NSEW" width="10" height="5">
+          <style xsi:type="style:SquareDescription" labelSize="10" showIcon="false" labelExpression="aql:self.name + ' [' + self.riskLevel.toString() + ']'" labelPosition="node" resizeKind="NSEW" width="18" height="8">
             <borderColor xsi:type="description:SystemColor" href="environment:/viewpoint#//@systemColors/@entries[name='orange']"/>
             <labelColor xsi:type="description:SystemColor" href="environment:/viewpoint#//@systemColors/@entries[name='black']"/>
             <color xsi:type="description:SystemColor" href="environment:/viewpoint#//@systemColors/@entries[name='light_orange']"/>
@@ -1645,131 +1645,40 @@
         </toolSections>
       </defaultLayer>
     </ownedRepresentations>
-    <ownedRepresentations xsi:type="description_2:EditionTableDescription" name="MetricsDashboard" label="Quality Metrics Dashboard" domainClass="unified::UnifiedSystemModel" initialHeaderColumnWidth="260">
+    <ownedRepresentations xsi:type="description_2:EditionTableDescription" name="MetricsDashboard" label="Quality Metrics Dashboard" domainClass="unified::UnifiedSystemModel" initialHeaderColumnWidth="300">
       <metamodel href="http://edu.kit.sdq.dsis.metamodel/unified#/"/>
-      <ownedLineMappings name="MD_SummaryLine" domainClass="unified::UnifiedSystemModel" semanticCandidatesExpression="aql:Sequence{self}" headerLabelExpression="aql:'Model v' + self.modelVersion"/>
-      <ownedLineMappings name="MD_HazardLine" domainClass="unified::IntegratedHazard" semanticCandidatesExpression="feature:globalHazards" headerLabelExpression="aql:self.name"/>
-      <ownedLineMappings name="MD_TSRLine" domainClass="unified::TechnicalSafetyRequirement" semanticCandidatesExpression="feature:technicalRequirements" headerLabelExpression="aql:self.requirementId"/>
-      <ownedLineMappings name="MD_FMEALine" domainClass="unified::FMEAItem" semanticCandidatesExpression="aql:self.fmeaAnalysis.fmeaItems" headerLabelExpression="aql:self.name"/>
-      <ownedLineMappings name="MD_MechLine" domainClass="unified::SafetyMechanism" semanticCandidatesExpression="feature:safetyMechanisms" headerLabelExpression="aql:self.name"/>
-      <ownedColumnMappings name="MD_Col_MCR" headerLabelExpression="MCR | Risk Level | ASIL | S | Mech.Type" canEdit="false" featureName="name" labelExpression="aql:if self.oclIsKindOf(unified::UnifiedSystemModel) then   self.oclAsType(unified::UnifiedSystemModel).analysisMetadata.mcr.toString() + '% MCR' else if self.oclIsKindOf(unified::IntegratedHazard) then   self.oclAsType(unified::IntegratedHazard).riskLevel.toString() else if self.oclIsKindOf(unified::TechnicalSafetyRequirement) then   self.oclAsType(unified::TechnicalSafetyRequirement).allocatedASIL.toString() else if self.oclIsKindOf(unified::FMEAItem) then   'S:' + self.oclAsType(unified::FMEAItem).severity.toString() else if self.oclIsKindOf(unified::SafetyMechanism) then   self.oclAsType(unified::SafetyMechanism).mechanismType.toString() else '' endif endif endif endif endif">
+      <!-- One row per GQM metric. Each row's semantic element is the model itself;
+           rows are distinguished by their line mapping (line.originMapping.name).
+           Values are computed LIVE via MetricsService, so the dashboard always
+           reflects the current model (no stale persisted snapshot). -->
+      <ownedLineMappings name="MD_MCR_Line" domainClass="unified::UnifiedSystemModel" semanticCandidatesExpression="aql:Sequence{self}" headerLabelExpression="aql:'Metamodel Coverage (MCR)'"/>
+      <ownedLineMappings name="MD_HTI_Line" domainClass="unified::UnifiedSystemModel" semanticCandidatesExpression="aql:Sequence{self}" headerLabelExpression="aql:'Hazard Traceability (HTI)'"/>
+      <ownedLineMappings name="MD_RAR_Line" domainClass="unified::UnifiedSystemModel" semanticCandidatesExpression="aql:Sequence{self}" headerLabelExpression="aql:'Requirement Allocation (RAR)'"/>
+      <ownedLineMappings name="MD_FLC_Line" domainClass="unified::UnifiedSystemModel" semanticCandidatesExpression="aql:Sequence{self}" headerLabelExpression="aql:'Failure-Logic Coverage (FLC)'"/>
+      <ownedLineMappings name="MD_TDS_Line" domainClass="unified::UnifiedSystemModel" semanticCandidatesExpression="aql:Sequence{self}" headerLabelExpression="aql:'Traceability Density (TDS)'"/>
+      <ownedLineMappings name="MD_MVR_Line" domainClass="unified::UnifiedSystemModel" semanticCandidatesExpression="aql:Sequence{self}" headerLabelExpression="aql:'Mechanism Verification (MVR)'"/>
+      <ownedLineMappings name="MD_Overall_Line" domainClass="unified::UnifiedSystemModel" semanticCandidatesExpression="aql:Sequence{self}" headerLabelExpression="aql:'Overall'"/>
+      <ownedColumnMappings name="MD_Col_Value" headerLabelExpression="Value" canEdit="false" featureName="name" labelExpression="aql:self.metricValuePct(line.originMapping.name)">
         <defaultForeground>
           <foreGroundColor xsi:type="description:SystemColor" href="environment:/viewpoint#//@systemColors/@entries[name='black']"/>
         </defaultForeground>
       </ownedColumnMappings>
-      <ownedColumnMappings name="MD_Col_HTI" headerLabelExpression="HTI | Goal Linked | Verif.Method | O | DC%" canEdit="false" featureName="name" labelExpression="aql:if self.oclIsKindOf(unified::UnifiedSystemModel) then   self.oclAsType(unified::UnifiedSystemModel).analysisMetadata.hti.toString() + '% HTI' else if self.oclIsKindOf(unified::IntegratedHazard) then   if self.eContainer().oclAsType(unified::UnifiedSystemModel).safetyGoals->select(sg | sg.relatedHazard = self)->size() > 0   then 'Goal linked'   else 'No Safety Goal'   endif else if self.oclIsKindOf(unified::TechnicalSafetyRequirement) then   self.oclAsType(unified::TechnicalSafetyRequirement).verificationMethod.toString() else if self.oclIsKindOf(unified::FMEAItem) then   'O:' + self.oclAsType(unified::FMEAItem).occurrence.toString() else if self.oclIsKindOf(unified::SafetyMechanism) then   self.oclAsType(unified::SafetyMechanism).diagnosticCoverage.toString() + '% DC' else '' endif endif endif endif endif">
-        <foregroundConditionalStyle predicateExpression="aql:self.oclIsKindOf(unified::UnifiedSystemModel) and self.oclAsType(unified::UnifiedSystemModel).analysisMetadata.hti &lt; 100">
-          <style>
-            <labelFormat>bold</labelFormat>
-            <foreGroundColor xsi:type="description:SystemColor" href="environment:/viewpoint#//@systemColors/@entries[name='red']"/>
-          </style>
-        </foregroundConditionalStyle>
-        <foregroundConditionalStyle predicateExpression="aql:self.oclIsKindOf(unified::UnifiedSystemModel) and self.oclAsType(unified::UnifiedSystemModel).analysisMetadata.hti = 100">
-          <style>
-            <labelFormat>bold</labelFormat>
-            <foreGroundColor xsi:type="description:SystemColor" href="environment:/viewpoint#//@systemColors/@entries[name='dark_green']"/>
-          </style>
-        </foregroundConditionalStyle>
-      </ownedColumnMappings>
-      <ownedColumnMappings name="MD_Col_RAR" headerLabelExpression="RAR | FMEA Linked | Realized By | D | Validated" canEdit="false" featureName="name" labelExpression="aql:if self.oclIsKindOf(unified::UnifiedSystemModel) then   self.oclAsType(unified::UnifiedSystemModel).analysisMetadata.rar.toString() + '% RAR' else if self.oclIsKindOf(unified::IntegratedHazard) then   if self.eContainer().oclAsType(unified::UnifiedSystemModel).fmeaAnalysis.fmeaItems->select(item | item.relatedHazards->includes(self))->size() > 0   then 'FMEA linked'   else 'No FMEA item'   endif else if self.oclIsKindOf(unified::TechnicalSafetyRequirement) then   if self.oclAsType(unified::TechnicalSafetyRequirement).realizedBy->size() > 0   then self.oclAsType(unified::TechnicalSafetyRequirement).realizedBy->size().toString() + ' block(s)'   else 'Unallocated'   endif else if self.oclIsKindOf(unified::FMEAItem) then   'D:' + self.oclAsType(unified::FMEAItem).detection.toString() else if self.oclIsKindOf(unified::SafetyMechanism) then   if self.oclAsType(unified::SafetyMechanism).validatedBy->size() > 0   then self.oclAsType(unified::SafetyMechanism).validatedBy->size().toString() + ' FMEA item(s)'   else 'Unvalidated'   endif else '' endif endif endif endif endif">
-        <foregroundConditionalStyle predicateExpression="aql:self.oclIsKindOf(unified::UnifiedSystemModel) and self.oclAsType(unified::UnifiedSystemModel).analysisMetadata.rar &lt; 95">
-          <style>
-            <labelFormat>bold</labelFormat>
-            <foreGroundColor xsi:type="description:SystemColor" href="environment:/viewpoint#//@systemColors/@entries[name='red']"/>
-          </style>
-        </foregroundConditionalStyle>
-        <foregroundConditionalStyle predicateExpression="aql:self.oclIsKindOf(unified::UnifiedSystemModel) and self.oclAsType(unified::UnifiedSystemModel).analysisMetadata.rar >= 95">
-          <style>
-            <labelFormat>bold</labelFormat>
-            <foreGroundColor xsi:type="description:SystemColor" href="environment:/viewpoint#//@systemColors/@entries[name='dark_green']"/>
-          </style>
-        </foregroundConditionalStyle>
-      </ownedColumnMappings>
-      <ownedColumnMappings name="MD_Col_FLC" headerLabelExpression="FLC | Mitigation | Verified By | RPN | TSR count" canEdit="false" featureName="name" labelExpression="aql:if self.oclIsKindOf(unified::UnifiedSystemModel) then   self.oclAsType(unified::UnifiedSystemModel).analysisMetadata.flc.toString() + '% FLC' else if self.oclIsKindOf(unified::IntegratedHazard) then   self.oclAsType(unified::IntegratedHazard).mitigationStatus.toString() else if self.oclIsKindOf(unified::TechnicalSafetyRequirement) then   if self.oclAsType(unified::TechnicalSafetyRequirement).verifiedBy->size() > 0   then self.oclAsType(unified::TechnicalSafetyRequirement).verifiedBy->size().toString() + ' FMEA item(s)'   else 'Not yet verified'   endif else if self.oclIsKindOf(unified::FMEAItem) then   'RPN:' + (self.oclAsType(unified::FMEAItem).severity * self.oclAsType(unified::FMEAItem).occurrence * self.oclAsType(unified::FMEAItem).detection).toString() else if self.oclIsKindOf(unified::SafetyMechanism) then   self.oclAsType(unified::SafetyMechanism).implements->size().toString() + ' TSR(s)' else '' endif endif endif endif endif">
-        <foregroundConditionalStyle predicateExpression="aql:self.oclIsKindOf(unified::FMEAItem) and (self.oclAsType(unified::FMEAItem).severity * self.oclAsType(unified::FMEAItem).occurrence * self.oclAsType(unified::FMEAItem).detection) > 100">
-          <style>
-            <labelFormat>bold</labelFormat>
-            <foreGroundColor xsi:type="description:SystemColor" href="environment:/viewpoint#//@systemColors/@entries[name='red']"/>
-          </style>
-        </foregroundConditionalStyle>
-        <foregroundConditionalStyle predicateExpression="aql:self.oclIsKindOf(unified::FMEAItem) and (self.oclAsType(unified::FMEAItem).severity * self.oclAsType(unified::FMEAItem).occurrence * self.oclAsType(unified::FMEAItem).detection) > 50 and (self.oclAsType(unified::FMEAItem).severity * self.oclAsType(unified::FMEAItem).occurrence * self.oclAsType(unified::FMEAItem).detection) &lt;= 100">
-          <style>
-            <labelFormat>bold</labelFormat>
-            <foreGroundColor xsi:type="description:SystemColor" href="environment:/viewpoint#//@systemColors/@entries[name='orange']"/>
-          </style>
-        </foregroundConditionalStyle>
-        <foregroundConditionalStyle predicateExpression="aql:self.oclIsKindOf(unified::FMEAItem) and (self.oclAsType(unified::FMEAItem).severity * self.oclAsType(unified::FMEAItem).occurrence * self.oclAsType(unified::FMEAItem).detection) &lt;= 50">
-          <style>
-            <foreGroundColor xsi:type="description:SystemColor" href="environment:/viewpoint#//@systemColors/@entries[name='dark_green']"/>
-          </style>
-        </foregroundConditionalStyle>
-        <foregroundConditionalStyle predicateExpression="aql:self.oclIsKindOf(unified::UnifiedSystemModel) and self.oclAsType(unified::UnifiedSystemModel).analysisMetadata.flc &lt; 100">
-          <style>
-            <labelFormat>bold</labelFormat>
-            <foreGroundColor xsi:type="description:SystemColor" href="environment:/viewpoint#//@systemColors/@entries[name='red']"/>
-          </style>
-        </foregroundConditionalStyle>
-      </ownedColumnMappings>
-      <ownedColumnMappings name="MD_Col_TDS" headerLabelExpression="TDS | Hazard Category | TSR Status | Failure Mode | Impl.In" canEdit="false" featureName="name" labelExpression="aql:if self.oclIsKindOf(unified::UnifiedSystemModel) then   self.oclAsType(unified::UnifiedSystemModel).analysisMetadata.tds.toString() + '% TDS' else if self.oclIsKindOf(unified::IntegratedHazard) then   self.oclAsType(unified::IntegratedHazard).hazardCategory.toString() else if self.oclIsKindOf(unified::TechnicalSafetyRequirement) then   self.oclAsType(unified::TechnicalSafetyRequirement).status.toString() else if self.oclIsKindOf(unified::FMEAItem) then   if self.oclAsType(unified::FMEAItem).failureMode &lt;> null   then self.oclAsType(unified::FMEAItem).failureMode.name   else 'No failure mode'   endif else if self.oclIsKindOf(unified::SafetyMechanism) then   if self.oclAsType(unified::SafetyMechanism).implementedIn &lt;> null   then self.oclAsType(unified::SafetyMechanism).implementedIn.name   else 'Not placed'   endif else '' endif endif endif endif endif">
-        <foregroundConditionalStyle predicateExpression="aql:self.oclIsKindOf(unified::UnifiedSystemModel) and self.oclAsType(unified::UnifiedSystemModel).analysisMetadata.tds &lt; 80">
-          <style>
-            <labelFormat>bold</labelFormat>
-            <foreGroundColor xsi:type="description:SystemColor" href="environment:/viewpoint#//@systemColors/@entries[name='red']"/>
-          </style>
-        </foregroundConditionalStyle>
-        <foregroundConditionalStyle predicateExpression="aql:self.oclIsKindOf(unified::UnifiedSystemModel) and self.oclAsType(unified::UnifiedSystemModel).analysisMetadata.tds >= 80">
-          <style>
-            <labelFormat>bold</labelFormat>
-            <foreGroundColor xsi:type="description:SystemColor" href="environment:/viewpoint#//@systemColors/@entries[name='dark_green']"/>
-          </style>
-        </foregroundConditionalStyle>
-      </ownedColumnMappings>
-      <ownedColumnMappings name="MD_Col_MVR" headerLabelExpression="MVR | Rel.Blocks | Tech.Category | Validates Mechs" canEdit="false" featureName="name" labelExpression="aql:if self.oclIsKindOf(unified::UnifiedSystemModel) then   self.oclAsType(unified::UnifiedSystemModel).analysisMetadata.mvr.toString() + '% MVR' else if self.oclIsKindOf(unified::IntegratedHazard) then   self.oclAsType(unified::IntegratedHazard).relatedBlocks->size().toString() + ' block(s)' else if self.oclIsKindOf(unified::TechnicalSafetyRequirement) then   self.oclAsType(unified::TechnicalSafetyRequirement).technicalCategory.toString() else if self.oclIsKindOf(unified::FMEAItem) then   if self.oclAsType(unified::FMEAItem).validatesMechanisms->size() > 0   then self.oclAsType(unified::FMEAItem).validatesMechanisms->size().toString() + ' mech.'   else 'None'   endif else '' endif endif endif endif">
-        <foregroundConditionalStyle predicateExpression="aql:self.oclIsKindOf(unified::UnifiedSystemModel) and self.oclAsType(unified::UnifiedSystemModel).analysisMetadata.mvr &lt; 85">
-          <style>
-            <labelFormat>bold</labelFormat>
-            <foreGroundColor xsi:type="description:SystemColor" href="environment:/viewpoint#//@systemColors/@entries[name='red']"/>
-          </style>
-        </foregroundConditionalStyle>
-        <foregroundConditionalStyle predicateExpression="aql:self.oclIsKindOf(unified::UnifiedSystemModel) and (self.oclAsType(unified::UnifiedSystemModel).analysisMetadata.mvr >= 85">
-          <style>
-            <labelFormat>bold</labelFormat>
-            <foreGroundColor xsi:type="description:SystemColor" href="environment:/viewpoint#//@systemColors/@entries[name='dark_green']"/>
-          </style>
-        </foregroundConditionalStyle>
-      </ownedColumnMappings>
-      <ownedColumnMappings name="MD_Col_Overall" headerLabelExpression="Overall Status" canEdit="false" featureName="name" labelExpression="aql:if self.oclIsKindOf(unified::UnifiedSystemModel)   then if self.oclAsType(unified::UnifiedSystemModel).analysisMetadata.mcr >= 90 and self.oclAsType(unified::UnifiedSystemModel).analysisMetadata.hti = 100 and self.oclAsType(unified::UnifiedSystemModel).analysisMetadata.rar >= 95 and self.oclAsType(unified::UnifiedSystemModel).analysisMetadata.flc = 100 and self.oclAsType(unified::UnifiedSystemModel).analysisMetadata.tds >= 80 and self.oclAsType(unified::UnifiedSystemModel).analysisMetadata.mvr >= 85 then 'ALL PASS' else 'GAPS' endif   else '' endif">
-        <foregroundConditionalStyle predicateExpression="aql:self.oclIsKindOf(unified::UnifiedSystemModel) and self.oclAsType(unified::UnifiedSystemModel).analysisMetadata.mcr >= 90 and self.oclAsType(unified::UnifiedSystemModel).analysisMetadata.hti = 100 and self.oclAsType(unified::UnifiedSystemModel).analysisMetadata.rar >= 95 and self.oclAsType(unified::UnifiedSystemModel).analysisMetadata.flc = 100 and self.oclAsType(unified::UnifiedSystemModel).analysisMetadata.tds >= 80 and self.oclAsType(unified::UnifiedSystemModel).analysisMetadata.mvr >= 85">
-          <style>
-            <labelFormat>bold</labelFormat>
-            <foreGroundColor xsi:type="description:SystemColor" href="environment:/viewpoint#//@systemColors/@entries[name='dark_green']"/>
-          </style>
-        </foregroundConditionalStyle>
-        <foregroundConditionalStyle predicateExpression="aql:self.oclIsKindOf(unified::UnifiedSystemModel) and not (self.oclAsType(unified::UnifiedSystemModel).analysisMetadata.mcr >= 90 and self.oclAsType(unified::UnifiedSystemModel).analysisMetadata.hti = 100 and self.oclAsType(unified::UnifiedSystemModel).analysisMetadata.rar >= 95 and self.oclAsType(unified::UnifiedSystemModel).analysisMetadata.flc = 100 and self.oclAsType(unified::UnifiedSystemModel).analysisMetadata.tds >= 80 and self.oclAsType(unified::UnifiedSystemModel).analysisMetadata.mvr >= 85)">
-          <style>
-            <labelFormat>bold</labelFormat>
-            <foreGroundColor xsi:type="description:SystemColor" href="environment:/viewpoint#//@systemColors/@entries[name='red']"/>
-          </style>
-        </foregroundConditionalStyle>
-      </ownedColumnMappings>
-      <ownedColumnMappings name="MD_Col_ActionStatus" headerLabelExpression="Action Status" canEdit="true" featureName="actionStatus" labelExpression="aql:if self.oclIsKindOf(unified::FMEAItem) then self.oclAsType(unified::FMEAItem).actionStatus.toString() else '' endif">
+      <ownedColumnMappings name="MD_Col_Threshold" headerLabelExpression="Threshold" canEdit="false" featureName="name" labelExpression="aql:self.metricThreshold(line.originMapping.name)">
         <defaultForeground>
-          <foreGroundColor xsi:type="description:SystemColor" href="environment:/viewpoint#//@systemColors/@entries[name='dark_green']"/>
+          <foreGroundColor xsi:type="description:SystemColor" href="environment:/viewpoint#//@systemColors/@entries[name='black']"/>
         </defaultForeground>
-        <foregroundConditionalStyle predicateExpression="aql:self.oclIsKindOf(unified::FMEAItem) and self.oclAsType(unified::FMEAItem).actionStatus.toString() = 'OPEN'">
+      </ownedColumnMappings>
+      <ownedColumnMappings name="MD_Col_Status" headerLabelExpression="Status" canEdit="false" featureName="name" labelExpression="aql:self.metricStatus(line.originMapping.name)">
+        <foregroundConditionalStyle predicateExpression="aql:self.metricPass(line.originMapping.name)">
+          <style>
+            <labelFormat>bold</labelFormat>
+            <foreGroundColor xsi:type="description:SystemColor" href="environment:/viewpoint#//@systemColors/@entries[name='dark_green']"/>
+          </style>
+        </foregroundConditionalStyle>
+        <foregroundConditionalStyle predicateExpression="aql:not self.metricPass(line.originMapping.name)">
           <style>
             <labelFormat>bold</labelFormat>
             <foreGroundColor xsi:type="description:SystemColor" href="environment:/viewpoint#//@systemColors/@entries[name='red']"/>
-          </style>
-        </foregroundConditionalStyle>
-        <foregroundConditionalStyle predicateExpression="aql:self.oclIsKindOf(unified::FMEAItem) and self.oclAsType(unified::FMEAItem).actionStatus.toString() = 'IN_PROGRESS'">
-          <style>
-            <foreGroundColor xsi:type="description:SystemColor" href="environment:/viewpoint#//@systemColors/@entries[name='orange']"/>
-          </style>
-        </foregroundConditionalStyle>
-        <foregroundConditionalStyle predicateExpression="aql:self.oclIsKindOf(unified::FMEAItem) and (self.oclAsType(unified::FMEAItem).actionStatus.toString() = 'COMPLETED' or self.oclAsType(unified::FMEAItem).actionStatus.toString() = 'VERIFIED')">
-          <style>
-            <foreGroundColor xsi:type="description:SystemColor" href="environment:/viewpoint#//@systemColors/@entries[name='green']"/>
           </style>
         </foregroundConditionalStyle>
       </ownedColumnMappings>

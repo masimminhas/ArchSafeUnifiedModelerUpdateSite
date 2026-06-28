@@ -9,4 +9,34 @@
   </parent>
   <artifactId>edu.kit.sdq.dsis.rcp.feature</artifactId>
   <packaging>eclipse-feature</packaging>
+
+  <build>
+    <plugins>
+      <!-- Copy the canonical case studies into rootfiles/ so they are packaged
+           as product root files (see build.properties 'root=rootfiles').
+           Single source of truth: /casestudies (no duplication in VCS). -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-resources-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>copy-case-studies-to-rootfiles</id>
+            <phase>initialize</phase>
+            <goals>
+              <goal>copy-resources</goal>
+            </goals>
+            <configuration>
+              <outputDirectory>${project.basedir}/rootfiles/casestudies</outputDirectory>
+              <overwrite>true</overwrite>
+              <resources>
+                <resource>
+                  <directory>${maven.multiModuleProjectDirectory}/casestudies</directory>
+                </resource>
+              </resources>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
 </project>
