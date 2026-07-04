@@ -303,7 +303,7 @@ public class PropagateASILAction extends AbstractExternalJavaAction {
 
     private void showInfo(String title, String msg) {
         Display.getDefault().syncExec(() ->
-            MessageDialog.openInformation(Display.getDefault().getActiveShell(), title, msg));
+            edu.kit.sdq.dsis.unified.design.actions.ReportDialog.show(title, msg));
     }
 
     @Override

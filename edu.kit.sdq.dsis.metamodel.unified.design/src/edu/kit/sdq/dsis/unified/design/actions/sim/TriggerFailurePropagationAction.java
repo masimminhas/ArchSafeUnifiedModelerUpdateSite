@@ -112,7 +112,7 @@ public class TriggerFailurePropagationAction implements IExternalJavaAction {
     }
 
     private void showInfo(String m) {
-        try { MessageDialog.openInformation(Display.getDefault().getActiveShell(),
+        try { edu.kit.sdq.dsis.unified.design.actions.ReportDialog.show(
             "Failure Propagation Simulation", m);
         } catch (Exception ignored) { System.out.println("[FPS] " + m); }
     }
