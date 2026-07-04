@@ -165,6 +165,6 @@ public class IdentifyCriticalPropagationPathAction implements IExternalJavaActio
     }
     private EObject sem(EObject v) { return (v instanceof DRepresentationElement)?((DRepresentationElement)v).getTarget():v; }
     private EObject root(EObject o) { while(o!=null){if("UnifiedSystemModel".equals(o.eClass().getName()))return o; o=o.eContainer();} return null; }
-    private void info(String m) { try{MessageDialog.openInformation(Display.getDefault().getActiveShell(),"Critical Propagation Path",m);}catch(Exception ignored){} }
+    private void info(String m) { try{edu.kit.sdq.dsis.unified.design.actions.ReportDialog.show("Critical Propagation Path",m);}catch(Exception ignored){} }
     private void err(String m)  { try{MessageDialog.openError(Display.getDefault().getActiveShell(),"Critical Path – Error",m);}catch(Exception ignored){} }
 }
