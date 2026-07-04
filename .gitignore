@@ -25,6 +25,11 @@ releng/edu.kit.sdq.dsis.rcp/rootfiles/
 # Research paper material / docs — kept LOCAL only, never published to the remote
 docs/
 
+# Demo video & Motion Canvas intro material — kept LOCAL only, never published
+/DEMO_SCRIPT_FocuSee.md
+/DEMO_CAPTIONS_AND_CARDS.md
+/demo-intro/
+
 # LaTeX build intermediates (keep .tex/.bib/.pdf sources/outputs, ignore the rest)
 *.aux
 *.bbl

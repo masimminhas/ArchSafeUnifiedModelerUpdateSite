@@ -164,7 +164,7 @@ public class TriggerFromFailureModeAction implements IExternalJavaAction {
     }
 
     private void showInfo(String msg) {
-        try { MessageDialog.openInformation(Display.getDefault().getActiveShell(),
+        try { edu.kit.sdq.dsis.unified.design.actions.ReportDialog.show(
             "Failure Mode Propagation", msg);
         } catch (Exception ignored) { System.out.println("[FPS] " + msg); }
     }

@@ -243,7 +243,7 @@ public class ValidateTraceabilityCoverageAction extends AbstractExternalJavaActi
 
     private void showInfo(String title, String message) {
         Display.getDefault().syncExec(() ->
-            MessageDialog.openInformation(Display.getDefault().getActiveShell(), title, message)
+            edu.kit.sdq.dsis.unified.design.actions.ReportDialog.show(title, message)
         );
     }
 

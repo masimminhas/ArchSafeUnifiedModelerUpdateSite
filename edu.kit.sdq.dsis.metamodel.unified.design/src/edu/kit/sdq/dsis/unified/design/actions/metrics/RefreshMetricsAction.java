@@ -103,13 +103,8 @@ public class RefreshMetricsAction implements IExternalJavaAction {
 
         // Show the summary in a non-blocking information dialog
         final String finalSummary = summary;
-        Display.getDefault().asyncExec(() ->
-            MessageDialog.openInformation(
-                Display.getDefault().getActiveShell(),
-                "Quality Metrics Refreshed",
-                finalSummary
-            )
-        );
+        edu.kit.sdq.dsis.unified.design.actions.ReportDialog.show(
+            "Quality Metrics Refreshed", finalSummary);
     }
 
     /**

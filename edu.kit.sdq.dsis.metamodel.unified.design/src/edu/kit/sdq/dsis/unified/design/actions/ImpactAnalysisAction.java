@@ -508,7 +508,7 @@ public class ImpactAnalysisAction extends AbstractExternalJavaAction {
 
     private void showInfo(String title, String message) {
         Display.getDefault().syncExec(() ->
-            MessageDialog.openInformation(Display.getDefault().getActiveShell(), title, message));
+            edu.kit.sdq.dsis.unified.design.actions.ReportDialog.show(title, message));
     }
 
     @Override

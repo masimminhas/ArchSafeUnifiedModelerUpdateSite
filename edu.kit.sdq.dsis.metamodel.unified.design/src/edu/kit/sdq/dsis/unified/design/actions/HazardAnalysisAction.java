@@ -130,7 +130,7 @@ public class HazardAnalysisAction implements IExternalJavaAction {
     
     private void showInfo(String title, String message) {
         Display.getDefault().asyncExec(() -> {
-            MessageDialog.openInformation(Display.getDefault().getActiveShell(), title, message);
+            edu.kit.sdq.dsis.unified.design.actions.ReportDialog.show(title, message);
         });
     }
     
