@@ -10,7 +10,6 @@
 - 🎨 **Picto live class diagrams** — open [`unified.ecore`](edu.kit.sdq.dsis.metamodel.unified/model/unified.ecore) with Picto installed; the sibling [`unified.ecore.picto`](edu.kit.sdq.dsis.metamodel.unified/model/unified.ecore.picto) activates a Graphviz-DOT class-diagram view with 10 togglable layers (features, supertypes, subtypes, inline refs, reference labels, inherited features, operations, derived features, references-to-self, documentation), plus one drill-in diagram per EClass
 - ✅ **[Validation rules catalogue](rules.md)** — 45 semantic rules with ISO 26262 citations
 - 🧪 **[Case studies](casestudies/README.md)** — AEB (ISO 26262) and medical infusion pump (IEC 62304)
-- 🏛️ **Architecture diagrams** — [plug-in topology](docs/architecture.puml) and [build/distribution pipeline](docs/pipeline.puml) (PlantUML; open in VS Code with `Alt+D` or render via `plantuml -tsvg`)
 
 ## Project Structure
 
