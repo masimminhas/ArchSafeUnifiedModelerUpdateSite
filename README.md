@@ -11,7 +11,6 @@
 - ✅ **[Validation rules catalogue](rules.md)** — 45 semantic rules with ISO 26262 citations
 - 🧪 **[Case studies](casestudies/README.md)** — AEB (ISO 26262) and medical infusion pump (IEC 62304)
 - ⚖️ **[Tool evaluation](docs/EVALUATION.md)** — positioning vs. Capella, Papyrus-SysML, CHESS, EAST-ADL, Medini Analyze
-- 🎤 **[ECMFA / JOT 2026 talk slides](docs/ecmfa-presentation.tex)** + [BibTeX](docs/ecmfa-presentation.bib) — 20-slide Beamer deck for the unified-framework paper
 - 🏛️ **Architecture diagrams** — [plug-in topology](docs/architecture.puml) and [build/distribution pipeline](docs/pipeline.puml) (PlantUML; open in VS Code with `Alt+D` or render via `plantuml -tsvg`)
 
 ## Project Structure
