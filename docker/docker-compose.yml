@@ -1,13 +1,10 @@
-version: "3.9"
-
 services:
   archsafe-modeler:
     image: ghcr.io/masimminhas/archsafeunifiedmodeler:latest
     container_name: archsafe-unified-modeler
-    environment:
-      - DISPLAY=:99
-    volumes:
-      # Mount your workspace/models into the container
-      - ./workspace:/workspace
-    command: ["--data", "/workspace"]
+    ports:
+      - "127.0.0.1:6080:6080"   # noVNC → http://localhost:6080
+      - "127.0.0.1:5900:5900"   # optional: native VNC clients
+    # environment:
+    #   - VNC_PW=archsafe       # uncomment to require a VNC password
     restart: unless-stopped
