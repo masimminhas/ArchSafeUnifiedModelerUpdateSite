@@ -1,4 +1,5 @@
 docker/supervisord.conf text eol=lf
 docker/entrypoint.sh text eol=lf
 docker/maximize.sh text eol=lf
+docker/keep-visible.sh text eol=lf
 entrypoint.sh text eol=lf
