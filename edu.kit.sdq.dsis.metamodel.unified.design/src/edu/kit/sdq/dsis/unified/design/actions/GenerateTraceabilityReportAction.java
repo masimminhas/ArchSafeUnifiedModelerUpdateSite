@@ -18,6 +18,7 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Shell;
 
+import edu.kit.sdq.dsis.unified.design.services.MetricsService;
 import unified.*;
 
 /**
@@ -34,6 +35,9 @@ import unified.*;
  *   8. Recommendations panel
  */
 public class GenerateTraceabilityReportAction extends AbstractExternalJavaAction {
+
+    /** Single source of truth for the quality metrics (stateless, safe to share). */
+    private final MetricsService METRICS = new MetricsService();
 
     @Override
     public void execute(Collection<? extends EObject> selections, Map<String, Object> parameters) {
@@ -175,7 +179,7 @@ public class GenerateTraceabilityReportAction extends AbstractExternalJavaAction
                 "Fraction of FMEA items with a failure mode linked (ISO 26262-5 §8.4).",
                 flcPct, "= 100%", flcPass);
             metricCard(w, "TDS", "Traceability Density Score",
-                "Actual cross-layer trace links as a fraction of theoretical maximum.",
+                "Fraction of the expected cross-layer trace relations that are populated.",
                 tdsPct, "≥ 80%", tdsPass);
             metricCard(w, "MVR", "Mechanism Verification Rate",
                 "Fraction of safety mechanisms validated by a FMEA item (ISO 26262-5 §8.4).",
@@ -535,29 +539,18 @@ public class GenerateTraceabilityReportAction extends AbstractExternalJavaAction
         return total == 0 ? 1.0 : (double) linked / total;
     }
 
+    /**
+     * Traceability Density Score.
+     *
+     * <p>Delegates to {@link edu.kit.sdq.dsis.unified.design.services.MetricsService}
+     * so the report and the metrics dashboard share one definition. This class
+     * previously carried its own copy that divided the number of links by a flat
+     * slot count; because several of the trace references are multi-valued, that
+     * copy could exceed 1.0 (the AEB case study reported 132%, which in turn drove
+     * the overall score above 100%).</p>
+     */
     private double computeTDS(UnifiedSystemModel m) {
-        int actual = 0, max = 0;
-        max += m.getSafetyGoals().size() * 2;
-        for (SafetyGoal sg : m.getSafetyGoals()) {
-            if (sg.getRelatedHazard() != null) actual++;
-            actual += sg.getAllocatedTo().size();
-        }
-        max += m.getFunctionalRequirements().size() * 2;
-        for (FunctionalSafetyRequirement fsr : m.getFunctionalRequirements()) {
-            actual += fsr.getRefinedTo().size();
-            actual += fsr.getImplementedBy().size();
-        }
-        max += m.getTechnicalRequirements().size() * 2;
-        for (TechnicalSafetyRequirement tsr : m.getTechnicalRequirements()) {
-            actual += tsr.getRealizedBy().size();
-            actual += tsr.getVerifiedBy().size();
-        }
-        for (FMEAAnalysis fa : m.getFmeaAnalysis())
-            for (FMEAItem item : fa.getFmeaItems()) {
-                max++;
-                actual += item.getValidatesMechanisms().size();
-            }
-        return max == 0 ? 1.0 : (double) actual / max;
+        return METRICS.computeTDS(m);
     }
 
     private double computeMVR(UnifiedSystemModel m) {
