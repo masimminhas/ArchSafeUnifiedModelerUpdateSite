@@ -205,59 +205,67 @@ public class MetricsService {
     // ════════════════════════════════════════════════════════════════════════
     // 5.  TDS — Traceability Density Score
     //
-    //     Definition: Counts actual cross-layer reference edges across 6
-    //     traceability layers and divides by the theoretical maximum.
+    //     Definition: the fraction of the EXPECTED cross-layer trace relations
+    //     that are populated. Each element contributes one unit per relation it
+    //     is expected to carry, and that unit is earned when the relation holds
+    //     at least one link.
     //
-    //     Layers and counted references:
-    //       L1→L2: SafetyGoal.relatedHazard           (1 per SG)
-    //       L2→L3: SafetyGoal.allocatedTo             (N per SG)
-    //       L3→L4: FunctionalReq.refinedTo            (N per FSR)
-    //       L3→L4: FunctionalReq.implementedBy        (N per FSR)
-    //       L4→L5: TechnicalReq.realizedBy            (N per TSR)
-    //       L4→L5: TechnicalReq.verifiedBy            (N per TSR)
-    //       L5→L6: FMEAItem.validatesMechanisms       (N per item)
+    //     Expected relations (one unit each):
+    //       SafetyGoal.relatedHazard                  (L1→L2)
+    //       SafetyGoal.allocatedTo                    (L2→L3)
+    //       FunctionalReq.refinedTo                   (L3→L4)
+    //       FunctionalReq.implementedBy               (L3→arch)
+    //       TechnicalReq.realizedBy                   (L4→arch)
+    //       TechnicalReq.verifiedBy                   (L4→L5)
+    //       FMEAItem.validatesMechanisms              (L5→L6)
     //
-    //     Theoretical max = 2 per SG + 2 per FSR + 2 per TSR + 1 per item
-    //     Result is capped at 1.0 to handle over-linking.
+    //     NOTE: an earlier version divided the NUMBER OF LINKS by a flat slot
+    //     count (2 per SG/FSR/TSR, 1 per item). Because refinedTo,
+    //     implementedBy, realizedBy and validatesMechanisms are multi-valued,
+    //     the numerator counted link multiplicities while the denominator
+    //     counted relation slots, so a richly linked model could exceed 1.0
+    //     (the AEB case study reached 45/34 = 1.32). Counting populated
+    //     relations instead keeps the numerator <= the denominator by
+    //     construction, so the result is a genuine ratio in [0,1].
     //
     //     AQL call in odesign:  aql:self.computeTDS()
     //     self type:            UnifiedSystemModel
     // ════════════════════════════════════════════════════════════════════════
     public double computeTDS(UnifiedSystemModel model) {
-        int actualLinks    = 0;
-        int theoreticalMax = 0;
+        int populated = 0;   // expected relations that carry at least one link
+        int expected  = 0;   // expected relations in total
 
-        // Safety Goals: 2 possible links each (hazard ref + FSR allocations)
+        // Safety goals: hazard reference, and allocation to functional requirements
         for (SafetyGoal sg : model.getSafetyGoals()) {
-            if (sg.getRelatedHazard() != null) actualLinks++;
-            actualLinks += sg.getAllocatedTo().size();
-            theoreticalMax += 2;
+            expected += 2;
+            if (sg.getRelatedHazard() != null)     populated++;
+            if (!sg.getAllocatedTo().isEmpty())    populated++;
         }
 
-        // Functional requirements: 2 possible links each (refinedTo + implementedBy)
+        // Functional safety requirements: refinement to TSRs, allocation to blocks
         for (FunctionalSafetyRequirement fsr : model.getFunctionalRequirements()) {
-            actualLinks += fsr.getRefinedTo().size();
-            actualLinks += fsr.getImplementedBy().size();
-            theoreticalMax += 2;
+            expected += 2;
+            if (!fsr.getRefinedTo().isEmpty())     populated++;
+            if (!fsr.getImplementedBy().isEmpty()) populated++;
         }
 
-        // Technical requirements: 2 possible links each (realizedBy + verifiedBy)
+        // Technical safety requirements: realisation by blocks, verification by FMEA
         for (TechnicalSafetyRequirement tsr : model.getTechnicalRequirements()) {
-            actualLinks += tsr.getRealizedBy().size();
-            actualLinks += tsr.getVerifiedBy().size();
-            theoreticalMax += 2;
+            expected += 2;
+            if (!tsr.getRealizedBy().isEmpty())    populated++;
+            if (!tsr.getVerifiedBy().isEmpty())    populated++;
         }
 
-        // FMEA items: 1 possible link each (validatesMechanisms)
+        // FMEA items: validation of at least one safety mechanism
         for (FMEAAnalysis fmea : model.getFmeaAnalysis()) {
             for (FMEAItem item : fmea.getFmeaItems()) {
-                actualLinks += item.getValidatesMechanisms().size();
-                theoreticalMax += 1;
+                expected += 1;
+                if (!item.getValidatesMechanisms().isEmpty()) populated++;
             }
         }
 
-        if (theoreticalMax == 0) return 1.0;
-        return Math.min(1.0, (double) actualLinks / theoreticalMax);
+        if (expected == 0) return 1.0;   // vacuously complete
+        return (double) populated / expected;   // in [0,1] by construction
     }
 
     /** Display label for TDS column. */

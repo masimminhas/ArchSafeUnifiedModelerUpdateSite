@@ -700,44 +700,13 @@ public class AdvancedAnalysisServices {
      * Threshold: >= 0.80 (80%)
      */
     public Double computeTraceabilityDensity(UnifiedSystemModel model) {
-        int actual = 0, maximum = 0;
-
-        // SafetyGoal → Hazard + FSR allocations
-        if (model.getSafetyGoals() != null) {
-            for (SafetyGoal sg : model.getSafetyGoals()) {
-                maximum += 2;
-                if (sg.getRelatedHazard() != null) actual++;
-                if (sg.getAllocatedTo()   != null) actual += sg.getAllocatedTo().size();
-            }
-        }
-        // FSR → TSR refinements + Block implementations
-        if (model.getFunctionalRequirements() != null) {
-            for (FunctionalSafetyRequirement fsr : model.getFunctionalRequirements()) {
-                maximum += 2;
-                if (fsr.getRefinedTo()     != null) actual += fsr.getRefinedTo().size();
-                if (fsr.getImplementedBy() != null) actual += fsr.getImplementedBy().size();
-            }
-        }
-        // TSR → Block realizations + FMEA verifications
-        if (model.getTechnicalRequirements() != null) {
-            for (TechnicalSafetyRequirement tsr : model.getTechnicalRequirements()) {
-                maximum += 2;
-                if (tsr.getRealizedBy() != null) actual += tsr.getRealizedBy().size();
-                if (tsr.getVerifiedBy() != null) actual += tsr.getVerifiedBy().size();
-            }
-        }
-        // FMEA → Mechanism validations
-        if (model.getFmeaAnalysis() != null) {
-            for (FMEAAnalysis fa : model.getFmeaAnalysis()) {
-                if (fa.getFmeaItems() == null) continue;
-                for (FMEAItem item : fa.getFmeaItems()) {
-                    maximum++;
-                    if (item.getValidatesMechanisms() != null)
-                        actual += item.getValidatesMechanisms().size();
-                }
-            }
-        }
-        return maximum == 0 ? 1.0 : Math.min(1.0, (double) actual / maximum);
+        // Single definition, shared with the metrics dashboard and the traceability
+        // report. See MetricsService.computeTDS. The previous local copy divided the
+        // NUMBER OF LINKS by a flat slot count; since several trace references are
+        // multi-valued, that is not a bounded ratio. It was capped at 1.0 here, which
+        // masked the problem, and was left uncapped in the traceability report, where
+        // it produced 132% for the AEB case study.
+        return new MetricsService().computeTDS(model);
     }
 
     /**
