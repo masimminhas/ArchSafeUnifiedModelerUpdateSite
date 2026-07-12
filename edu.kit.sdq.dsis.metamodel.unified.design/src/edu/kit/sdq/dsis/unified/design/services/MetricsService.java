@@ -34,6 +34,13 @@ public class MetricsService {
     private static final double THRESHOLD_TDS = 0.80;
     private static final double THRESHOLD_MVR = 0.85;
 
+    // ── Progress-bar rendering (MetricsDashboard "Progress" column) ─────────
+    // Block characters render reliably in the Eclipse UI font on Windows, Linux
+    // and macOS. If a platform ever shows boxes, swap them for '=' and '-'.
+    private static final int  BAR_CELLS = 10;
+    private static final char BAR_FULL  = '█';   // full block
+    private static final char BAR_EMPTY = '░';   // light shade
+
     // Number of required concept categories for MCR denominator.
     // Must match the 9 concept types enumerated in the validation plan:
     // globalHazards, safetyGoals, functionalRequirements, technicalRequirements,
@@ -399,6 +406,33 @@ public class MetricsService {
         if (c.startsWith("MD_"))   c = c.substring(3);
         if (c.endsWith("_Line"))   c = c.substring(0, c.length() - 5);
         return c.toUpperCase();
+    }
+
+    /**
+     * Progress cell: a ten-cell bar followed by the percentage, for example
+     * {@code "########.. 80%"} rendered with block characters. On the Overall row
+     * the bar shows the mean of the six metrics.
+     */
+    public String metricBar(UnifiedSystemModel model, String lineMapping) {
+        Double v = "OVERALL".equals(metricCode(lineMapping))
+                ? overallFraction(model)
+                : metricFraction(model, lineMapping);
+        if (v == null) return "";
+
+        double clamped = Math.max(0.0, Math.min(1.0, v));
+        int filled = (int) Math.round(clamped * BAR_CELLS);
+
+        StringBuilder bar = new StringBuilder(BAR_CELLS + 6);
+        for (int i = 0; i < BAR_CELLS; i++) {
+            bar.append(i < filled ? BAR_FULL : BAR_EMPTY);
+        }
+        return bar.append(' ').append(pctLabel(clamped)).toString();
+    }
+
+    /** Mean of the six metrics; drives the bar on the Overall row. */
+    private Double overallFraction(UnifiedSystemModel model) {
+        return (computeMCR(model) + computeHTI(model) + computeRAR(model)
+              + computeFLC(model) + computeTDS(model) + computeMVR(model)) / 6.0;
     }
 
     private String pctLabel(double fraction) {
