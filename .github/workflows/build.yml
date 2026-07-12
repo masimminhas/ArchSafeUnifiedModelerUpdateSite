@@ -137,11 +137,10 @@ jobs:
           name: update-site
           path: ./update-site
 
-      - name: Copy landing page and docs/ assets into Pages site (if present)
-        # docs/ is kept local-only (research material), so it is normally absent
-        # in CI. When present, ship it alongside the P2 update site; otherwise
-        # Pages serves the bare P2 update site.
-        run: '[ -d docs ] && cp -R docs/. ./update-site/ || echo "no docs/ to copy — publishing bare update site"'
+      - name: Copy landing page into Pages site
+        # site/ holds only the intentionally-public landing page + its assets.
+        # docs/ (research material) is kept local-only and is never published.
+        run: cp -R site/. ./update-site/
 
       - name: Setup GitHub Pages
         uses: actions/configure-pages@v4
