@@ -1044,4 +1044,72 @@ public class AdvancedAnalysisServices {
 
         return gaps.length() == 0 ? "ALL PASS" : "GAPS:" + gaps.toString();
     }
+
+    // =========================================================================
+    // MetricsTableDashboard label services
+    //
+    // The dashboard used to do its own arithmetic in AQL, for example:
+    //
+    //     aql:'Hazard Coverage: ' + (self.computeHazardCoverage() * 100).round()
+    //                             .toString() + '%'
+    //
+    // computeHazardCoverage() returns a Double (an AQL Real) while 100 is an
+    // Integer literal, and AQL has no '*' service for (Real, Integer). The
+    // sub-expression therefore evaluated to null, round() and toString() on it
+    // produced nothing, and the label rendered as "Hazard Coverage: %" with the
+    // number silently missing. The services below return the finished string, so
+    // the .odesign performs no arithmetic and the formatting is under our control.
+    // =========================================================================
+
+    /** e.g. "Hazard Coverage: 100%". */
+    public String hazardCoverageLabel(UnifiedSystemModel model) {
+        return "Hazard Coverage: " + asPercent(computeHazardCoverage(model));
+    }
+
+    /** e.g. "FMEA Coverage: 100%". */
+    public String fmeaCoverageLabel(UnifiedSystemModel model) {
+        return "FMEA Coverage: " + asPercent(computeFMEACoverage(model));
+    }
+
+    /** e.g. "Traceability: 100%". */
+    public String traceabilityLabel(UnifiedSystemModel model) {
+        return "Traceability: " + asPercent(computeTraceabilityDensity(model));
+    }
+
+    /** e.g. "Cyclomatic Complexity: 3" (previously rendered as a bare "3"). */
+    public String cyclomaticComplexityLabel(UnifiedSystemModel model) {
+        Integer v = computeCyclomaticComplexity(model);
+        return "Cyclomatic Complexity: " + (v == null ? "n/a" : v.toString());
+    }
+
+    /** e.g. "Avg. Block Degree: 1.82" (previously a raw 1.8181818181818181). */
+    public String avgBlockDegreeLabel(UnifiedSystemModel model) {
+        Double v = computeAverageBlockDegree(model);
+        return v == null ? "Avg. Block Degree: n/a"
+                : String.format(Locale.ROOT, "Avg. Block Degree: %.2f", v);
+    }
+
+    /** e.g. "Average RPN: 63". */
+    public String averageRPNLabel(UnifiedSystemModel model) {
+        Double v = computeAverageRPN(model);
+        return v == null ? "Average RPN: n/a"
+                : String.format(Locale.ROOT, "Average RPN: %.0f", v);
+    }
+
+    /** e.g. "Completeness: 100/100". */
+    public String completenessLabel(UnifiedSystemModel model) {
+        Integer v = computeCompletenessScore(model);
+        return "Completeness: " + (v == null ? "n/a" : v + "/100");
+    }
+
+    /** e.g. "Consistency: 95/100". */
+    public String consistencyLabel(UnifiedSystemModel model) {
+        Integer v = computeConsistencyScore(model);
+        return "Consistency: " + (v == null ? "n/a" : v + "/100");
+    }
+
+    /** Formats a 0..1 fraction as a rounded percentage, e.g. 0.955 -> "96%". */
+    private String asPercent(Double fraction) {
+        return fraction == null ? "n/a" : Math.round(fraction * 100) + "%";
+    }
 }

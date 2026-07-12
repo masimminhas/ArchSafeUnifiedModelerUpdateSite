@@ -999,7 +999,7 @@
             </style>
           </subNodeMappings>
           <subNodeMappings name="MTABLE_CyclomaticComplexity" semanticCandidatesExpression="aql:Sequence{self}" domainClass="unified::UnifiedSystemModel">
-            <style xsi:type="style:SquareDescription" labelSize="11" showIcon="false" labelExpression="aql:self.computeCyclomaticComplexity().toString()" labelPosition="node" resizeKind="NSEW" width="20" height="3">
+            <style xsi:type="style:SquareDescription" labelSize="11" showIcon="false" labelExpression="aql:self.cyclomaticComplexityLabel()" labelPosition="node" resizeKind="NSEW" width="20" height="3">
               <borderColor xsi:type="description:SystemColor" href="environment:/viewpoint#//@systemColors/@entries[name='black']"/>
               <labelFormat>bold</labelFormat>
               <labelColor xsi:type="description:SystemColor" href="environment:/viewpoint#//@systemColors/@entries[name='black']"/>
@@ -1007,14 +1007,14 @@
             </style>
           </subNodeMappings>
           <subNodeMappings name="MTABLE_AvgBlockDegree" semanticCandidatesExpression="aql:Sequence{self}" domainClass="unified::UnifiedSystemModel">
-            <style xsi:type="style:SquareDescription" labelSize="11" showIcon="false" labelExpression="aql:self.computeAverageBlockDegree().toString()" labelPosition="node" resizeKind="NSEW" width="20" height="3">
+            <style xsi:type="style:SquareDescription" labelSize="11" showIcon="false" labelExpression="aql:self.avgBlockDegreeLabel()" labelPosition="node" resizeKind="NSEW" width="20" height="3">
               <borderColor xsi:type="description:SystemColor" href="environment:/viewpoint#//@systemColors/@entries[name='black']"/>
               <labelFormat>bold</labelFormat>
               <labelColor xsi:type="description:SystemColor" href="environment:/viewpoint#//@systemColors/@entries[name='black']"/>
               <color xsi:type="description:SystemColor" href="environment:/viewpoint#//@systemColors/@entries[name='light_blue']"/>
             </style>
           </subNodeMappings>
-          <style xsi:type="style:FlatContainerStyleDescription" borderSizeComputationExpression="2" labelSize="12" showIcon="false" labelExpression="📊 ARCHITECTURE METRICS" tooltipExpression="Architecture and structural metrics" roundedCorner="true" widthComputationExpression="22" heightComputationExpression="15">
+          <style xsi:type="style:FlatContainerStyleDescription" borderSizeComputationExpression="2" labelSize="12" showIcon="false" labelExpression="ARCHITECTURE METRICS" tooltipExpression="Architecture and structural metrics" roundedCorner="true" widthComputationExpression="22" heightComputationExpression="15">
             <borderColor xsi:type="description:SystemColor" href="environment:/viewpoint#//@systemColors/@entries[name='blue']"/>
             <labelFormat>bold</labelFormat>
             <labelColor xsi:type="description:SystemColor" href="environment:/viewpoint#//@systemColors/@entries[name='dark_blue']"/>
@@ -1032,14 +1032,14 @@
             </style>
           </subNodeMappings>
           <subNodeMappings name="MTABLE_HazardCoverage" semanticCandidatesExpression="aql:Sequence{self}" domainClass="unified::UnifiedSystemModel">
-            <style xsi:type="style:SquareDescription" labelSize="11" showIcon="false" labelExpression="aql:'Hazard Coverage: ' + (self.computeHazardCoverage() * 100).round().toString() + '%'" labelPosition="node" resizeKind="NSEW" width="20" height="3">
+            <style xsi:type="style:SquareDescription" labelSize="11" showIcon="false" labelExpression="aql:self.hazardCoverageLabel()" labelPosition="node" resizeKind="NSEW" width="20" height="3">
               <borderColor xsi:type="description:SystemColor" href="environment:/viewpoint#//@systemColors/@entries[name='black']"/>
               <labelFormat>bold</labelFormat>
               <labelColor xsi:type="description:SystemColor" href="environment:/viewpoint#//@systemColors/@entries[name='black']"/>
               <color xsi:type="description:SystemColor" href="environment:/viewpoint#//@systemColors/@entries[name='light_green']"/>
             </style>
             <conditionnalStyles predicateExpression="aql:self.computeHazardCoverage() &lt; 0.5">
-              <style xsi:type="style:SquareDescription" borderSizeComputationExpression="2" labelSize="10" showIcon="false" labelExpression="aql:'⚠️ Hazard Coverage: ' + (self.computeHazardCoverage() * 100).round().toString() + '%'" labelPosition="node" resizeKind="NSEW" width="20" height="3">
+              <style xsi:type="style:SquareDescription" borderSizeComputationExpression="2" labelSize="10" showIcon="false" labelExpression="aql:self.hazardCoverageLabel()" labelPosition="node" resizeKind="NSEW" width="20" height="3">
                 <borderColor xsi:type="description:SystemColor" href="environment:/viewpoint#//@systemColors/@entries[name='red']"/>
                 <labelFormat>bold</labelFormat>
                 <labelColor xsi:type="description:SystemColor" href="environment:/viewpoint#//@systemColors/@entries[name='red']"/>
@@ -1055,7 +1055,7 @@
               <color xsi:type="description:SystemColor" href="environment:/viewpoint#//@systemColors/@entries[name='light_yellow']"/>
             </style>
           </subNodeMappings>
-          <style xsi:type="style:FlatContainerStyleDescription" borderSizeComputationExpression="2" labelSize="12" showIcon="false" labelExpression="🛡️ SAFETY METRICS" tooltipExpression="Safety analysis metrics" roundedCorner="true" widthComputationExpression="22" heightComputationExpression="12">
+          <style xsi:type="style:FlatContainerStyleDescription" borderSizeComputationExpression="2" labelSize="12" showIcon="false" labelExpression="SAFETY METRICS" tooltipExpression="Safety analysis metrics" roundedCorner="true" widthComputationExpression="22" heightComputationExpression="12">
             <borderColor xsi:type="description:SystemColor" href="environment:/viewpoint#//@systemColors/@entries[name='dark_red']"/>
             <labelFormat>bold</labelFormat>
             <labelColor xsi:type="description:SystemColor" href="environment:/viewpoint#//@systemColors/@entries[name='dark_red']"/>
@@ -1073,14 +1073,14 @@
             </style>
           </subNodeMappings>
           <subNodeMappings name="MTABLE_FMEACoverage" semanticCandidatesExpression="aql:Sequence{self}" domainClass="unified::UnifiedSystemModel">
-            <style xsi:type="style:SquareDescription" labelSize="11" showIcon="false" labelExpression="aql:'FMEA Coverage: ' + (self.computeFMEACoverage() * 100).round().toString() + '%'" labelPosition="node" resizeKind="NSEW" width="20" height="3">
+            <style xsi:type="style:SquareDescription" labelSize="11" showIcon="false" labelExpression="aql:self.fmeaCoverageLabel()" labelPosition="node" resizeKind="NSEW" width="20" height="3">
               <borderColor xsi:type="description:SystemColor" href="environment:/viewpoint#//@systemColors/@entries[name='black']"/>
               <labelFormat>bold</labelFormat>
               <labelColor xsi:type="description:SystemColor" href="environment:/viewpoint#//@systemColors/@entries[name='black']"/>
               <color xsi:type="description:SystemColor" href="environment:/viewpoint#//@systemColors/@entries[name='light_green']"/>
             </style>
             <conditionnalStyles predicateExpression="aql:self.computeFMEACoverage() &lt; 0.8">
-              <style xsi:type="style:SquareDescription" borderSizeComputationExpression="2" labelSize="10" showIcon="false" labelExpression="aql:'⚠️ FMEA Coverage: ' + (self.computeFMEACoverage() * 100).round().toString() + '%'" labelPosition="node" resizeKind="NSEW" width="20" height="3">
+              <style xsi:type="style:SquareDescription" borderSizeComputationExpression="2" labelSize="10" showIcon="false" labelExpression="aql:self.fmeaCoverageLabel()" labelPosition="node" resizeKind="NSEW" width="20" height="3">
                 <borderColor xsi:type="description:SystemColor" href="environment:/viewpoint#//@systemColors/@entries[name='orange']"/>
                 <labelColor xsi:type="description:SystemColor" href="environment:/viewpoint#//@systemColors/@entries[name='orange']"/>
                 <color xsi:type="description:SystemColor" href="environment:/viewpoint#//@systemColors/@entries[name='light_orange']"/>
@@ -1088,14 +1088,14 @@
             </conditionnalStyles>
           </subNodeMappings>
           <subNodeMappings name="MTABLE_AverageRPN" semanticCandidatesExpression="aql:Sequence{self}" domainClass="unified::UnifiedSystemModel">
-            <style xsi:type="style:SquareDescription" labelSize="11" showIcon="false" labelExpression="aql:'Average RPN: ' + self.computeAverageRPN().round().toString()" labelPosition="node" resizeKind="NSEW" width="20" height="3">
+            <style xsi:type="style:SquareDescription" labelSize="11" showIcon="false" labelExpression="aql:self.averageRPNLabel()" labelPosition="node" resizeKind="NSEW" width="20" height="3">
               <borderColor xsi:type="description:SystemColor" href="environment:/viewpoint#//@systemColors/@entries[name='black']"/>
               <labelFormat>bold</labelFormat>
               <labelColor xsi:type="description:SystemColor" href="environment:/viewpoint#//@systemColors/@entries[name='black']"/>
               <color xsi:type="description:SystemColor" href="environment:/viewpoint#//@systemColors/@entries[name='light_yellow']"/>
             </style>
             <conditionnalStyles predicateExpression="aql:self.computeAverageRPN() > 100.0">
-              <style xsi:type="style:SquareDescription" borderSizeComputationExpression="2" labelSize="10" showIcon="false" labelExpression="aql:'⚠️ Average RPN: ' + self.computeAverageRPN().round().toString()" labelPosition="node" resizeKind="NSEW" width="20" height="3">
+              <style xsi:type="style:SquareDescription" borderSizeComputationExpression="2" labelSize="10" showIcon="false" labelExpression="aql:self.averageRPNLabel()" labelPosition="node" resizeKind="NSEW" width="20" height="3">
                 <borderColor xsi:type="description:SystemColor" href="environment:/viewpoint#//@systemColors/@entries[name='red']"/>
                 <labelColor xsi:type="description:SystemColor" href="environment:/viewpoint#//@systemColors/@entries[name='red']"/>
                 <color xsi:type="description:SystemColor" href="environment:/viewpoint#//@systemColors/@entries[name='light_red']"/>
@@ -1110,7 +1110,7 @@
               <color xsi:type="description:SystemColor" href="environment:/viewpoint#//@systemColors/@entries[name='light_red']"/>
             </style>
           </subNodeMappings>
-          <style xsi:type="style:FlatContainerStyleDescription" borderSizeComputationExpression="2" labelSize="12" showIcon="false" labelExpression="📋 FMEA METRICS" tooltipExpression="FMEA analysis metrics" roundedCorner="true" widthComputationExpression="22" heightComputationExpression="15">
+          <style xsi:type="style:FlatContainerStyleDescription" borderSizeComputationExpression="2" labelSize="12" showIcon="false" labelExpression="FMEA METRICS" tooltipExpression="FMEA analysis metrics" roundedCorner="true" widthComputationExpression="22" heightComputationExpression="15">
             <borderColor xsi:type="description:SystemColor" href="environment:/viewpoint#//@systemColors/@entries[name='orange']"/>
             <labelFormat>bold</labelFormat>
             <labelColor xsi:type="description:SystemColor" href="environment:/viewpoint#//@systemColors/@entries[name='dark_orange']"/>
@@ -1120,14 +1120,14 @@
         </containerMappings>
         <containerMappings name="MTABLE_QualityScores_Container" semanticCandidatesExpression="aql:Sequence{self}" domainClass="unified::UnifiedSystemModel" childrenPresentation="List">
           <subNodeMappings name="MTABLE_CompletenessScore" semanticCandidatesExpression="aql:Sequence{self}" domainClass="unified::UnifiedSystemModel">
-            <style xsi:type="style:SquareDescription" labelSize="11" showIcon="false" labelExpression="aql:'✅ Completeness: ' + self.computeCompletenessScore().toString() + '/100'" labelPosition="node" resizeKind="NSEW" width="20" height="4">
+            <style xsi:type="style:SquareDescription" labelSize="11" showIcon="false" labelExpression="aql:self.completenessLabel()" labelPosition="node" resizeKind="NSEW" width="20" height="4">
               <borderColor xsi:type="description:SystemColor" href="environment:/viewpoint#//@systemColors/@entries[name='green']"/>
               <labelFormat>bold</labelFormat>
               <labelColor xsi:type="description:SystemColor" href="environment:/viewpoint#//@systemColors/@entries[name='black']"/>
               <color xsi:type="description:SystemColor" href="environment:/viewpoint#//@systemColors/@entries[name='light_green']"/>
             </style>
             <conditionnalStyles predicateExpression="aql:self.computeCompletenessScore() &lt; 50">
-              <style xsi:type="style:SquareDescription" borderSizeComputationExpression="3" labelSize="11" showIcon="false" labelExpression="aql:'⚠️ Completeness: ' + self.computeCompletenessScore().toString() + '/100'" labelPosition="node" resizeKind="NSEW" width="20" height="4">
+              <style xsi:type="style:SquareDescription" borderSizeComputationExpression="3" labelSize="11" showIcon="false" labelExpression="aql:self.completenessLabel()" labelPosition="node" resizeKind="NSEW" width="20" height="4">
                 <borderColor xsi:type="description:SystemColor" href="environment:/viewpoint#//@systemColors/@entries[name='red']"/>
                 <labelFormat>bold</labelFormat>
                 <labelColor xsi:type="description:SystemColor" href="environment:/viewpoint#//@systemColors/@entries[name='red']"/>
@@ -1136,14 +1136,14 @@
             </conditionnalStyles>
           </subNodeMappings>
           <subNodeMappings name="MTABLE_ConsistencyScore" semanticCandidatesExpression="aql:Sequence{self}" domainClass="unified::UnifiedSystemModel">
-            <style xsi:type="style:SquareDescription" labelSize="11" showIcon="false" labelExpression="aql:'✅ Consistency: ' + self.computeConsistencyScore().toString() + '/100'" labelPosition="node" resizeKind="NSEW" width="20" height="4">
+            <style xsi:type="style:SquareDescription" labelSize="11" showIcon="false" labelExpression="aql:self.consistencyLabel()" labelPosition="node" resizeKind="NSEW" width="20" height="4">
               <borderColor xsi:type="description:SystemColor" href="environment:/viewpoint#//@systemColors/@entries[name='green']"/>
               <labelFormat>bold</labelFormat>
               <labelColor xsi:type="description:SystemColor" href="environment:/viewpoint#//@systemColors/@entries[name='black']"/>
               <color xsi:type="description:SystemColor" href="environment:/viewpoint#//@systemColors/@entries[name='light_green']"/>
             </style>
             <conditionnalStyles predicateExpression="aql:self.computeConsistencyScore() &lt; 70">
-              <style xsi:type="style:SquareDescription" borderSizeComputationExpression="3" labelSize="11" showIcon="false" labelExpression="aql:'⚠️ Consistency: ' + self.computeConsistencyScore().toString() + '/100'" labelPosition="node" resizeKind="NSEW" width="20" height="4">
+              <style xsi:type="style:SquareDescription" borderSizeComputationExpression="3" labelSize="11" showIcon="false" labelExpression="aql:self.consistencyLabel()" labelPosition="node" resizeKind="NSEW" width="20" height="4">
                 <borderColor xsi:type="description:SystemColor" href="environment:/viewpoint#//@systemColors/@entries[name='orange']"/>
                 <labelFormat>bold</labelFormat>
                 <labelColor xsi:type="description:SystemColor" href="environment:/viewpoint#//@systemColors/@entries[name='orange']"/>
@@ -1152,14 +1152,14 @@
             </conditionnalStyles>
           </subNodeMappings>
           <subNodeMappings name="MTABLE_TraceabilityDensity" semanticCandidatesExpression="aql:Sequence{self}" domainClass="unified::UnifiedSystemModel">
-            <style xsi:type="style:SquareDescription" labelSize="11" showIcon="false" labelExpression="aql:'Traceability: ' + (self.computeTraceabilityDensity() * 100).round().toString() + '%'" labelPosition="node" resizeKind="NSEW" width="20" height="3">
+            <style xsi:type="style:SquareDescription" labelSize="11" showIcon="false" labelExpression="aql:self.traceabilityLabel()" labelPosition="node" resizeKind="NSEW" width="20" height="3">
               <borderColor xsi:type="description:SystemColor" href="environment:/viewpoint#//@systemColors/@entries[name='black']"/>
               <labelFormat>bold</labelFormat>
               <labelColor xsi:type="description:SystemColor" href="environment:/viewpoint#//@systemColors/@entries[name='black']"/>
               <color xsi:type="description:SystemColor" href="environment:/viewpoint#//@systemColors/@entries[name='light_green']"/>
             </style>
             <conditionnalStyles predicateExpression="aql:self.computeTraceabilityDensity() &lt; 0.3">
-              <style xsi:type="style:SquareDescription" borderSizeComputationExpression="2" labelSize="11" showIcon="false" labelExpression="aql:'⚠️ Traceability: ' + (self.computeTraceabilityDensity() * 100).round().toString() + '%'" labelPosition="node" resizeKind="NSEW" width="20" height="3">
+              <style xsi:type="style:SquareDescription" borderSizeComputationExpression="2" labelSize="11" showIcon="false" labelExpression="aql:self.traceabilityLabel()" labelPosition="node" resizeKind="NSEW" width="20" height="3">
                 <borderColor xsi:type="description:SystemColor" href="environment:/viewpoint#//@systemColors/@entries[name='red']"/>
                 <labelFormat>bold</labelFormat>
                 <labelColor xsi:type="description:SystemColor" href="environment:/viewpoint#//@systemColors/@entries[name='red']"/>
@@ -1167,7 +1167,7 @@
               </style>
             </conditionnalStyles>
           </subNodeMappings>
-          <style xsi:type="style:FlatContainerStyleDescription" borderSizeComputationExpression="2" labelSize="12" showIcon="false" labelExpression="🎯 QUALITY SCORES" tooltipExpression="Overall model quality assessment" roundedCorner="true" widthComputationExpression="22" heightComputationExpression="13">
+          <style xsi:type="style:FlatContainerStyleDescription" borderSizeComputationExpression="2" labelSize="12" showIcon="false" labelExpression="QUALITY SCORES" tooltipExpression="Overall model quality assessment" roundedCorner="true" widthComputationExpression="22" heightComputationExpression="13">
             <borderColor xsi:type="description:SystemColor" href="environment:/viewpoint#//@systemColors/@entries[name='green']"/>
             <labelFormat>bold</labelFormat>
             <labelColor xsi:type="description:SystemColor" href="environment:/viewpoint#//@systemColors/@entries[name='dark_green']"/>
@@ -1662,6 +1662,20 @@
         <defaultForeground>
           <foreGroundColor xsi:type="description:SystemColor" href="environment:/viewpoint#//@systemColors/@entries[name='black']"/>
         </defaultForeground>
+      </ownedColumnMappings>
+      <ownedColumnMappings name="MD_Col_Progress" headerLabelExpression="Progress" canEdit="false" featureName="name" labelExpression="aql:self.metricBar(line.originMapping.name)">
+        <foregroundConditionalStyle predicateExpression="aql:self.metricPass(line.originMapping.name)">
+          <style>
+            <labelFormat>bold</labelFormat>
+            <foreGroundColor xsi:type="description:SystemColor" href="environment:/viewpoint#//@systemColors/@entries[name='dark_green']"/>
+          </style>
+        </foregroundConditionalStyle>
+        <foregroundConditionalStyle predicateExpression="aql:not self.metricPass(line.originMapping.name)">
+          <style>
+            <labelFormat>bold</labelFormat>
+            <foreGroundColor xsi:type="description:SystemColor" href="environment:/viewpoint#//@systemColors/@entries[name='red']"/>
+          </style>
+        </foregroundConditionalStyle>
       </ownedColumnMappings>
       <ownedColumnMappings name="MD_Col_Threshold" headerLabelExpression="Threshold" canEdit="false" featureName="name" labelExpression="aql:self.metricThreshold(line.originMapping.name)">
         <defaultForeground>
