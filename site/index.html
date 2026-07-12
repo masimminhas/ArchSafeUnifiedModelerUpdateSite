@@ -361,15 +361,14 @@
         </ol>
         <div class="pre-wrap">
           <pre><span class="cmd">docker</span> run <span class="flag">-d</span> \
-  <span class="flag">-p</span> <span class="value">6080:6080</span> <span class="flag">-p</span> <span class="value">5900:5900</span> \
+  <span class="flag">-p</span> <span class="value">127.0.0.1:6080:6080</span> \
   <span class="flag">--name</span> <span class="value">archsafe-modeler</span> \
   <span class="url">ghcr.io/masimminhas/archsafeunifiedmodeler:latest</span></pre>
-          <button class="copy-btn" onclick="copyText('docker run -d -p 6080:6080 -p 5900:5900 --name archsafe-modeler ghcr.io/masimminhas/archsafeunifiedmodeler:latest', this)">Copy</button>
+          <button class="copy-btn" onclick="copyText('docker run -d -p 127.0.0.1:6080:6080 --name archsafe-modeler ghcr.io/masimminhas/archsafeunifiedmodeler:latest', this)">Copy</button>
         </div>
         <ol start="2">
-          <li>Open <code>http://localhost:6080/vnc.html</code> in your browser</li>
-          <li>Password: <code>archsafe</code></li>
-          <li>The tool launches automatically — ready to use</li>
+          <li>Open <code>http://localhost:6080</code> in your browser</li>
+          <li>The tool connects and launches automatically — no password, ready to use</li>
         </ol>
         <div class="note">
           ✓ Best option for reviewers — nothing to install locally.

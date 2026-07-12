@@ -65,18 +65,19 @@ mvn -B clean verify
 ## Docker
 
 ```bash
-# Pull latest image
-docker pull ghcr.io/masimminhas/archsafeunifiedmodeler:latest
-
-# Run headless with your workspace mounted
-docker run --rm \
-  -v "$PWD/workspace:/workspace" \
-  ghcr.io/masimminhas/archsafeunifiedmodeler:latest \
-  --data /workspace
-
-# Or use Docker Compose
-cd docker && docker compose up
+docker run -d -p 127.0.0.1:6080:6080 --name archsafe-modeler \
+  ghcr.io/masimminhas/archsafeunifiedmodeler:latest
 ```
+
+Then open **http://localhost:6080** — the modeler connects automatically
+(no password, no VNC client needed). The case-study projects are pre-loaded
+in the workspace.
+
+Optional:
+- `-p 127.0.0.1:5900:5900` additionally exposes plain VNC for native clients.
+- `-e VNC_PW=<password>` protects the VNC session with a password (noVNC
+  will then prompt for it).
+- Or use Docker Compose: `cd docker && docker compose up -d`
 
 ## Installing via Update Site
 

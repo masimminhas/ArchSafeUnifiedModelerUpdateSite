@@ -15,11 +15,12 @@ pre-loaded into the workspace when running the Docker image.
 ### Via Docker (automatic)
 All projects are pre-loaded in the workspace. Just run:
 ```bash
-docker run -d -p 6080:6080 -p 5900:5900 \
+docker run -d -p 127.0.0.1:6080:6080 \
   --name archsafe-modeler \
   ghcr.io/masimminhas/archsafeunifiedmodeler:latest
 ```
-Open **http://localhost:6080/vnc.html** → the projects are already in the workspace.
+Open **http://localhost:6080** → the modeler connects automatically and the
+projects are already in the workspace.
 
 ### Via Eclipse Update Site
 1. Install the tool from `https://masimminhas.github.io/ArchSafeUnifiedModelerUpdateSite/`

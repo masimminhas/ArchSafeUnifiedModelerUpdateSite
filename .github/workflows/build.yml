@@ -250,11 +250,10 @@ jobs:
 
             ### Docker
             ```bash
-            docker pull ghcr.io/masimminhas/archsafeunifiedmodeler:${{ github.ref_name }}
-            docker run -d -p 6080:6080 -p 5900:5900 \
+            docker run -d -p 127.0.0.1:6080:6080 \
               ghcr.io/masimminhas/archsafeunifiedmodeler:${{ github.ref_name }}
             ```
-            Open **http://localhost:6080/vnc.html** (password: `archsafe`)
+            Open **http://localhost:6080** — connects automatically, no password.
 
             ### Update Site (Eclipse)
             `https://masimminhas.github.io/ArchSafeUnifiedModelerUpdateSite/`
