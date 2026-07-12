@@ -18,8 +18,8 @@ abstract: >-
   case studies are included: an automotive Autonomous Emergency Braking
   (AEB) system and a medical infusion pump.
 type: software
-version: "1.0.0"
-date-released: "2026-04-21"
+version: "1.0.3"
+date-released: "2026-07-12"
 license: EPL-2.0
 repository-code: "https://github.com/masimminhas/ArchSafeUnifiedModelerUpdateSite"
 url: "https://masimminhas.github.io/ArchSafeUnifiedModelerUpdateSite/"

@@ -80,8 +80,11 @@ COPY casestudies/ /home/archsafe/workspace/
 # Copy supervisord config and entrypoint
 COPY docker/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 COPY docker/maximize.sh /usr/local/bin/archsafe-maximize.sh
+COPY docker/keep-visible.sh /usr/local/bin/archsafe-keep-visible.sh
 COPY entrypoint.sh /entrypoint.sh
-RUN chmod +x /entrypoint.sh /usr/local/bin/archsafe-maximize.sh
+RUN chmod +x /entrypoint.sh \
+             /usr/local/bin/archsafe-maximize.sh \
+             /usr/local/bin/archsafe-keep-visible.sh
 
 # ✅ Must run as ROOT so supervisord can manage child processes
 USER root
