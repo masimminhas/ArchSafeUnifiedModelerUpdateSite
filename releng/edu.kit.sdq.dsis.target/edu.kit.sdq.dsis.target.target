@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <?pde version="3.8"?>
-<target name="ArchSafe Unified Modeler Target Platform" sequenceNumber="11">
+<target name="ArchSafe Unified Modeler Target Platform" sequenceNumber="12">
   <locations>
     <!-- Eclipse 2023-12 Platform + EMF -->
     <location includeAllPlatforms="false" includeConfigurePhase="true"
@@ -21,11 +21,11 @@
       <repository location="https://download.eclipse.org/eclipse/updates/4.30/"/>
     </location>
 
-    <!-- Sirius 7.3.0 -->
+    <!-- Sirius 7.4.14 (compatible with .aird files authored with Sirius 7.4.1+, internal version 15.4.x) -->
     <location includeAllPlatforms="false" includeConfigurePhase="true"
               includeMode="planner" includeSource="true" type="InstallableUnit">
       <unit id="org.eclipse.sirius.specifier.feature.group"  version="0.0.0"/>
-      <repository location="https://download.eclipse.org/sirius/updates/releases/7.3.0/2023-03/"/>
+      <repository location="https://download.eclipse.org/sirius/updates/releases/7.4.14/2023-03/"/>
     </location>
   </locations>
   <targetJRE path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-17"/>
